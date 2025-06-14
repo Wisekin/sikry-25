@@ -92,3 +92,25 @@ By following this pattern, we get the best of both worlds:
    I noticed that the translation keys in your component don't match those in your 
 companiesPage.json
  file. Let's update the component to use the correct keys:
+
+
+
+------------------
+ Added to English translations (
+/public/locales/en/commsPage.json
+):
+json
+"history": {
+  "title": "Communications History"
+}
+Added to French translations (
+/public/locales/fr/commsPage.json
+):
+json
+"history": {
+  "title": "Historique des Communications"
+}
+Updated the CommunicationsTable component to use the translation key:
+Added the useTranslation hook import
+Initialized the translation hook with const { t } = useTranslation('commsPage')
+Replaced the hardcoded text with the translation key: {t('history.title')}
