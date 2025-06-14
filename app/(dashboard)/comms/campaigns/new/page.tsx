@@ -18,16 +18,13 @@ import { useTranslation } from 'react-i18next';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/src/components/ui/dialog"
-import { DatePicker } from "@/src/components/ui/date-picker"
-
-export const metadata = {
-  title: "New Campaign | SIKRY",
-  description: "Create a new communication campaign",
-}
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css"
 
 // Define static part of campaign types outside component
 const staticCampaignTypes = [
@@ -118,6 +115,9 @@ export default function NewCampaignPage() {
                     <DialogContent>
                       <DialogHeader>
                         <DialogTitle>{t('newCampaignPage.addTypeDialog.title')}</DialogTitle>
+                        <DialogDescription>
+                          {t('newCampaignPage.addTypeDialog.description')}
+                        </DialogDescription>
                       </DialogHeader>
                       <div className="space-y-4 py-4">
                         <div>

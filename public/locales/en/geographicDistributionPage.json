@@ -1,27 +1,46 @@
 {
-  "title": "Geographic Distribution",
-  "subtitle": "Analyze the distribution of companies across different regions and countries.",
+  "title": "Geographic Data Distribution",
+  "subtitle": "Visualize how your data is distributed across different regions.",
   "loading": {
-    "title": "Loading geographic data...",
-    "subtitle": "Please wait while we fetch the distribution data."
+    "title": "Loading geographic insights...",
+    "subtitle": "Please wait while we load the geographic data."
   },
   "error": {
     "title": "Could not load data",
+    "subtitle": "An error occurred while loading the geographic data",
     "tryAgain": "Try Again"
   },
+  "noData": "No geographic distribution data available for the selected filters.",
   "metrics": {
     "totalCountries": {
       "title": "Total Countries",
       "value": "{{count}} countries"
     },
+    "totalRegions": {
+      "title": "Total Regions Covered",
+      "value": "{{count}}"
+    },
     "topRegion": {
       "title": "Top Region",
-      "value": "{{region}} ({{count}} companies)"
+      "value": "{{region}} ({{count}} companies)",
+      "valueShort": "{{name}} ({{count}})"
     },
     "globalCoverage": {
       "title": "Global Coverage",
       "value": "{{percentage}}% of countries"
+    },
+    "regionsWithGrowth": {
+      "title": "Regions with Growth",
+      "value": "{{count}}",
+      "mockNote": "(Mock)"
     }
+  },
+  "map": {
+    "title": "Distribution Map",
+    "placeholder": "Map Visualization Placeholder"
+  },
+  "topRegions": {
+    "title": "Top Regions by Data Volume"
   },
   "chart": {
     "title": "Geographic Distribution",
@@ -43,7 +62,11 @@
     "region": "Region",
     "country": "Country",
     "minCompanies": "Minimum Companies",
+    "allDataTypes": "All Data Types",
+    "companies": "Companies",
+    "users": "Users",
     "apply": "Apply Filters",
     "clear": "Clear Filters"
-  }
+  },
+  "noDataAvailable": "No region data to display."
 } 

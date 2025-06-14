@@ -21,6 +21,9 @@
   "loading": "Loading communications...",
   "title": "Communications",
   "description": "Manage your communications and track engagement.",
+  "history": {
+    "title": "Communications History"
+  },
   "filters": {
     "all": "All",
     "unread": "Unread",
@@ -267,5 +270,7 @@
   },
   "bulkSender.header.description": "bulkSender.header.description",
   "bulkSender.header.newButton": "bulkSender.header.newButton",
-  "bulkSender.content.title": "bulkSender.content.title"
+  "bulkSender.content.title": "bulkSender.content.title",
+  "newCampaignPage.addTypeDialog.description": "newCampaignPage.addTypeDialog.description",
+  "history.title": "history.title"
 }

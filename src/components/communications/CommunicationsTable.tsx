@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslation } from 'react-i18next';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/src/components/ui/table"
 import { Button } from "@/src/components/ui/button"
 import { Badge } from "@/src/components/ui/badge"
@@ -16,6 +17,7 @@ interface CommunicationsTableProps {
 }
 
 export function CommunicationsTable({ communications, onRefresh }: CommunicationsTableProps) {
+  const { t } = useTranslation('commsPage');
   const [updating, setUpdating] = useState<string | null>(null)
 
   const handleStatusUpdate = async (id: string, status: string) => {
@@ -65,7 +67,7 @@ export function CommunicationsTable({ communications, onRefresh }: Communication
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Communications History</CardTitle>
+        <CardTitle>{t('history.title')}</CardTitle>
       </CardHeader>
       <CardContent>
         <Table>

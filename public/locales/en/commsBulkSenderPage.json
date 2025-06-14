@@ -164,24 +164,24 @@
     },
     "importButton": "Import Contacts"
   },
-  "legacy": { 
-    "email": { 
-        "personalization": "Personalization",
-        "readability": "Readability", 
-        "tags": "Tags",
-        "subjectPlaceholder": "Enter message subject"
+  "legacy": {
+    "email": {
+      "personalization": "Personalization",
+      "readability": "Readability",
+      "tags": "Tags",
+      "subjectPlaceholder": "Enter message subject"
     },
-    "linkedin": { 
-        "responseRate": "Response Rate"
+    "linkedin": {
+      "responseRate": "Response Rate"
     },
-    "sms": { 
-        "characters": "Characters", 
-        "segments_plural": "SMS Segments" 
+    "sms": {
+      "characters": "Characters",
+      "segments_plural": "SMS Segments"
     },
-    "templates": { 
+    "templates": {
       "title": "Templates",
       "useTemplate": "Use Template",
-      "modalTitle": "Choose a Template", 
+      "modalTitle": "Choose a Template",
       "categories": {
         "welcome": "Welcome",
         "promotion": "Promotion",
@@ -196,11 +196,11 @@
     "recipients": {
       "title": "Recipients",
       "selectRecipients": "Select Recipients",
-      "totalSelected": "{{count}} recipients selected", 
+      "totalSelected": "{{count}} recipients selected",
       "noRecipients": "No recipients selected. Please add recipients to send messages.",
-      "addRecipients": "Add Recipients" 
+      "addRecipients": "Add Recipients"
     },
-    "delivery": { 
+    "delivery": {
       "title": "Delivery",
       "options": {
         "optimal": "Optimal Time",
@@ -210,20 +210,20 @@
       "schedule": "Schedule",
       "schedulePlaceholder": "Select date and time"
     },
-    "actions": { 
-      "send": "Send Messages", 
-      "schedule": "Schedule Messages", 
-      "cancel": "Cancel", 
+    "actions": {
+      "send": "Send Messages",
+      "schedule": "Schedule Messages",
+      "cancel": "Cancel",
       "sending": "Sending...",
       "scheduled": "Messages Scheduled"
     },
-    "abTesting": { 
+    "abTesting": {
       "title": "A/B Testing",
       "description": "Test different versions of your message to optimize performance"
     },
-    "pageTitle": "Bulk Sender", 
+    "pageTitle": "Bulk Sender",
     "pageDescription": "Send communications in bulk to multiple recipients.",
-    "compose": { 
+    "compose": {
       "title": "Compose Message",
       "subject": "Subject",
       "subjectPlaceholder": "Enter message subject",
@@ -232,14 +232,14 @@
       "attachments": "Attachments",
       "addAttachment": "Add Attachment"
     },
-    "schedule": { 
+    "schedule": {
       "title": "Schedule",
       "sendNow": "Send Now",
       "scheduleForLater": "Schedule for Later",
       "dateTime": "Date & Time",
       "timezone": "Timezone"
     },
-    "preview": { 
+    "preview": {
       "title": "Preview",
       "previewRecipient": "Preview Recipient",
       "previewMessage": "Preview your message as it will appear to recipients.",
@@ -251,5 +251,6 @@
       "recipientsRequired": "At least one recipient is required",
       "scheduleRequired": "Please select a valid date and time for scheduling"
     }
-  }
+  },
+  "email.subjectPlaceholder": "email.subjectPlaceholder"
 }

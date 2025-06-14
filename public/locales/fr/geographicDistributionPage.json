@@ -1,27 +1,46 @@
 {
-  "title": "Distribution Géographique",
-  "subtitle": "Analysez la répartition des entreprises à travers différentes régions et pays.",
+  "title": "Répartition Géographique des Données",
+  "subtitle": "Visualisez comment vos données sont réparties dans différentes régions.",
   "loading": {
-    "title": "Chargement des données géographiques...",
-    "subtitle": "Veuillez patienter pendant que nous récupérons les données de distribution."
+    "title": "Chargement des informations géographiques...",
+    "subtitle": "Veuillez patienter pendant le chargement des données géographiques."
   },
   "error": {
     "title": "Impossible de charger les données",
+    "subtitle": "Une erreur est survenue lors du chargement des données géographiques",
     "tryAgain": "Réessayer"
   },
+  "noData": "Aucune donnée de distribution géographique n'est disponible pour les filtres sélectionnés.",
   "metrics": {
     "totalCountries": {
       "title": "Total des Pays",
       "value": "{{count}} pays"
     },
+    "totalRegions": {
+      "title": "Régions Couvertes",
+      "value": "{{count}}"
+    },
     "topRegion": {
       "title": "Région Principale",
-      "value": "{{region}} ({{count}} entreprises)"
+      "value": "{{region}} ({{count}} entreprises)",
+      "valueShort": "{{name}} ({{count}})"
     },
     "globalCoverage": {
       "title": "Couverture Mondiale",
       "value": "{{percentage}}% des pays"
+    },
+    "regionsWithGrowth": {
+      "title": "Régions en Croissance",
+      "value": "{{count}}",
+      "mockNote": "(Simulation)"
     }
+  },
+  "map": {
+    "title": "Carte de Répartition",
+    "placeholder": "Espace réservé à la visualisation de la carte"
+  },
+  "topRegions": {
+    "title": "Principales Régions par Volume de Données"
   },
   "chart": {
     "title": "Distribution Géographique",
@@ -43,7 +62,11 @@
     "region": "Région",
     "country": "Pays",
     "minCompanies": "Nombre Minimum d'Entreprises",
+    "allDataTypes": "Tous les Types de Données",
+    "companies": "Entreprises",
+    "users": "Utilisateurs",
     "apply": "Appliquer les Filtres",
     "clear": "Effacer les Filtres"
-  }
+  },
+  "noDataAvailable": "Aucune donnée de région à afficher."
 } 

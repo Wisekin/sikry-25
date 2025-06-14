@@ -166,18 +166,18 @@
   },
   "legacy": {
     "email": {
-        "personalization": "Personnalisation",
-        "readability": "Lisibilité",
-        "tags": "Tags",
-        "subjectPlaceholder": "Entrez l'objet du message"
+      "personalization": "Personnalisation",
+      "readability": "Lisibilité",
+      "tags": "Tags",
+      "subjectPlaceholder": "Entrez l'objet du message"
     },
     "linkedin": {
-        "responseRate": "Taux de réponse"
+      "responseRate": "Taux de réponse"
     },
     "sms": {
-        "characters": "Caractères",
-        "segments": "Segment SMS",
-        "segments_plural": "Segments SMS"
+      "characters": "Caractères",
+      "segments": "Segment SMS",
+      "segments_plural": "Segments SMS"
     },
     "templates": {
       "title": "Modèles",
@@ -222,5 +222,6 @@
       "title": "Test A/B",
       "description": "Testez différentes versions de votre message pour optimiser les performances"
     }
-  }
+  },
+  "email.subjectPlaceholder": "email.subjectPlaceholder"
 }

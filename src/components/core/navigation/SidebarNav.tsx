@@ -58,11 +58,11 @@ export function SidebarNav() {
   // Add statistics section with subpages
   const statisticsNavSection = {
     section: "statistics",
-    titleKey: "nav.statistics",
+    titleKey: "nav.statistics.title",
     icon: BarChart3,
     basePath: "/statistics",
     items: [
-      { titleKey: "nav.statisticsOverview", href: "/statistics", },
+      { titleKey: "nav.statisticsOverview", href: "/statistics" },
       { titleKey: "nav.statisticsCollectionTrends", href: "/statistics/collection-trends" },
       { titleKey: "nav.statisticsGeographicDistribution", href: "/statistics/geographic-distribution" },
       { titleKey: "nav.statisticsSectorDistribution", href: "/statistics/sector-distribution" },
@@ -79,10 +79,10 @@ export function SidebarNav() {
       icon: MessageSquare,
       basePath: "/comms",
       items: [
-        { titleKey: "nav.overview", href: "/comms" },
-        { titleKey: "comms.campaigns", href: "/comms/campaigns" },
-        { titleKey: "comms.templates", href: "/comms/templates" },
-        { titleKey: "comms.bulkSender", href: "/comms/bulk-sender" },
+        { titleKey: "nav.communications.overview", href: "/comms" },
+        { titleKey: "nav.communications.campaigns", href: "/comms/campaigns" },
+        { titleKey: "nav.communications.templates", href: "/comms/templates" },
+        { titleKey: "nav.communications.bulkSender", href: "/comms/bulk-sender" },
       ],
     },
     {

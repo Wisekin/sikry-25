@@ -5,6 +5,9 @@
     "companies": "Companies",
     "marketIntel": "Market Intel",
     "scrapers": "Scrapers",
+    "statistics": {
+      "title": "Statistics"
+    },
     "statisticsOverview": "Overview",
     "statisticsCollectionTrends": "Collection Trends",
     "statisticsGeographicDistribution": "Geographic Distribution",
@@ -287,5 +290,7 @@
   "ai.title": "ai.title",
   "ai.placeholder": "ai.placeholder",
   "ai.quickSuggestions": "ai.quickSuggestions",
-  "ai.close": "ai.close"
+  "ai.close": "ai.close",
+  "actions.cancel": "actions.cancel",
+  "nav.statistics.title": "nav.statistics.title"
 }

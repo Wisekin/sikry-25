@@ -103,7 +103,7 @@ export default function SignupPage() {
                   id="email"
                   name="email"
                   type="email"
-                  placeholder={t('signup.emailPlaceholder')} {/* Specific placeholder for signup */}
+                  placeholder={t('signup.emailPlaceholder')}
                   value={formData.email}
                   onChange={handleChange}
                   className="pl-10"
@@ -119,7 +119,7 @@ export default function SignupPage() {
                   id="password"
                   name="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder={t('signup.passwordPlaceholder')} {/* Specific placeholder for signup */}
+                  placeholder={t('signup.passwordPlaceholder')}
                   value={formData.password}
                   onChange={handleChange}
                   className="pl-10 pr-10"

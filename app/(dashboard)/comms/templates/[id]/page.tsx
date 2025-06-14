@@ -1,7 +1,7 @@
 "use client"
 
 import { useTranslation } from 'react-i18next';
-import '@/i18n/config.client'
+import '@/src/i18n/config.client'
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card"
 import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
@@ -76,8 +76,15 @@ Closing:
   },
 }
 
-export default function TemplatePage({ params }: { params: { id: string } }) {
+import * as React from 'react';
+
+interface TemplatePageProps {
+  params: { id: string };
+}
+
+export default function TemplatePage({ params }: TemplatePageProps) {
   const { t } = useTranslation('commsPage');
+  // In Next.js 14, params is already resolved, so we can use it directly
   const template = templates[params.id as keyof typeof templates]
 
   if (!template) {

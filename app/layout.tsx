@@ -12,7 +12,7 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "Sikso Intelligent Platform",
   description: "Advanced business intelligence and automation platform",
-    generator: 'v0.dev'
+  generator: 'v0.dev'
 }
 
 export default function RootLayout({
@@ -22,17 +22,30 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-        <body className={cn(inter.className, "min-h-screen bg-background font-sans antialiased")}>
-<AuthProvider>
+      <head>
+        <link 
+          rel="preload" 
+          href="/_next/static/css/app/layout.css" 
+          as="style" 
+        />
+      </head>
+      <body className={cn(
+        "min-h-screen bg-background font-sans antialiased",
+        inter.className
+      )}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
             <TranslationProvider>
-              <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-                {children}
-              </ThemeProvider>
+              {children}
             </TranslationProvider>
-</AuthProvider>
-        
-        </body>
-   
+          </AuthProvider>
+        </ThemeProvider>
+      </body>
     </html>
   )
 }

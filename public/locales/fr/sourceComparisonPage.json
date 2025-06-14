@@ -1,58 +1,83 @@
 {
   "title": "Comparaison des Sources",
-  "subtitle": "Comparez la qualité et le volume des données entre différentes sources.",
+  "subtitle": "Évaluez et comparez les performances de vos différentes sources de données.",
   "loading": {
-    "title": "Chargement des données de comparaison...",
-    "subtitle": "Veuillez patienter pendant que nous récupérons les données de comparaison."
+    "title": "Chargement de la comparaison",
+    "subtitle": "Chargement des données de performance des sources..."
   },
   "error": {
-    "title": "Impossible de charger les données",
+    "title": "Erreur de chargement",
+    "subtitle": "Une erreur est survenue lors du chargement des données",
     "tryAgain": "Réessayer"
+  },
+  "noData": {
+    "title": "Aucune Donnée Disponible",
+    "subtitle": "Aucune donnée de comparaison disponible",
+    "message": "Aucune donnée de comparaison de source disponible pour les filtres sélectionnés."
   },
   "metrics": {
     "totalSources": {
-      "title": "Total des Sources",
+      "title": "Nombre Total de Sources",
       "value": "{{count}} sources"
     },
-    "topSource": {
-      "title": "Source Principale",
-      "value": "{{source}} ({{count}} enregistrements)"
+    "highestVolume": {
+      "title": "Source au Volume le Plus Élevé",
+      "value": "{{name}}"
     },
-    "avgQuality": {
-      "title": "Qualité Moyenne",
-      "value": "{{score}}% de précision"
-    }
-  },
-  "chart": {
-    "title": "Comparaison des Sources",
-    "noData": "Aucune donnée de comparaison disponible pour les filtres sélectionnés.",
-    "sources": {
-      "webScraping": "Web Scraping",
-      "apiIntegration": "Intégration API",
-      "manualEntry": "Saisie Manuelle",
-      "dataProvider": "Fournisseur de Données",
-      "socialMedia": "Réseaux Sociaux",
-      "other": "Autre"
+    "bestQuality": {
+      "title": "Meilleure Source en Qualité",
+      "value": "{{name}}"
     },
-    "tooltip": {
-      "records": "{{count}} enregistrements",
-      "quality": "{{quality}}% de qualité",
-      "completeness": "{{completeness}}% complet"
-    }
+    "dataVolume": "Volume de Données",
+    "qualityScore": "Score de Qualité (%)",
+    "coverage": "Couverture (%)"
   },
   "filters": {
-    "source": "Source",
-    "minRecords": "Nombre Minimum d'Enregistrements",
-    "minQuality": "Qualité Minimum",
-    "dateRange": "Période",
-    "apply": "Appliquer les Filtres",
-    "clear": "Effacer les Filtres"
+    "compareBy": "Comparer par",
+    "allMetrics": "Toutes les Métriques",
+    "dataVolume": "Volume de Données",
+    "qualityScore": "Score de Qualité",
+    "coverage": "Couverture",
+    "period": "Période",
+    "allTime": "Toutes Périodes",
+    "last30Days": "30 Derniers Jours",
+    "last90Days": "90 Derniers Jours"
   },
-  "qualityMetrics": {
-    "accuracy": "Précision",
-    "completeness": "Complétude",
-    "timeliness": "Actualité",
-    "consistency": "Cohérence",
-    "reliability": "Fiabilité"
-  }
-} 
+  "charts": {
+    "performanceMetrics": {
+      "title": "Métriques de Performance des Sources",
+      "noData": "Aucune métrique de performance de source à afficher."
+    },
+    "detailedMetrics": {
+      "title": "Métriques Détaillées des Sources",
+      "noData": "Aucune métrique détaillée de source à afficher.",
+      "headers": {
+        "sourceName": "Nom de la Source",
+        "dataVolume": "Volume de Données",
+        "qualityScore": "Score de Qualité (%)",
+        "coverage": "Couverture (%)",
+        "updateFrequency": "Fréquence de Mise à Jour"
+      }
+    }
+  },
+  "updateFrequencies": {
+    "realTime": "Temps Réel",
+    "daily": "Quotidienne",
+    "weekly": "Hebdomadaire",
+    "monthly": "Mensuelle",
+    "adHoc": "Ponctuelle"
+  },
+  "notAvailable": "N/A",
+  "table": {
+    "title": "Données de Comparaison des Sources",
+    "noData": "Aucune donnée disponible pour les filtres sélectionnés.",
+    "headers": {
+      "sourceName": "Nom de la Source",
+      "dataVolume": "Volume de Données",
+      "qualityScore": "Score de Qualité",
+      "coverage": "Couverture",
+      "updateFrequency": "Fréquence de Mise à Jour"
+    }
+  },
+  "lastUpdated": "Dernière mise à jour : {{date}}"
+}

@@ -124,7 +124,9 @@ const FunnelProgressPage = () => {
         {/* Funnel Stages Visualization */}
         {currentFunnelData && (
           <div className="mb-8 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <h2 className="text-xl font-semibold text-[#1B1F3B] mb-4 flex items-center">{t('topFunnels.title')}
+            <h2 className="text-xl font-semibold text-[#1B1F3B] mb-4 flex items-center">
+              {t('topFunnels.title')}
+            </h2>
             <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-2 overflow-x-auto pb-4">
               {currentFunnelData.stages.map((stage, index) => (
                 <div key={stage.id} className="bg-gray-50 p-4 rounded-lg border border-gray-200 min-w-[200px] md:min-w-[220px] flex-shrink-0">

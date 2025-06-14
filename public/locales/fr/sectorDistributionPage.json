@@ -26,6 +26,7 @@
   "chart": {
     "title": "Distribution par Secteur",
     "noData": "Aucune donnée sectorielle disponible pour les filtres sélectionnés.",
+    "dataCountLabel": "Nombre d'entreprises",
     "sectors": {
       "technology": "Technologie",
       "healthcare": "Santé",
@@ -52,5 +53,10 @@
     "growthRate": "Taux de Croissance Minimum",
     "apply": "Appliquer les Filtres",
     "clear": "Effacer les Filtres"
-  }
-} 
+  },
+  "breakdown": {
+    "title": "Répartition par Secteur",
+    "noData": "Aucune donnée de répartition sectorielle disponible"
+  },
+  "filters.dataTypes": "filters.dataTypes"
+}

@@ -1,58 +1,83 @@
 {
   "title": "Source Comparison",
-  "subtitle": "Compare data quality and volume across different data sources.",
+  "subtitle": "Evaluate and compare the performance of your different data sources.",
   "loading": {
-    "title": "Loading source comparison data...",
-    "subtitle": "Please wait while we fetch the comparison data."
+    "title": "Loading Source Comparison",
+    "subtitle": "Loading source performance data..."
   },
   "error": {
-    "title": "Could not load data",
+    "title": "Error Loading Data",
+    "subtitle": "An error occurred while loading the data",
     "tryAgain": "Try Again"
+  },
+  "noData": {
+    "title": "No Data Available",
+    "subtitle": "No source comparison data available",
+    "message": "No source comparison data available for the selected filters."
   },
   "metrics": {
     "totalSources": {
-      "title": "Total Sources",
+      "title": "Total Data Sources",
       "value": "{{count}} sources"
     },
-    "topSource": {
-      "title": "Top Source",
-      "value": "{{source}} ({{count}} records)"
+    "highestVolume": {
+      "title": "Highest Volume Source",
+      "value": "{{name}}"
     },
-    "avgQuality": {
-      "title": "Average Quality",
-      "value": "{{score}}% accuracy"
-    }
-  },
-  "chart": {
-    "title": "Source Comparison",
-    "noData": "No source comparison data available for the selected filters.",
-    "sources": {
-      "webScraping": "Web Scraping",
-      "apiIntegration": "API Integration",
-      "manualEntry": "Manual Entry",
-      "dataProvider": "Data Provider",
-      "socialMedia": "Social Media",
-      "other": "Other"
+    "bestQuality": {
+      "title": "Best Quality Source",
+      "value": "{{name}}"
     },
-    "tooltip": {
-      "records": "{{count}} records",
-      "quality": "{{quality}}% quality",
-      "completeness": "{{completeness}}% complete"
-    }
+    "dataVolume": "Data Volume",
+    "qualityScore": "Quality Score (%)",
+    "coverage": "Coverage (%)"
   },
   "filters": {
-    "source": "Source",
-    "minRecords": "Minimum Records",
-    "minQuality": "Minimum Quality",
-    "dateRange": "Date Range",
-    "apply": "Apply Filters",
-    "clear": "Clear Filters"
+    "compareBy": "Compare by",
+    "allMetrics": "All Metrics",
+    "dataVolume": "Data Volume",
+    "qualityScore": "Quality Score",
+    "coverage": "Coverage",
+    "period": "Period",
+    "allTime": "All Time",
+    "last30Days": "Last 30 Days",
+    "last90Days": "Last 90 Days"
   },
-  "qualityMetrics": {
-    "accuracy": "Accuracy",
-    "completeness": "Completeness",
-    "timeliness": "Timeliness",
-    "consistency": "Consistency",
-    "reliability": "Reliability"
-  }
-} 
+  "charts": {
+    "performanceMetrics": {
+      "title": "Source Performance Metrics",
+      "noData": "No source performance metrics to display."
+    },
+    "detailedMetrics": {
+      "title": "Detailed Source Metrics",
+      "noData": "No detailed source metrics to display.",
+      "headers": {
+        "sourceName": "Source Name",
+        "dataVolume": "Data Volume",
+        "qualityScore": "Quality Score (%)",
+        "coverage": "Coverage (%)",
+        "updateFrequency": "Update Frequency"
+      }
+    }
+  },
+  "updateFrequencies": {
+    "realTime": "Real-time",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "monthly": "Monthly",
+    "adHoc": "Ad-hoc"
+  },
+  "notAvailable": "N/A",
+  "table": {
+    "title": "Source Comparison Data",
+    "noData": "No data available for the selected filters.",
+    "headers": {
+      "sourceName": "Source Name",
+      "dataVolume": "Data Volume",
+      "qualityScore": "Quality Score",
+      "coverage": "Coverage",
+      "updateFrequency": "Update Frequency"
+    }
+  },
+  "lastUpdated": "Last updated: {{date}}"
+}

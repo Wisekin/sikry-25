@@ -336,7 +336,7 @@ export default function BulkSenderPage() {
                                                     <GitCompareArrows size={14} className="mr-1.5" /> {t('emailTab.abTestButton')}
                                                 </Button>
                                             </Label>
-                                            <Input id="subject" value={emailSubject} onChange={(e) => setEmailSubject(e.target.value)} placeholder={t('email.subjectPlaceholder', { ns: 'commsBulkSenderPage.legacy' })} className={`border-brand-secondary/50 focus:border-brand-primary focus:ring-brand-primary ${colorMap[emailBodyColor].bg} ${colorMap[emailBodyColor].text}`} />
+                                            <Input id="subject" value={emailSubject} onChange={(e) => setEmailSubject(e.target.value)} placeholder={t('email.subjectPlaceholder', { ns: 'commsBulkSenderPage' })} className={`border-brand-secondary/50 focus:border-brand-primary focus:ring-brand-primary ${colorMap[emailBodyColor].bg} ${colorMap[emailBodyColor].text}`} />
                                             {isAbTesting && <Input id="subject-b" placeholder={t('emailTab.subjectVariationBPlaceholder')} className={`border-brand-secondary/50 focus:border-brand-primary focus:ring-brand-primary mt-2 ${colorMap[emailBodyColor].bg} ${colorMap[emailBodyColor].text}`} />}
                                         </div>
                                         <div className="space-y-2">

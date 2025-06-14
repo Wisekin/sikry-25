@@ -21,6 +21,9 @@
   "loading": "Chargement des communications...",
   "title": "Communications",
   "description": "Gérez vos communications et suivez l'engagement.",
+  "history": {
+    "title": "Historique des Communications"
+  },
   "filters": {
     "all": "Tous",
     "unread": "Non lu",
@@ -265,5 +268,7 @@
       "addButton": "Ajouter le Type"
     }
   },
-  "bulkSender.header.newButton": "bulkSender.header.newButton"
+  "bulkSender.header.newButton": "bulkSender.header.newButton",
+  "newCampaignPage.addTypeDialog.description": "newCampaignPage.addTypeDialog.description",
+  "history.title": "history.title"
 }
