@@ -272,5 +272,6 @@
   "bulkSender.header.newButton": "bulkSender.header.newButton",
   "bulkSender.content.title": "bulkSender.content.title",
   "newCampaignPage.addTypeDialog.description": "newCampaignPage.addTypeDialog.description",
-  "history.title": "history.title"
+  "history.title": "history.title",
+  "noResults": "noResults"
 }

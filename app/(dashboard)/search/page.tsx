@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, Suspense, forwardRef } from "react"
+import { createClient } from '@/src/utils/supabase/client'
 import { useSearchParams } from "next/navigation"
 import { useTranslation } from 'react-i18next'
 import { Button } from "@/src/components/ui/button"
@@ -203,6 +204,8 @@ function SearchContent() {
   const { t } = useTranslation(['searchPage', 'common']);
   const searchParams = useSearchParams();
   const [query, setQuery] = useState(searchParams.get("q") || "");
+  const [user, setUser] = useState<any>(null);
+  const supabase = createClient();
   const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -237,6 +240,14 @@ function SearchContent() {
   };
 
   useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    getUser();
+  }, [supabase.auth]);
+
+  useEffect(() => {
     const fetchCompanies = async () => {
       setLoading(true);
       setError(null);
@@ -244,8 +255,9 @@ function SearchContent() {
         const params = new URLSearchParams();
         params.set('q', query);
         params.set('scope', 'companies');
-        // TODO: set 'user' param from auth/session context if available
-        // params.set('user', userId);
+        if (user) {
+          params.set('user', user.id);
+        }
         const res = await fetch(`/api/search?${params.toString()}`);
         if (!res.ok) throw new Error('Failed to fetch results');
         const data = await res.json();
@@ -273,9 +285,12 @@ function SearchContent() {
         setLoading(false);
       }
     };
-    fetchCompanies();
+
+    if (user) {
+      fetchCompanies();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, query]);
+  }, [searchParams, query, user]);
 
   const filteredCompanies = companies.filter(company => {
     if (filters.industry !== "All Industries" && company.industry !== filters.industry) return false;
@@ -318,6 +333,8 @@ function SearchContent() {
         <div className="grid md:grid-cols-3 gap-4 items-center">
           <div className="md:col-span-2">
             <Input 
+              value={query} 
+              onChange={(e) => setQuery(e.target.value)} 
               placeholder={t('searchPlaceholder', { ns: 'searchPage' })} 
               className="p-6 text-base border-gray-300 focus:ring-2 focus:ring-[#2A3050]" 
             />
@@ -421,6 +438,7 @@ function SearchContent() {
             <div className="text-center py-24 bg-white rounded-xl shadow-sm">
               <h3 className="text-xl font-semibold text-[#1B1F3B] mb-2">{t('noResults.title', 'No Results Found')}</h3>
               <p className="text-muted-foreground mb-4">{t('noResults.suggestion', 'Try adjusting your filters or search terms for a better match.')}</p>
+              {error && <p className="text-red-500">{error}</p>}
               <Button variant="outline" onClick={handleClearFilters}>{t('clearFilters', 'Clear All Filters')}</Button>
             </div>
           )}
