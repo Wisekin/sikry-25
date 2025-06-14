@@ -1,0 +1,37 @@
+{
+  "header": {
+    "title": "Analyse des performances",
+    "subtitle": "Suivez l'engagement des utilisateurs et les métriques de trafic du site Web."
+  },
+  "error": {
+    "fetch": "Échec de la récupération des données de performance.",
+    "title": "Impossible de charger les données",
+    "tryAgain": "Réessayer"
+  },
+  "noData": "Aucune donnée de performance disponible.",
+  "filters": {
+    "label": "Filtrer par date",
+    "period": "Période :",
+    "last7days": "7 derniers jours",
+    "last30days": "30 derniers jours",
+    "last3months": "3 derniers mois"
+  },
+  "summary": {
+    "totalVisits": "Visites totales",
+    "uniqueVisitors": "Visiteurs uniques",
+    "avgSessionDuration": "Durée moy. session",
+    "bounceRate": "Taux de rebond",
+    "pagesPerVisit": "Pages / Visite",
+    "topReferrer": "Meilleur référent"
+  },
+  "charts": {
+    "activity": {
+      "title": "Activité des utilisateurs au fil du temps"
+    },
+    "topPages": {
+      "title": "Pages les plus performantes",
+      "path": "Chemin de la page",
+      "views": "Vues"
+    }
+  }
+}

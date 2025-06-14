@@ -1,0 +1,35 @@
+{
+  "title": "Analyse des réponses aux leads",
+  "subtitle": "Vue d'ensemble des métriques de réponse aux leads",
+  "error": {
+    "fetchFailed": "Échec de la récupération des données analytiques.",
+    "unknown": "Une erreur inconnue est survenue.",
+    "title": "Erreur"
+  },
+  "noData": {
+    "title": "Aucune donnée disponible",
+    "description": "Il n'y a actuellement aucune donnée analytique à afficher."
+  },
+  "summary": {
+    "totalProcessed": "Total des leads traités",
+    "avgResponseTime": "Temps de réponse moyen",
+    "successRate": "Taux de réussite",
+    "failureRate": "Taux d'échec"
+  },
+  "charts": {
+    "leadsProcessedTitle": "Leads traités au fil du temps",
+    "leadsProcessedLabel": "Leads traités",
+    "responseTimeTitle": "Temps de réponse au fil du temps",
+    "avgResponseTimeLabel": "Temps de réponse moyen"
+  },
+  "table": {
+    "title": "Performance des règles",
+    "description": "Métriques de performance pour les règles de réponse aux leads.",
+    "headers": {
+      "ruleName": "Nom de la règle",
+      "processed": "Traité",
+      "successRate": "Taux de réussite",
+      "avgTime": "Temps moyen"
+    }
+  }
+}

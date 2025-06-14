@@ -1,0 +1,46 @@
+{
+  "header": {
+    "title": "Mon tableau de bord de parrainage",
+    "subtitle": "Partagez votre lien, suivez vos parrainages et voyez vos récompenses."
+  },
+  "linkSection": {
+    "title": "Votre lien de parrainage unique",
+    "buttons": {
+      "copyLink": "Copier le lien",
+      "share": "Partager"
+    },
+    "copySuccessAlert": "Lien de parrainage copié dans le presse-papiers !"
+  },
+  "userStats": {
+    "invitesClicks": {
+      "title": "Invitations/Clics"
+    },
+    "successfulReferrals": {
+      "title": "Parrainages réussis",
+      "change": "+{{count}} ce mois-ci"
+    },
+    "pendingReferrals": {
+      "title": "Parrainages en attente"
+    },
+    "rewardsEarned": {
+      "title": "Total des récompenses gagnées (USD)"
+    }
+  },
+  "referredFriendsTable": {
+    "title": "Vos amis parrainés",
+    "headers": {
+      "nameEmail": "Nom/E-mail",
+      "dateReferred": "Date de parrainage",
+      "status": "Statut",
+      "rewardEarned": "Récompense gagnée"
+    },
+    "status": {
+      "joined": "Inscrit",
+      "pendingAction": "Action en attente",
+      "rewardEarned": "Récompense gagnée",
+      "inactive": "Inactif"
+    },
+    "emptyMessage": "Vous n'avez encore parrainé personne. Partagez votre lien pour commencer !",
+    "noRewardSymbol": "-"
+  }
+}

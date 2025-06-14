@@ -1,0 +1,58 @@
+{
+  "title": "Source Comparison",
+  "subtitle": "Compare data quality and volume across different data sources.",
+  "loading": {
+    "title": "Loading source comparison data...",
+    "subtitle": "Please wait while we fetch the comparison data."
+  },
+  "error": {
+    "title": "Could not load data",
+    "tryAgain": "Try Again"
+  },
+  "metrics": {
+    "totalSources": {
+      "title": "Total Sources",
+      "value": "{{count}} sources"
+    },
+    "topSource": {
+      "title": "Top Source",
+      "value": "{{source}} ({{count}} records)"
+    },
+    "avgQuality": {
+      "title": "Average Quality",
+      "value": "{{score}}% accuracy"
+    }
+  },
+  "chart": {
+    "title": "Source Comparison",
+    "noData": "No source comparison data available for the selected filters.",
+    "sources": {
+      "webScraping": "Web Scraping",
+      "apiIntegration": "API Integration",
+      "manualEntry": "Manual Entry",
+      "dataProvider": "Data Provider",
+      "socialMedia": "Social Media",
+      "other": "Other"
+    },
+    "tooltip": {
+      "records": "{{count}} records",
+      "quality": "{{quality}}% quality",
+      "completeness": "{{completeness}}% complete"
+    }
+  },
+  "filters": {
+    "source": "Source",
+    "minRecords": "Minimum Records",
+    "minQuality": "Minimum Quality",
+    "dateRange": "Date Range",
+    "apply": "Apply Filters",
+    "clear": "Clear Filters"
+  },
+  "qualityMetrics": {
+    "accuracy": "Accuracy",
+    "completeness": "Completeness",
+    "timeliness": "Timeliness",
+    "consistency": "Consistency",
+    "reliability": "Reliability"
+  }
+} 

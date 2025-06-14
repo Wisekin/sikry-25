@@ -1,0 +1,42 @@
+{
+  "header": {
+    "title": "Gestion de la Facturation",
+    "subtitle": "Visualisez et gérez votre abonnement, vos factures et votre utilisation."
+  },
+  "buttons": {
+    "updatePaymentMethod": "Mettre à Jour le Moyen de Paiement"
+  },
+  "stats": {
+    "currentPlan": {
+      "title": "Plan Actuel",
+      "planName": "Professionnel",
+      "priceFormat": "{{amount}}/mois"
+    },
+    "nextInvoice": {
+      "title": "Prochaine Facture",
+      "amount": "99,00 $",
+      "dueOnFormat": "Exigible le {{date}}"
+    },
+    "usage": {
+      "title": "Utilisation Actuelle",
+      "usageFormat": "{{currentUsage}} / {{quota}}",
+      "ofMonthlyQuota": "du quota mensuel"
+    }
+  },
+  "billingOverview": {
+    "title": "Aperçu de la Facturation",
+    "description": "Résumé de votre statut de facturation actuel et de votre historique."
+  },
+  "invoices": {
+    "title": "Factures",
+    "description": "Visualisez et téléchargez vos factures passées."
+  },
+  "usageAnalytics": {
+    "title": "Analyses d'Utilisation",
+    "description": "Répartition détaillée de votre utilisation de la plateforme."
+  },
+  "availablePlans": {
+    "title": "Plans Disponibles",
+    "description": "Explorez et gérez vos plans d'abonnement."
+  }
+}

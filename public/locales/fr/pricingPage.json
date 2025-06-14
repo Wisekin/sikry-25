@@ -1,0 +1,108 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "features": "Fonctionnalités",
+    "pricing": "Tarifs",
+    "getStartedButton": "Commencer"
+  },
+  "hero": {
+    "badgeText": "Tarification Transparente",
+    "title": {
+      "main": "Trouvez le Plan Parfait pour ",
+      "highlight": "Votre Entreprise"
+    },
+    "description": "Pas de frais cachés, pas de surprises. Choisissez le plan qui évolue avec l'ambition et les besoins en données de votre entreprise."
+  },
+  "plans": {
+    "starter": {
+      "name": "Débutant",
+      "price": "49 $",
+      "period": "/mois",
+      "description": "Idéal pour les particuliers et petites équipes qui débutent avec l'intelligence de données.",
+      "features": [
+        "1 000 recherches d'entreprises/mois",
+        "Extraction de données de base (e-mail, téléphone)",
+        "Options de filtrage standard",
+        "Accès limité aux modèles",
+        "Support par e-mail"
+      ],
+      "limitations": [
+        "Pas d'accès API",
+        "Pas de prospection multicanal"
+      ],
+      "ctaButton": "Choisir Débutant"
+    },
+    "professional": {
+      "name": "Professionnel",
+      "price": "99 $",
+      "period": "/mois",
+      "description": "Pour les entreprises en croissance nécessitant plus de puissance et de fonctionnalités.",
+      "features": [
+        "10 000 recherches d'entreprises/mois",
+        "Extraction de données avancée (technographies, réseaux sociaux)",
+        "Options de filtrage complètes",
+        "Accès complet aux modèles & Test A/B",
+        "Prospection multicanal (E-mail, LinkedIn)",
+        "Support par e-mail prioritaire"
+      ],
+      "limitations": [
+        "Crédits API limités",
+        "Max 5 utilisateurs"
+      ],
+      "ctaButton": "Choisir Professionnel",
+      "popularBadge": "Le Plus Populaire"
+    },
+    "enterprise": {
+      "name": "Entreprise",
+      "price": "Personnalisé",
+      "period": "",
+      "description": "Solutions sur mesure pour les grandes organisations ayant des besoins spécifiques.",
+      "features": [
+        "Recherches d'entreprises illimitées",
+        "Suite complète d'extraction de données",
+        "Filtrage & rapports personnalisés",
+        "Modèles & workflows de campagne personnalisés",
+        "Tous les canaux de communication",
+        "Chargé de compte dédié & SLA",
+        "Accès API complet & intégrations"
+      ],
+      "limitations": [],
+      "ctaButton": "Contacter les Ventes"
+    }
+  },
+  "faq": {
+    "title": "Questions Fréquemment Posées",
+    "questions": [
+      {
+        "question": "Qu'est-ce qui est inclus dans l'essai gratuit ?",
+        "answer": "Notre essai gratuit vous donne accès à la plupart des fonctionnalités du plan Professionnel pendant 14 jours, y compris un nombre limité de recherches d'entreprises et d'extractions de données. Aucune carte de crédit requise."
+      },
+      {
+        "question": "Puis-je changer de plan plus tard ?",
+        "answer": "Oui, vous pouvez mettre à niveau ou rétrograder votre plan à tout moment. Les modifications seront calculées au prorata pour le cycle de facturation en cours."
+      },
+      {
+        "question": "Quels modes de paiement acceptez-vous ?",
+        "answer": "Nous acceptons toutes les principales cartes de crédit (Visa, Mastercard, American Express) et PayPal. Pour les plans Entreprise, nous prenons également en charge la facturation et les virements bancaires."
+      },
+      {
+        "question": "Offrez-vous une réduction pour la facturation annuelle ?",
+        "answer": "Oui, nous offrons une réduction équivalente à deux mois gratuits si vous choisissez de payer annuellement pour les plans Débutant ou Professionnel."
+      },
+      {
+        "question": "Que se passe-t-il si je dépasse les limites de mon plan ?",
+        "answer": "Vous serez averti avant de dépasser vos limites. Vous pourrez choisir de mettre à niveau votre plan ou d'acheter des packs complémentaires pour des recherches ou extractions supplémentaires pour le mois en cours."
+      },
+      {
+        "question": "Offrez-vous un support pour tous les plans ?",
+        "answer": "Tous les plans incluent un support par e-mail. Les plans Professionnel bénéficient d'un support par e-mail prioritaire, et les plans Entreprise disposent d'un chargé de compte dédié et d'options de support téléphonique."
+      }
+    ]
+  },
+  "cta": {
+    "title": "Vous Avez Encore des Questions ? Nous Sommes Là Pour Aider.",
+    "description": "Notre équipe est prête à vous aider à choisir le meilleur plan ou à créer une solution personnalisée pour vos besoins commerciaux uniques.",
+    "trialButton": "Commencer Votre Essai Gratuit",
+    "demoButton": "Parler aux Ventes"
+  }
+}

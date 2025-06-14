@@ -1,0 +1,65 @@
+{
+  "header": {
+    "title": "Booster d'Avis",
+    "subtitle": "Mettez en œuvre des stratégies et des campagnes pour augmenter proactivement les avis positifs."
+  },
+  "metrics": {
+    "activeCampaigns": {
+      "title": "Campagnes de Booster Actives"
+    },
+    "reviewsFromBooster": {
+      "title": "Avis du Booster"
+    },
+    "avgRating": {
+      "title": "Note Moyenne (Booster)",
+      "unit": "/ 5"
+    }
+  },
+  "strategies": {
+    "title": "Stratégies de Booster",
+    "emailSequence": {
+      "name": "Séquence d'Emails Post-Achat",
+      "description": "Envoyez automatiquement des demandes d'avis par email quelques jours après l'achat d'un client.",
+      "actionText": "Configurer la Séquence"
+    },
+    "smsCampaign": {
+      "name": "Campagnes SMS Ciblées",
+      "description": "Envoyez des liens d'avis par SMS à des segments de clients spécifiques ayant eu des interactions positives récemment.",
+      "actionText": "Lancer la Campagne SMS"
+    },
+    "qrGenerator": {
+      "name": "Code QR en Magasin",
+      "description": "Générez des codes QR uniques pour les supports imprimés dans les points de vente pour encourager les avis instantanés.",
+      "actionText": "Générer le Code QR"
+    },
+    "socialContest": {
+      "name": "Concours d'Avis sur les Réseaux Sociaux",
+      "description": "Organisez un concours sur les réseaux sociaux pour inciter les clients à laisser des avis.",
+      "actionText": "Configurer le Concours"
+    }
+  },
+  "campaigns": {
+    "title": "Campagnes Actives et Récentes",
+    "table": {
+      "headers": {
+        "name": "Nom de la Campagne",
+        "strategy": "Stratégie",
+        "startDate": "Date de Début",
+        "status": "Statut",
+        "reviewsGenerated": "Avis Générés",
+        "avgRating": "Note Moyenne",
+        "actions": "Actions"
+      }
+    },
+    "status": {
+      "active": "Active",
+      "paused": "En Pause",
+      "completed": "Terminée",
+      "draft": "Brouillon"
+    },
+    "actions": {
+      "manage": "Gérer la Campagne"
+    },
+    "emptyMessage": "Aucune campagne de booster d'avis active."
+  }
+}

@@ -1,0 +1,184 @@
+{
+  "dashboard": {
+    "title": "Tableau de Bord Financier",
+    "description": "Suivez et gérez vos activités financières."
+  },
+  "buttons": {
+    "addRecord": "Ajouter un Enregistrement"
+  },
+  "filter": {
+    "searchPlaceholder": "Rechercher des enregistrements par description, catégorie...",
+    "sourceTypeLabel": "Type de Source",
+    "sourceTypeOptions": {
+      "campaign": "Campagne",
+      "contact": "Contact",
+      "scraper": "Scraper",
+      "subscription": "Abonnement",
+      "manual": "Manuel"
+    },
+    "typeLabel": "Type",
+    "currencyLabel": "Devise"
+  },
+  "campaignROITable": {
+    "title": "ROI des Campagnes",
+    "headers": {
+      "campaign": "Campagne",
+      "revenue": "Revenu",
+      "costs": "Coûts",
+      "netProfit": "Bénéfice Net",
+      "roi": "ROI"
+    }
+  },
+  "recordsTable": {
+    "title": "Enregistrements Financiers",
+    "headers": {
+      "source": "Source",
+      "amount": "Montant",
+      "category": "Catégorie"
+    }
+  },
+  "types": {
+    "revenue": "Revenu",
+    "cost": "Coût",
+    "expense": "Dépense",
+    "refund": "Remboursement"
+  },
+  "campaignROI": {
+    "header": {
+      "title": "Analyse du ROI des Campagnes",
+      "subtitle": "Évaluez la performance de vos campagnes marketing."
+    },
+    "metrics": {
+      "overallROI": {
+        "title": "ROI Global des Campagnes",
+        "changeText": "{{value}} vs période précédente"
+      },
+      "topCampaign": {
+        "title": "Meilleure Campagne",
+        "roiLabel": "ROI : {{value}} %"
+      },
+      "totalTracked": {
+        "title": "Total des Campagnes Suivies"
+      }
+    },
+    "filters": {
+      "title": "Filtres",
+      "startDatePlaceholder": "Date de Début",
+      "endDatePlaceholder": "Date de Fin",
+      "statusOptions": {
+        "all": "Tous les Statuts",
+        "active": "Active",
+        "completed": "Terminée",
+        "planned": "Planifiée"
+      },
+      "applyButton": "Appliquer les Filtres"
+    },
+    "table": {
+      "title": "Détails des Performances des Campagnes",
+      "headers": {
+        "campaignName": "Nom de la Campagne",
+        "spend": "Dépenses",
+        "revenue": "Revenu",
+        "netProfit": "Bénéfice Net",
+        "roiPercentage": "ROI (%)",
+        "status": "Statut"
+      },
+      "noData": "Aucune donnée de campagne trouvée."
+    },
+    "statuses": {
+      "active": "Active",
+      "completed": "Terminée",
+      "planned": "Planifiée"
+    }
+  },
+  "recordsPage": {
+    "header": {
+      "title": "Enregistrements Financiers",
+      "subtitle": "Visualisez et gérez vos transactions financières."
+    },
+    "metrics": {
+      "totalRevenue": {
+        "title": "Revenu Total"
+      },
+      "totalExpenses": {
+        "title": "Dépenses Totales"
+      },
+      "netProfit": {
+        "title": "Bénéfice Net"
+      },
+      "changeSuffix": "{{value}} ce mois-ci",
+      "currencyUnit": {
+        "usd": "USD"
+      }
+    },
+    "table": {
+      "title": "Liste des Transactions",
+      "headers": {
+        "date": "Date",
+        "description": "Description",
+        "type": "Type",
+        "amount": "Montant",
+        "currency": "Devise"
+      },
+      "noData": "Aucun enregistrement financier trouvé."
+    },
+    "types": {
+      "income": "Revenu",
+      "expense": "Dépense"
+    }
+  },
+  "summaryPage": {
+    "header": {
+      "title": "Résumé Financier",
+      "subtitle": "Un aperçu de la santé financière de votre entreprise."
+    },
+    "metrics": {
+      "totalRevenueYTD": {
+        "title": "Revenu Total (AAJ)"
+      },
+      "totalExpensesYTD": {
+        "title": "Dépenses Totales (AAJ)"
+      },
+      "netProfitYTD": {
+        "title": "Bénéfice Net (AAJ)"
+      },
+      "avgTransactionValue": {
+        "title": "Valeur Moyenne par Transaction"
+      },
+      "monthlyBurnRate": {
+        "title": "Taux de Consommation Mensuel"
+      },
+      "revenueGrowth": {
+        "title": "Croissance des Revenus"
+      },
+      "changeSuffix": {
+        "vsLastYear": "{{value}} vs l'année dernière",
+        "vsLastMonth": "{{value}} vs le mois dernier",
+        "ytd": "{{value}} AAJ"
+      },
+      "currencyUnit": {
+        "usd": "USD"
+      }
+    },
+    "charts": {
+      "monthlyPerformance": {
+        "title": "Performance Mensuelle",
+        "legendRevenue": "Revenus",
+        "legendExpenses": "Dépenses",
+        "tooltipRevenue": "Revenus : {{value}}",
+        "tooltipExpenses": "Dépenses : {{value}}"
+      },
+      "expenseCategories": {
+        "title": "Catégories de Dépenses",
+        "categories": {
+          "salaries": "Salaires",
+          "marketing": "Marketing",
+          "operations": "Opérations",
+          "software": "Logiciels"
+        },
+        "tooltipLabel": "{{name}} : {{value}} %"
+      }
+    }
+  },
+  "common.all": "common.all"
+}

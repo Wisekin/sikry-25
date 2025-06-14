@@ -1,0 +1,42 @@
+{
+  "header": {
+    "title": "Aperçu du programme de parrainage",
+    "subtitle": "Surveillez et gérez le programme de parrainage de votre entreprise."
+  },
+  "overviewStats": {
+    "totalReferrers": {
+      "title": "Total des parrains",
+      "change": "+10 ce mois-ci"
+    },
+    "successfulReferrals": {
+      "title": "Parrainages réussis",
+      "change": "+30 ce mois-ci"
+    },
+    "conversionRate": {
+      "title": "Taux de conversion",
+      "change": "-2% vs mois dernier"
+    },
+    "totalRewardsPaid": {
+      "title": "Total des récompenses payées (USD)",
+      "change": "+500 $ ce mois-ci"
+    }
+  },
+  "navLinks": {
+    "myDashboard": {
+      "title": "Mon tableau de bord de parrainage",
+      "description": "Visualisez votre lien de parrainage personnel, suivez vos invitations et voyez vos récompenses gagnées."
+    },
+    "tracking": {
+      "title": "Suivi des parrainages",
+      "description": "Surveillez le statut de tous les parrainages, voyez qui s'est inscrit et leur progression vers l'obtention de récompenses."
+    },
+    "rewardsProgram": {
+      "title": "Voir le programme de récompenses",
+      "description": "Comprenez la structure des récompenses de parrainage, les critères d'éligibilité et comment réclamer les récompenses."
+    }
+  },
+  "chart": {
+    "title": "Parrainages au fil du temps",
+    "tooltip": "Parrainages : {{count}}"
+  }
+}

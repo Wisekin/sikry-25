@@ -1,0 +1,49 @@
+{
+  "title": "Distribution Géographique",
+  "subtitle": "Analysez la répartition des entreprises à travers différentes régions et pays.",
+  "loading": {
+    "title": "Chargement des données géographiques...",
+    "subtitle": "Veuillez patienter pendant que nous récupérons les données de distribution."
+  },
+  "error": {
+    "title": "Impossible de charger les données",
+    "tryAgain": "Réessayer"
+  },
+  "metrics": {
+    "totalCountries": {
+      "title": "Total des Pays",
+      "value": "{{count}} pays"
+    },
+    "topRegion": {
+      "title": "Région Principale",
+      "value": "{{region}} ({{count}} entreprises)"
+    },
+    "globalCoverage": {
+      "title": "Couverture Mondiale",
+      "value": "{{percentage}}% des pays"
+    }
+  },
+  "chart": {
+    "title": "Distribution Géographique",
+    "noData": "Aucune donnée géographique disponible pour les filtres sélectionnés.",
+    "regions": {
+      "northAmerica": "Amérique du Nord",
+      "europe": "Europe",
+      "asia": "Asie",
+      "southAmerica": "Amérique du Sud",
+      "africa": "Afrique",
+      "oceania": "Océanie"
+    },
+    "tooltip": {
+      "companies": "{{count}} entreprises",
+      "percentage": "{{percentage}}% du total"
+    }
+  },
+  "filters": {
+    "region": "Région",
+    "country": "Pays",
+    "minCompanies": "Nombre Minimum d'Entreprises",
+    "apply": "Appliquer les Filtres",
+    "clear": "Effacer les Filtres"
+  }
+} 

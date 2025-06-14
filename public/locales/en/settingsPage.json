@@ -1,0 +1,188 @@
+{
+  "header": {
+    "title": "Account Settings",
+    "subtitle": "Manage your company profile and preferences"
+  },
+  "overviewCards": {
+    "profile": {
+      "title": "Profile Status",
+      "value": "Complete",
+      "description": "All fields filled"
+    },
+    "security": {
+      "title": "Security Score",
+      "description": "Excellent security"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "description": "Alerts enabled",
+      "valueActive_one": "{{count}} Active",
+      "valueActive_other": "{{count}} Active"
+    }
+  },
+  "insightsBanner": {
+    "title": "Security Recommendation",
+    "description": "Enable two-factor authentication for enhanced security",
+    "buttonText": "Activate Now"
+  },
+  "tabs": {
+    "profile": "Profile",
+    "notifications": "Notifications",
+    "security": "Security",
+    "billing": "Billing",
+    "integrations": "Integrations"
+  },
+  "profileTab": {
+    "companyInfo": {
+      "title": "Company Information",
+      "companyNameLabel": "Company Name",
+      "firstNameLabel": "First Name",
+      "lastNameLabel": "Last Name",
+      "emailLabel": "Business Email",
+      "saveButton": "Save Changes"
+    },
+    "preferences": {
+      "title": "Preferences",
+      "timezoneLabel": "Timezone",
+      "languageLabel": "Language",
+      "languageOptions": {
+        "en": "English",
+        "fr": "Français",
+        "de": "Deutsch"
+      },
+      "darkModeLabel": "Dark Mode",
+      "darkModeDescription": "Switch interface theme",
+      "saveButton": "Save Preferences"
+    }
+  },
+  "notificationsTab": {
+    "title": "Notification Preferences",
+    "email": {
+      "label": "Email Notifications",
+      "description": "Receive notifications via email"
+    },
+    "scraperAlerts": {
+      "label": "Scraper Alerts",
+      "description": "Get notified when scrapers fail"
+    },
+    "weeklyReports": {
+      "label": "Weekly Reports",
+      "description": "Receive weekly performance summaries"
+    },
+    "marketingEmails": {
+      "label": "Marketing Emails",
+      "description": "Receive product updates and tips"
+    },
+    "saveButton": "Save Notification Settings"
+  },
+  "securityTab": {
+    "auth": {
+      "title": "Authentication",
+      "currentPasswordLabel": "Current Password",
+      "newPasswordLabel": "New Password",
+      "confirmPasswordLabel": "Confirm Password",
+      "twoFactorLabel": "Two-Factor Authentication",
+      "twoFactorDescription": "Add extra security to your account",
+      "updateButton": "Update Security"
+    },
+    "apiAccess": {
+      "title": "API Access",
+      "productionKeyLabel": "Production Key",
+      "productionKeyDescription": "Use this key in your production environment",
+      "developmentKeyLabel": "Development Key",
+      "developmentKeyDescription": "Use for testing and development",
+      "generateNewKeyButton": "Generate New Key"
+    }
+  },
+  "billingTab": {
+    "subscription": {
+      "title": "Subscription Plan",
+      "planNameProfessional": "Professional",
+      "priceSuffixPerMonth": "/month",
+      "profilesLimitText": "Up to {{count}} company profiles",
+      "nextBillingDateLabel": "Next billing date:",
+      "usageThisMonthLabel": "Usage this month:",
+      "upgradeButton": "Upgrade Plan"
+    },
+    "paymentMethod": {
+      "title": "Payment Method",
+      "expiresLabel": "Expires {{date}}",
+      "updateButton": "Update Payment Method",
+      "downloadInvoicesButton": "Download Invoices"
+    }
+  },
+  "integrationsTab": {
+    "connectedServices": {
+      "title": "Connected Services",
+      "linkedIn": "LinkedIn",
+      "salesforce": "Salesforce",
+      "hubspot": "HubSpot"
+    },
+    "webhook": {
+      "title": "Webhook Configuration",
+      "endpointUrlLabel": "Endpoint URL",
+      "eventsToSendLabel": "Events to send",
+      "eventCompanyFound": "Company found",
+      "eventScraperCompleted": "Scraper completed",
+      "eventCampaignSent": "Campaign sent",
+      "saveButton": "Save Configuration"
+    }
+  },
+  "parametersPage": {
+    "general": {
+      "title": "General Settings",
+      "description": "Configure general platform behavior and preferences",
+      "defaultView": {
+        "label": "Default View",
+        "placeholder": "Select default view",
+        "options": {
+          "list": "List View",
+          "grid": "Grid View",
+          "map": "Map View"
+        }
+      },
+      "language": {
+        "label": "Language",
+        "placeholder": "Select language",
+        "options": {
+          "en": "English",
+          "fr": "Français"
+        }
+      },
+      "exportFormat": {
+        "label": "Export Format",
+        "placeholder": "Select export format",
+        "options": {
+          "csv": "CSV",
+          "xlsx": "Excel (XLSX)",
+          "json": "JSON"
+        }
+      },
+      "dataRetention": {
+        "label": "Data Retention (days)"
+      },
+      "autoRefresh": {
+        "label": "Auto-refresh Data",
+        "description": "Automatically refresh data every 5 minutes"
+      },
+      "enableNotifications": {
+        "label": "Enable Notifications",
+        "description": "Receive notifications for important events"
+      },
+      "darkMode": {
+        "label": "Dark Mode",
+        "description": "Use dark theme for the interface"
+      }
+    },
+    "api": {
+      "title": "API Settings",
+      "description": "Configure API usage and limits",
+      "requestLimit": {
+        "label": "API Request Limit (per day)"
+      }
+    },
+    "buttons": {
+      "save": "Save Settings"
+    }
+  }
+}

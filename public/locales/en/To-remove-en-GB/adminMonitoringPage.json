@@ -1,0 +1,33 @@
+{
+  "title": "System Monitoring",
+  "description": "Monitor system health and performance metrics.",
+  "systemStatus": {
+    "title": "System Status",
+    "status": "Status",
+    "uptime": "Uptime",
+    "version": "Version",
+    "lastUpdated": "Last Updated"
+  },
+  "metrics": {
+    "title": "Performance Metrics",
+    "cpuUsage": "CPU Usage",
+    "memoryUsage": "Memory Usage",
+    "diskUsage": "Disk Usage",
+    "networkTraffic": "Network Traffic"
+  },
+  "alerts": {
+    "title": "Recent Alerts",
+    "noAlerts": "No recent alerts to display.",
+    "type": "Type",
+    "message": "Message",
+    "timestamp": "Timestamp",
+    "severity": "Severity"
+  },
+  "logs": {
+    "title": "System Logs",
+    "noLogs": "No logs to display.",
+    "level": "Level",
+    "message": "Message",
+    "timestamp": "Timestamp"
+  }
+}

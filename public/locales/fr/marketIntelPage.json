@@ -1,0 +1,140 @@
+{
+  "title": "Intelligence de Marché",
+  "subtitle": "Analyse complète du marché et aperçu des concurrents",
+  "cards": {
+    "marketSize": {
+      "title": "Taille du Marché",
+      "value": "2,5 Md€",
+      "growth": "+15% sur un an"
+    },
+    "keyPlayers": {
+      "title": "Acteurs Clés",
+      "count": "12",
+      "description": "Concurrents majeurs identifiés"
+    },
+    "marketInsights": {
+      "title": "Aperçus du Marché",
+      "count": "24",
+      "description": "Nouveaux aperçus ce mois-ci"
+    },
+    "leadScore": {
+      "title": "Score de Lead",
+      "score": "85",
+      "improvement": "+5 points ce mois-ci"
+    },
+    "opportunities": {
+      "title": "Opportunités",
+      "count": "8",
+      "description": "Segments à fort potentiel"
+    }
+  },
+  "banner": {
+    "title": "Aperçus du Marché",
+    "description": "Nouvelles tendances et opportunités identifiées",
+    "button": "Voir le Rapport"
+  },
+  "sections": {
+    "competitorLandscape": {
+      "title": "Paysage Concurrentiel",
+      "description": "Analyse des acteurs clés du marché et de leur positionnement"
+    },
+    "relationshipMapping": {
+      "title": "Cartographie des Relations",
+      "description": "Représentation visuelle des connexions du marché"
+    },
+    "leadScoring": {
+      "title": "Évaluation des Leads",
+      "description": "Évaluation des opportunités potentielles du marché"
+    },
+    "marketTrends": {
+      "title": "Tendances du Marché",
+      "description": "Analyse de croissance par secteur"
+    }
+  },
+  "sectors": {
+    "fintech": {
+      "name": "FinTech",
+      "growth": "+25%"
+    },
+    "healthtech": {
+      "name": "HealthTech",
+      "growth": "+20%"
+    },
+    "saas": {
+      "name": "SaaS",
+      "growth": "+15%"
+    },
+    "ecommerce": {
+      "name": "E-commerce",
+      "growth": "+10%"
+    }
+  },
+  "relationshipGraph": {
+    "title": "Graphe des Relations d'Entreprise",
+    "description": "Visualisez les connexions et les partenariats",
+    "placeholder": {
+      "title": "Le graphe de relations interactif sera disponible dans la prochaine mise à jour.",
+      "description": "Visualisation dirigée des connexions et partenariats entre entreprises."
+    },
+    "buttons": {
+      "zoomIn": "Zoom avant",
+      "zoomOut": "Zoom arrière",
+      "reset": "Réinitialiser"
+    }
+  },
+  "leadScoringCard": {
+    "title": "Notation des Prospects",
+    "description": "Qualification et priorisation des pistes alimentées par l'IA",
+    "leads": [
+      {
+        "company": "TechFlow Solutions",
+        "factors": ["Engagement élevé", "Correspondance parfaite", "Budget confirmé"]
+      },
+      {
+        "company": "Alpine Marketing",
+        "factors": ["Bonne correspondance", "Intérêt actif", "Échéancier incertain"]
+      },
+      {
+        "company": "SwissFintech",
+        "factors": ["Potentiel élevé", "Décideur impliqué", "Évaluation des concurrents"]
+      }
+    ]
+  },
+  "competitorMatrix": {
+    "title": "Analyse des Concurrents",
+    "description": "Comparaison détaillée des acteurs clés du marché",
+    "export": "Exporter les Données",
+    "tableHeaders": {
+      "company": "Entreprise",
+      "marketShare": "Part de Marché",
+      "growth": "Croissance",
+      "funding": "Financement",
+      "employees": "Employés",
+      "score": "Score",
+      "threatLevel": "Niveau de Menace"
+    },
+    "threatLevels": {
+      "high": "Élevé",
+      "medium": "Moyen",
+      "low": "Faible"
+    },
+    "competitors": {
+      "competitorA": {
+        "name": "Concurrent A",
+        "funding": "50 M€",
+        "employees": "200-500"
+      },
+      "competitorB": {
+        "name": "Concurrent B",
+        "funding": "25 M€",
+        "employees": "100-200"
+      },
+      "competitorC": {
+        "name": "Concurrent C",
+        "funding": "75 M€",
+        "employees": "500+"
+      }
+    }
+  },
+  "competitorMatrix.title": "competitorMatrix.title"
+}

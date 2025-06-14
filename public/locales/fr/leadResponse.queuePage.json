@@ -1,0 +1,31 @@
+{
+  "title": "File d'attente des leads",
+  "subtitle": "Consultez et gérez les leads en attente pour le traitement des règles.",
+  "common": {
+    "refresh": "Rafraîchir",
+    "actions": "Actions"
+  },
+  "table": {
+    "title": "Tableau de la file d'attente",
+    "description": "Tous les leads actuellement en attente de traitement.",
+    "headers": {
+      "leadId": "ID du lead",
+      "ruleTriggered": "Règle déclenchée",
+      "status": "Statut",
+      "queuedAt": "En file depuis",
+      "lastAttempt": "Dernière tentative",
+      "errorMessage": "Message d'erreur"
+    }
+  },
+  "actions": {
+    "retry": "Réessayer",
+    "cancel": "Annuler"
+  },
+  "status": {
+    "completed": "Terminé",
+    "processing": "En cours",
+    "failed": "Échoué",
+    "retrying": "Nouvelle tentative",
+    "pending": "En attente"
+  }
+}

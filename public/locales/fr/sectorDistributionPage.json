@@ -1,0 +1,56 @@
+{
+  "title": "Distribution par Secteur",
+  "subtitle": "Analysez la répartition des entreprises à travers différents secteurs d'activité et industries.",
+  "loading": {
+    "title": "Chargement des données sectorielles...",
+    "subtitle": "Veuillez patienter pendant que nous récupérons les données de distribution."
+  },
+  "error": {
+    "title": "Impossible de charger les données",
+    "tryAgain": "Réessayer"
+  },
+  "metrics": {
+    "totalSectors": {
+      "title": "Total des Secteurs",
+      "value": "{{count}} secteurs"
+    },
+    "topSector": {
+      "title": "Secteur Principal",
+      "value": "{{sector}} ({{count}} entreprises)"
+    },
+    "sectorDiversity": {
+      "title": "Diversité Sectorielle",
+      "value": "{{percentage}}% de secteurs uniques"
+    }
+  },
+  "chart": {
+    "title": "Distribution par Secteur",
+    "noData": "Aucune donnée sectorielle disponible pour les filtres sélectionnés.",
+    "sectors": {
+      "technology": "Technologie",
+      "healthcare": "Santé",
+      "finance": "Finance",
+      "manufacturing": "Industrie",
+      "retail": "Commerce",
+      "energy": "Énergie",
+      "telecommunications": "Télécommunications",
+      "transportation": "Transport",
+      "construction": "Construction",
+      "agriculture": "Agriculture",
+      "other": "Autre"
+    },
+    "tooltip": {
+      "companies": "{{count}} entreprises",
+      "percentage": "{{percentage}}% du total",
+      "growth": "{{growth}}% de croissance"
+    }
+  },
+  "filters": {
+    "sector": "Secteur",
+    "industry": "Industrie",
+    "minCompanies": "Nombre Minimum d'Entreprises",
+    "growthRate": "Taux de Croissance Minimum",
+    "apply": "Appliquer les Filtres",
+    "clear": "Effacer les Filtres"
+  }
+} 

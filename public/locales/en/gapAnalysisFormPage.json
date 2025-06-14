@@ -1,0 +1,128 @@
+{
+  "form": {
+    "header": {
+      "title": "Business Gap Analysis",
+      "subtitle": "Step {{currentStep}} of {{totalSteps}} - Answer questions to get personalized insights",
+      "backButton": "Back"
+    },
+    "progressLabel": "Complete",
+    "parameters": {
+      "cardTitle": "Market Analysis Parameters",
+      "cardDescription": "Define the scope and focus of your gap analysis",
+      "analysisTitleLabel": "Analysis Title",
+      "analysisTitlePlaceholder": "E.g., Enterprise Software Market Analysis",
+      "industryLabel": "Industry",
+      "industryPlaceholder": "Select industry",
+      "industries": {
+        "technology": "Technology",
+        "finance": "Finance",
+        "healthcare": "Healthcare",
+        "retail": "Retail",
+        "manufacturing": "Manufacturing"
+      },
+      "analysisDescriptionLabel": "Analysis Description",
+      "analysisDescriptionPlaceholder": "Describe the purpose and goals of this gap analysis...",
+      "marketSizeLabel": "Market Size",
+      "marketSizePlaceholder": "Select market size",
+      "marketSizes": {
+        "small": "Small (< $1M)",
+        "medium": "Medium ($1M - $10M)",
+        "large": "Large ($10M - $100M)",
+        "enterprise": "Enterprise (> $100M)"
+      },
+      "geographyLabel": "Geographic Focus",
+      "geographyPlaceholder": "Select region",
+      "geographies": {
+        "northAmerica": "North America",
+        "europe": "Europe",
+        "asiaPacific": "Asia Pacific",
+        "latinAmerica": "Latin America",
+        "global": "Global"
+      },
+      "competitiveAnalysisLabel": "Competitive Analysis",
+      "primaryCompetitorLabel": "Primary Competitor",
+      "primaryCompetitorPlaceholder": "Competitor name",
+      "secondaryCompetitorLabel": "Secondary Competitor",
+      "secondaryCompetitorPlaceholder": "Competitor name",
+      "analysisOptionsLabel": "Analysis Options",
+      "deepScanLabel": "Deep Market Scan",
+      "deepScanDescription": "Perform an extensive analysis of market trends and patterns",
+      "aiRecommendationsLabel": "AI Recommendations",
+      "aiRecommendationsDescription": "Include AI-powered strategic recommendations",
+      "generateLetterLabel": "Generate Sales Letter",
+      "generateLetterDescription": "Automatically create a sales letter based on findings",
+      "buttons": {
+        "saveDraft": "Save Draft",
+        "runAnalysis": "Run Analysis"
+      }
+    },
+    "questions": {
+      "cardDescription": "Please answer the following questions about your business",
+      "requiredIndicator": "*",
+      "scaleLabels": {
+        "poor": "Poor",
+        "excellent": "Excellent"
+      },
+      "placeholders": {
+        "number": "Enter number",
+        "text": "Enter your response"
+      },
+      "booleanYesLabel": "Yes"
+    },
+    "navigation": {
+      "previous": "Previous",
+      "next": "Next",
+      "completeAnalysis": "Complete Analysis",
+      "loading": "Loading..."
+    }
+  },
+  "results": {
+    "header": {
+      "backToDashboard": "Back to Dashboard",
+      "assessmentComplete": "Assessment Complete",
+      "processedMessage": "Your business analysis has been processed"
+    },
+    "overview": {
+      "overallScoreTitle": "Overall Score",
+      "priorityAreasTitle": "Priority Areas",
+      "improvementPotentialTitle": "Improvement Potential",
+      "highPotential": "High Potential",
+      "growthOpportunitiesMessage": "Significant growth opportunities identified"
+    },
+    "categoryBreakdown": {
+      "title": "Category Breakdown",
+      "description": "Detailed analysis across business dimensions"
+    },
+    "salesLetter": {
+      "title": "Personalized Sales Letter",
+      "description": "AI-generated based on your assessment results",
+      "buttons": {
+        "generate": "Generate Letter",
+        "regenerate": "Regenerate Letter",
+        "download": "Download",
+        "send": "Send Letter",
+        "generating": "Generating..."
+      },
+      "generationInfo": {
+        "generatedAt": "Generated {{datetime}}",
+        "justNow": "just now",
+        "regenerations": "{{count}} regenerations"
+      },
+      "readyToGenerate": {
+        "title": "Ready to Generate",
+        "description": "Click \"Generate Letter\" to create a personalized sales letter based on your assessment"
+      }
+    },
+    "recommendations": {
+      "title": "Strategic Recommendations",
+      "description": "Key areas for improvement based on your assessment",
+      "focusMessage": "Focus on improving your {{area}} to drive better business results and competitive advantage"
+    },
+    "actions": {
+      "startNewAssessment": "Start New Assessment",
+      "exportResults": "Export Results"
+    },
+    "errorSubmitting": "Error submitting analysis",
+    "errorGeneratingLetter": "Error generating letter"
+  }
+}

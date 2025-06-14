@@ -1,0 +1,66 @@
+{
+  "title": "User Management",
+  "subtitle": "Manage system users and permissions",
+  "actions": {
+    "addUser": "Add User",
+    "editUser": "Edit User",
+    "deleteUser": "Delete User",
+    "resetPassword": "Reset Password",
+    "exportUsers": "Export Users"
+  },
+  "filters": {
+    "title": "Filters",
+    "role": "Role",
+    "status": "Status",
+    "dateRange": "Date Range",
+    "search": "Search Users"
+  },
+  "table": {
+    "name": "Name",
+    "email": "Email",
+    "role": "Role",
+    "status": "Status",
+    "lastLogin": "Last Login",
+    "created": "Created",
+    "actions": "Actions"
+  },
+  "roles": {
+    "admin": "Administrator",
+    "manager": "Manager",
+    "user": "User",
+    "viewer": "Viewer"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "suspended": "Suspended",
+    "pending": "Pending"
+  },
+  "form": {
+    "name": "Full Name",
+    "email": "Email Address",
+    "role": "Role",
+    "status": "Status",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "permissions": "Permissions"
+  },
+  "permissions": {
+    "title": "Permissions",
+    "view": "View",
+    "create": "Create",
+    "edit": "Edit",
+    "delete": "Delete",
+    "export": "Export",
+    "import": "Import"
+  },
+  "messages": {
+    "noUsers": "No users found",
+    "loading": "Loading users...",
+    "error": "Error loading users",
+    "success": "User saved successfully",
+    "deleteConfirm": "Are you sure you want to delete this user?",
+    "deleteSuccess": "User deleted successfully",
+    "resetPasswordSuccess": "Password reset email sent successfully"
+  }
+} 

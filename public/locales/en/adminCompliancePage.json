@@ -1,0 +1,108 @@
+{
+  "header": {
+    "title": "Compliance",
+    "subtitle": "Monitor and manage your organization's compliance status.",
+    "runAuditButton": "Run Audit"
+  },
+  "overview": {
+    "stats": {
+      "gdpr": {
+        "title": "GDPR Compliance",
+        "value": "{{percentage}}%",
+        "description": "Fully compliant"
+      },
+      "ccpa": {
+        "title": "CCPA Compliance",
+        "value": "{{percentage}}%",
+        "description": "Fully compliant"
+      },
+      "auditStatus": {
+        "title": "Audit Status",
+        "valuePassed": "Passed",
+        "valueFailed": "Failed",
+        "lastAuditFormat": "Last audit: {{timeAgo}}"
+      }
+    },
+    "mainContent": {
+      "title": "Compliance Overview",
+      "description": "Current compliance status and recent activities"
+    }
+  },
+  "logsTab": {
+    "title": "Compliance Logs",
+    "description": "View and manage compliance logs"
+  },
+  "policiesTab": {
+    "title": "Compliance Policies",
+    "description": "View and manage compliance policies"
+  },
+  "reportsTab": {
+    "title": "Compliance Reports",
+    "description": "View and generate compliance reports"
+  },
+  "legacyPageTitle": "Compliance Management", 
+  "legacyPageSubtitle": "Manage regulatory compliance and data protection", 
+  "legacyTabs": { 
+    "overview": "Overview",
+    "logs": "Logs",
+    "policies": "Policies",
+    "reports": "Reports"
+  },
+  "legacySections": { 
+    "gdpr": "GDPR Compliance",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "dataRetention": "Data Retention"
+  },
+  "gdpr": {
+    "title": "GDPR Compliance",
+    "dataProcessing": "Data Processing",
+    "dataProtection": "Data Protection",
+    "userRights": "User Rights",
+    "dataBreach": "Data Breach Response",
+    "consent": "Consent Management"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "dataCollection": "Data Collection",
+    "dataUsage": "Data Usage",
+    "dataSharing": "Data Sharing",
+    "userChoices": "User Choices",
+    "updates": "Policy Updates"
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "usage": "Usage Terms",
+    "restrictions": "Restrictions",
+    "liability": "Liability",
+    "termination": "Termination",
+    "updates": "Terms Updates"
+  },
+  "dataRetention": {
+    "title": "Data Retention",
+    "policies": "Retention Policies",
+    "schedules": "Retention Schedules",
+    "deletion": "Data Deletion",
+    "archiving": "Data Archiving",
+    "compliance": "Compliance Reports"
+  },
+  "actions": {
+    "save": "Save Changes",
+    "export": "Export Reports",
+    "audit": "Run Audit",
+    "update": "Update Policies"
+  },
+  "messages": {
+    "loading": "Loading compliance settings...",
+    "error": "Error loading compliance settings",
+    "success": "Compliance settings saved successfully",
+    "auditComplete": "Compliance audit completed successfully",
+    "updateSuccess": "Policies updated successfully"
+  },
+  "status": {
+    "compliant": "Compliant",
+    "nonCompliant": "Non-Compliant",
+    "warning": "Warning",
+    "error": "Error"
+  }
+}

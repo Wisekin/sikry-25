@@ -1,0 +1,67 @@
+{
+  "header": {
+    "title": "Utilisateurs",
+    "subtitle": "Gérez les membres de votre équipe et leurs rôles.",
+    "inviteUserButton": "Inviter un Utilisateur"
+  },
+  "overview": {
+    "stats": {
+      "totalUsers": {
+        "title": "Utilisateurs Totals",
+        "description": "Membres actifs"
+      },
+      "pendingInvites": {
+        "title": "Invitations en Attente",
+        "description": "En attente de réponse"
+      },
+      "newUsers": {
+        "title": "Nouveaux Utilisateurs",
+        "description": "Ce mois-ci"
+      }
+    },
+    "mainContent": {
+      "title": "Aperçu des Utilisateurs",
+      "description": "Gérez les membres de votre équipe et leurs rôles."
+    }
+  },
+  "usersTab": {
+    "title": "Utilisateurs",
+    "description": "Voir et gérer tous les utilisateurs",
+    "status": {
+      "active": "Actif",
+      "inactive": "Inactif"
+    }
+  },
+  "invitesTab": {
+    "title": "Invitations en Attente",
+    "description": "Gérer les invitations des utilisateurs"
+  },
+  "searchInputPlaceholder": "Rechercher par nom ou e-mail...",
+  "list": {
+    "title": "Tous les utilisateurs",
+    "description": "Affichage de {{count}} utilisateurs.",
+    "searchPlaceholder": "Rechercher par nom ou e-mail..."
+  },
+  "table": {
+    "name": "Nom",
+    "email": "E-mail",
+    "role": "Rôle",
+    "status": "Statut",
+    "lastLogin": "Dernière Connexion",
+    "created": "Créé le",
+    "actions": "Actions",
+    "manage": "Gérer"
+  },
+  "roles": {
+    "admin": "Administrateur",
+    "manager": "Gestionnaire",
+    "user": "Utilisateur",
+    "viewer": "Lecteur"
+  },
+  "status": {
+    "active": "Actif",
+    "inactive": "Inactif",
+    "suspended": "Suspendu",
+    "pending": "En attente"
+  }
+}

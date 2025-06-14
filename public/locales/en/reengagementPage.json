@@ -1,0 +1,48 @@
+{
+  "header": {
+    "title": "Lead Re-engagement",
+    "subtitle": "Revitalize dormant leads and boost conversions."
+  },
+  "overviewStats": {
+    "coldLeads": {
+      "title": "Cold Leads Identified",
+      "change": "+50 this week"
+    },
+    "activeCampaigns": {
+      "title": "Active Campaigns",
+      "change": "+2 new"
+    },
+    "successfulReEngagements": {
+      "title": "Successful Re-engagements",
+      "change": "+25 last 7 days"
+    },
+    "engagementRateLift": {
+      "title": "Engagement Rate Lift",
+      "change": "vs. previous period"
+    }
+  },
+  "navLinks": {
+    "classification": {
+      "title": "Lead Classification",
+      "description": "Define and manage criteria for classifying leads (hot, warm, cold) to target re-engagement efforts effectively."
+    },
+    "tasks": {
+      "title": "Re-engagement Tasks",
+      "description": "View, assign, and track manual or automated tasks related to your re-engagement campaigns and lead follow-ups."
+    },
+    "automation": {
+      "title": "Automation Rules",
+      "description": "Configure automated workflows and triggers for re-engaging leads based on their classification and behavior."
+    }
+  },
+  "funnel": {
+    "title": "Re-engagement Funnel",
+    "stages": {
+      "identified": "Identified",
+      "contacted": "Contacted",
+      "responded": "Responded",
+      "reEngaged": "Re-engaged"
+    },
+    "tooltip": "{{stageName}}: {{count}}"
+  }
+}

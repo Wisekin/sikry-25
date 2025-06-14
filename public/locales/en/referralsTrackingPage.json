@@ -1,0 +1,59 @@
+{
+  "header": {
+    "title": "Referral Tracking",
+    "subtitle": "Monitor all referral activities and their statuses."
+  },
+  "stats": {
+    "totalInitiated": {
+      "title": "Total Referrals Initiated"
+    },
+    "pendingConversion": {
+      "title": "Pending Full Conversion"
+    },
+    "successfullyConverted": {
+      "title": "Successfully Converted"
+    },
+    "totalRewardsDisbursed": {
+      "title": "Total Rewards Disbursed (USD)"
+    }
+  },
+  "filters": {
+    "title": "Filter Referrals",
+    "placeholders": {
+      "referrerName": "Referrer Name",
+      "refereeEmail": "Referee Email"
+    },
+    "statusOptions": {
+      "all": "All Statuses",
+      "invited": "Invited",
+      "signedUp": "Signed Up",
+      "pendingCriteria": "Pending Criteria",
+      "converted": "Converted",
+      "rewardPaid": "Reward Paid",
+      "expired": "Expired",
+      "failed": "Failed"
+    },
+    "buttons": {
+      "apply": "Apply Filters"
+    }
+  },
+  "table": {
+    "title": "All Referral Records",
+    "headers": {
+      "dateInitiated": "Date Initiated",
+      "referrer": "Referrer",
+      "refereeEmail": "Referee Email",
+      "refereeName": "Referee Name",
+      "status": "Status",
+      "reward": "Reward",
+      "actions": "Actions"
+    },
+    "body": {
+      "noRewardSymbol": "-",
+      "buttons": {
+        "editStatusTooltip": "Edit Status"
+      }
+    },
+    "emptyMessage": "No referral records found."
+  }
+}

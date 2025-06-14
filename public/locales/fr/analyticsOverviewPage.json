@@ -1,0 +1,20 @@
+{
+  "header": {
+    "title": "Aperçu des Analyses",
+    "subtitle": "Indicateurs clés et navigation vers les sections d'analyses détaillées."
+  },
+  "links": {
+    "performance": {
+      "title": "Analyses de Performance",
+      "description": "Suivez les indicateurs de performance clés et l'engagement des utilisateurs."
+    },
+    "conversion": {
+      "title": "Entonnoirs de Conversion",
+      "description": "Analysez les taux de conversion à travers différents entonnoirs."
+    },
+    "revenue": {
+      "title": "Perspectives sur les Revenus",
+      "description": "Surveillez la performance financière et les tendances des revenus."
+    }
+  }
+}

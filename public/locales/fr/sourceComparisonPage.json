@@ -1,0 +1,58 @@
+{
+  "title": "Comparaison des Sources",
+  "subtitle": "Comparez la qualité et le volume des données entre différentes sources.",
+  "loading": {
+    "title": "Chargement des données de comparaison...",
+    "subtitle": "Veuillez patienter pendant que nous récupérons les données de comparaison."
+  },
+  "error": {
+    "title": "Impossible de charger les données",
+    "tryAgain": "Réessayer"
+  },
+  "metrics": {
+    "totalSources": {
+      "title": "Total des Sources",
+      "value": "{{count}} sources"
+    },
+    "topSource": {
+      "title": "Source Principale",
+      "value": "{{source}} ({{count}} enregistrements)"
+    },
+    "avgQuality": {
+      "title": "Qualité Moyenne",
+      "value": "{{score}}% de précision"
+    }
+  },
+  "chart": {
+    "title": "Comparaison des Sources",
+    "noData": "Aucune donnée de comparaison disponible pour les filtres sélectionnés.",
+    "sources": {
+      "webScraping": "Web Scraping",
+      "apiIntegration": "Intégration API",
+      "manualEntry": "Saisie Manuelle",
+      "dataProvider": "Fournisseur de Données",
+      "socialMedia": "Réseaux Sociaux",
+      "other": "Autre"
+    },
+    "tooltip": {
+      "records": "{{count}} enregistrements",
+      "quality": "{{quality}}% de qualité",
+      "completeness": "{{completeness}}% complet"
+    }
+  },
+  "filters": {
+    "source": "Source",
+    "minRecords": "Nombre Minimum d'Enregistrements",
+    "minQuality": "Qualité Minimum",
+    "dateRange": "Période",
+    "apply": "Appliquer les Filtres",
+    "clear": "Effacer les Filtres"
+  },
+  "qualityMetrics": {
+    "accuracy": "Précision",
+    "completeness": "Complétude",
+    "timeliness": "Actualité",
+    "consistency": "Cohérence",
+    "reliability": "Fiabilité"
+  }
+} 

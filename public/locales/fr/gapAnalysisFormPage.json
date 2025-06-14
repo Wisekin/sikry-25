@@ -1,0 +1,128 @@
+{
+  "form": {
+    "header": {
+      "title": "Analyse des écarts commerciaux",
+      "subtitle": "Étape {{currentStep}} sur {{totalSteps}} - Répondez aux questions pour obtenir des informations personnalisées",
+      "backButton": "Retour"
+    },
+    "progressLabel": "Terminé",
+    "parameters": {
+      "cardTitle": "Paramètres d'analyse de marché",
+      "cardDescription": "Définissez la portée et l'orientation de votre analyse des écarts",
+      "analysisTitleLabel": "Titre de l'analyse",
+      "analysisTitlePlaceholder": "Ex: Analyse du marché des logiciels d'entreprise",
+      "industryLabel": "Secteur d'activité",
+      "industryPlaceholder": "Sélectionner un secteur",
+      "industries": {
+        "technology": "Technologie",
+        "finance": "Finance",
+        "healthcare": "Santé",
+        "retail": "Commerce de détail",
+        "manufacturing": "Industrie manufacturière"
+      },
+      "analysisDescriptionLabel": "Description de l'analyse",
+      "analysisDescriptionPlaceholder": "Décrivez l'objectif et les buts de cette analyse des écarts...",
+      "marketSizeLabel": "Taille du marché",
+      "marketSizePlaceholder": "Sélectionner la taille du marché",
+      "marketSizes": {
+        "small": "Petit (< 1M $)",
+        "medium": "Moyen (1M $ - 10M $)",
+        "large": "Grand (10M $ - 100M $)",
+        "enterprise": "Entreprise (> 100M $)"
+      },
+      "geographyLabel": "Zone géographique ciblée",
+      "geographyPlaceholder": "Sélectionner une région",
+      "geographies": {
+        "northAmerica": "Amérique du Nord",
+        "europe": "Europe",
+        "asiaPacific": "Asie-Pacifique",
+        "latinAmerica": "Amérique latine",
+        "global": "Monde entier"
+      },
+      "competitiveAnalysisLabel": "Analyse concurrentielle",
+      "primaryCompetitorLabel": "Concurrent principal",
+      "primaryCompetitorPlaceholder": "Nom du concurrent",
+      "secondaryCompetitorLabel": "Concurrent secondaire",
+      "secondaryCompetitorPlaceholder": "Nom du concurrent",
+      "analysisOptionsLabel": "Options d'analyse",
+      "deepScanLabel": "Analyse approfondie du marché",
+      "deepScanDescription": "Effectuer une analyse extensive des tendances et modèles du marché",
+      "aiRecommendationsLabel": "Recommandations IA",
+      "aiRecommendationsDescription": "Inclure des recommandations stratégiques basées sur l'IA",
+      "generateLetterLabel": "Générer une lettre de vente",
+      "generateLetterDescription": "Créer automatiquement une lettre de vente basée sur les résultats",
+      "buttons": {
+        "saveDraft": "Enregistrer le brouillon",
+        "runAnalysis": "Lancer l'analyse"
+      }
+    },
+    "questions": {
+      "cardDescription": "Veuillez répondre aux questions suivantes concernant votre entreprise",
+      "requiredIndicator": "*",
+      "scaleLabels": {
+        "poor": "Mauvais",
+        "excellent": "Excellent"
+      },
+      "placeholders": {
+        "number": "Entrer un nombre",
+        "text": "Entrer votre réponse"
+      },
+      "booleanYesLabel": "Oui"
+    },
+    "navigation": {
+      "previous": "Précédent",
+      "next": "Suivant",
+      "completeAnalysis": "Terminer l'analyse",
+      "loading": "Chargement..."
+    }
+  },
+  "results": {
+    "header": {
+      "backToDashboard": "Retour au tableau de bord",
+      "assessmentComplete": "Évaluation terminée",
+      "processedMessage": "Votre analyse commerciale a été traitée"
+    },
+    "overview": {
+      "overallScoreTitle": "Score global",
+      "priorityAreasTitle": "Domaines prioritaires",
+      "improvementPotentialTitle": "Potentiel d'amélioration",
+      "highPotential": "Potentiel élevé",
+      "growthOpportunitiesMessage": "Des opportunités de croissance significatives ont été identifiées"
+    },
+    "categoryBreakdown": {
+      "title": "Répartition par catégorie",
+      "description": "Analyse détaillée à travers les dimensions de l'entreprise"
+    },
+    "salesLetter": {
+      "title": "Lettre de vente personnalisée",
+      "description": "Générée par IA en fonction des résultats de votre évaluation",
+      "buttons": {
+        "generate": "Générer la lettre",
+        "regenerate": "Régénérer la lettre",
+        "download": "Télécharger",
+        "send": "Envoyer la lettre",
+        "generating": "Génération..."
+      },
+      "generationInfo": {
+        "generatedAt": "Générée le {{datetime}}",
+        "justNow": "à l'instant",
+        "regenerations": "{{count}} régénérations"
+      },
+      "readyToGenerate": {
+        "title": "Prêt à générer",
+        "description": "Cliquez sur \"Générer la lettre\" pour créer une lettre de vente personnalisée basée sur votre évaluation"
+      }
+    },
+    "recommendations": {
+      "title": "Recommandations stratégiques",
+      "description": "Domaines clés d'amélioration basés sur votre évaluation",
+      "focusMessage": "Concentrez-vous sur l'amélioration de votre {{area}} pour obtenir de meilleurs résultats commerciaux et un avantage concurrentiel"
+    },
+    "actions": {
+      "startNewAssessment": "Commencer une nouvelle évaluation",
+      "exportResults": "Exporter les résultats"
+    },
+    "errorSubmitting": "Erreur lors de la soumission de l'analyse",
+    "errorGeneratingLetter": "Erreur lors de la génération de la lettre"
+  }
+}

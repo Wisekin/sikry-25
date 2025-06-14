@@ -1,0 +1,44 @@
+{
+  "header": {
+    "title": "Aperçu des entonnoirs",
+    "subtitle": "Concevez, surveillez et optimisez vos entonnoirs de vente et de marketing."
+  },
+  "overviewStats": {
+    "activeFunnels": {
+      "title": "Entonnoirs actifs"
+    },
+    "totalLeadsInFunnels": {
+      "title": "Total des prospects dans les entonnoirs",
+      "change": "+50 cette semaine"
+    },
+    "overallConversionRate": {
+      "title": "Taux de conversion global"
+    },
+    "revenueFromFunnels": {
+      "title": "Revenus des entonnoirs (USD)",
+      "change": "+5k $ le mois dernier"
+    }
+  },
+  "navLinks": {
+    "builder": {
+      "title": "Constructeur d'entonnoirs",
+      "description": "Concevez et configurez visuellement vos entonnoirs multi-étapes."
+    },
+    "progress": {
+      "title": "Progression de l'entonnoir",
+      "description": "Suivez la progression des prospects et les taux de conversion à chaque étape de l'entonnoir."
+    },
+    "automation": {
+      "title": "Automatisation de l'entonnoir",
+      "description": "Configurez des actions et des déclencheurs automatisés dans vos entonnoirs."
+    }
+  },
+  "chart": {
+    "title": "Entonnoirs les plus performants (par taux de conversion)",
+    "label": {
+      "conversionRate": "% Conv.",
+      "revenue": "Revenus : {{amount}}$"
+    },
+    "emptyMessage": "Aucune donnée de performance d'entonnoir disponible pour le moment."
+  }
+}

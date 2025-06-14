@@ -1,0 +1,24 @@
+{
+  "header": {
+    "title": "Modèles VSL",
+    "subtitle": "Parcourez, gérez et créez de nouveaux modèles de Lettre de Vente Vidéo.",
+    "loadingSubtitle": "Chargement des modèles VSL...",
+    "errorSubtitle": "Erreur"
+  },
+  "errors": {
+    "fetchFailed": "Échec de la récupération des modèles VSL",
+    "loadFailed": "Impossible de charger les modèles VSL"
+  },
+  "actions": {
+    "createNew": "Créer un Nouveau Modèle",
+    "tryAgain": "Réessayer",
+    "refresh": "Actualiser",
+    "preview": "Aperçu",
+    "use": "Utiliser",
+    "edit": "Modifier"
+  },
+  "emptyState": {
+    "title": "Aucun Modèle VSL Trouvé",
+    "description": "Commencez par créer votre premier modèle VSL."
+  }
+}

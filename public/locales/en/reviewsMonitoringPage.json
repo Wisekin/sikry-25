@@ -1,0 +1,70 @@
+{
+  "header": {
+    "title": "Review Monitoring",
+    "subtitle": "Track and respond to customer reviews from various platforms."
+  },
+  "stats": {
+    "newReviewsToday": {
+      "title": "New Reviews Today"
+    },
+    "pendingReply": {
+      "title": "Pending Reply"
+    },
+    "overallSentiment": {
+      "title": "Overall Sentiment",
+      "positiveSuffix": "% Positive"
+    }
+  },
+  "filters": {
+    "platforms": {
+      "all": "All Platforms",
+      "google": "Google",
+      "trustpilot": "Trustpilot",
+      "facebook": "Facebook"
+    },
+    "ratings": {
+      "all": "All Ratings",
+      "5stars": "5 Stars",
+      "4stars": "4 Stars",
+      "3stars": "3 Stars",
+      "2stars": "2 Stars",
+      "1star": "1 Star"
+    },
+    "statuses": {
+      "all": "All Statuses",
+      "new": "New",
+      "viewed": "Viewed",
+      "replied": "Replied",
+      "pendingReply": "Pending Reply"
+    },
+    "buttons": {
+      "apply": "Apply Filters"
+    }
+  },
+  "reviewCard": {
+    "onPlatform": "on {{platform}}",
+    "ratingOutOfFive": "({{rating}}/5)",
+    "yourReplyLabel": "Your Reply:",
+    "statusLabel": "Status: {{status}}",
+    "links": {
+      "viewOriginal": "View Original"
+    },
+    "buttons": {
+      "reply": "Reply"
+    }
+  },
+  "sentiment": {
+    "positive": "Positive",
+    "neutral": "Neutral",
+    "negative": "Negative"
+  },
+  "status": {
+    "new": "New",
+    "viewed": "Viewed",
+    "replied": "Replied",
+    "pendingReply": "Pending Reply"
+  },
+  "reviewsList": {
+    "emptyMessage": "No reviews to display."
+  }
+}

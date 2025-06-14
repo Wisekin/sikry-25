@@ -1,0 +1,67 @@
+{
+  "title": "Lead Response Rules",
+  "subtitle": "Define and manage automated rules for instant lead engagement.",
+  "createNewRuleButton": "Create New Rule",
+  "error": {
+    "title": "Error",
+    "fetchFailed": "Failed to fetch rules.",
+    "unknown": "An unknown error occurred.",
+    "formSubmitFailed": "Failed to submit the rule.",
+    "deleteFailed": "Failed to delete the rule.",
+    "statusUpdateFailed": "Failed to update rule status.",
+    "dismissButton": "Dismiss"
+  },
+  "table": {
+    "title": "Lead Response Rule Configurations",
+    "description": "View and manage all your configured lead response rules.",
+    "emptyMessage": "No lead response rules configured yet.",
+    "headers": {
+      "name": "Name",
+      "trigger": "Trigger",
+      "actions": "Actions",
+      "status": "Status",
+      "lastModified": "Last Modified"
+    },
+    "body": {
+      "moreActionsSuffix": "...and {{count}} more"
+    }
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "dialog": {
+    "create": {
+      "title": "Create New Lead Response Rule",
+      "description": "Define the trigger and actions for your new rule."
+    },
+    "edit": {
+      "title": "Edit Lead Response Rule",
+      "description": "Modify the details of your existing rule."
+    },
+    "form": {
+      "nameLabel": "Rule Name",
+      "namePlaceholder": "e.g., 'New US Demo Request Follow-up'",
+      "triggerLabel": "Trigger Condition",
+      "triggerPlaceholder": "e.g., 'Lead source is \"Website\" AND Country is \"USA\"'",
+      "actionsLabel": "Actions to Perform",
+      "actionPlaceholder": "Action",
+      "addActionButton": "Add Action",
+      "statusLabel": "Status",
+      "statusPlaceholder": "Select status",
+      "priorityLabel": "Priority",
+      "priorityPlaceholder": "e.g., 1 (highest)"
+    }
+  },
+  "confirmDelete": {
+    "message": "Are you sure you want to delete this rule?"
+  },
+  "common": {
+    "actions": "Actions",
+    "edit": "Edit",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "saveChanges": "Save Changes",
+    "create": "Create"
+  }
+}

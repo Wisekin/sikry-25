@@ -1,0 +1,68 @@
+{
+  "title": "Anti-Spam Settings",
+  "subtitle": "Manage spam protection and filtering rules",
+  "sections": {
+    "filters": "Spam Filters",
+    "rules": "Filter Rules",
+    "whitelist": "Whitelist",
+    "blacklist": "Blacklist",
+    "reports": "Spam Reports"
+  },
+  "filters": {
+    "title": "Spam Filters",
+    "content": "Content Filtering",
+    "email": "Email Filtering",
+    "ip": "IP Filtering",
+    "domain": "Domain Filtering",
+    "attachment": "Attachment Filtering"
+  },
+  "rules": {
+    "title": "Filter Rules",
+    "create": "Create Rule",
+    "edit": "Edit Rule",
+    "delete": "Delete Rule",
+    "priority": "Rule Priority",
+    "conditions": "Rule Conditions",
+    "actions": "Rule Actions"
+  },
+  "whitelist": {
+    "title": "Whitelist",
+    "add": "Add to Whitelist",
+    "remove": "Remove from Whitelist",
+    "import": "Import Whitelist",
+    "export": "Export Whitelist"
+  },
+  "blacklist": {
+    "title": "Blacklist",
+    "add": "Add to Blacklist",
+    "remove": "Remove from Blacklist",
+    "import": "Import Blacklist",
+    "export": "Export Blacklist"
+  },
+  "reports": {
+    "title": "Spam Reports",
+    "view": "View Reports",
+    "export": "Export Reports",
+    "stats": "Statistics",
+    "trends": "Trends"
+  },
+  "actions": {
+    "save": "Save Changes",
+    "reset": "Reset to Default",
+    "test": "Test Rules",
+    "update": "Update Filters"
+  },
+  "messages": {
+    "loading": "Loading anti-spam settings...",
+    "error": "Error loading anti-spam settings",
+    "success": "Anti-spam settings saved successfully",
+    "confirmReset": "Are you sure you want to reset all anti-spam settings to default?",
+    "resetSuccess": "Anti-spam settings reset successfully"
+  },
+  "status": {
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "warning": "Warning",
+    "error": "Error"
+  }
+} 

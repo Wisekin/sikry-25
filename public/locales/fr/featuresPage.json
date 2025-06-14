@@ -1,0 +1,126 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "features": "Fonctionnalités",
+    "pricing": "Tarifs",
+    "getStartedButton": "Commencer"
+  },
+  "hero": {
+    "badge": "Découvrez SIKRY",
+    "title": {
+      "main": "Débloquez des Informations Marché avec une ",
+      "highlight": "Précision Inégalée"
+    },
+    "description": "Naviguez dans des paysages de marché complexes avec notre plateforme d'intelligence de données alimentée par l'IA. Découvrez, analysez et agissez sur les opportunités plus rapidement que jamais."
+  },
+  "featureCategories": {
+    "searchAndDiscovery": {
+      "categoryTitle": "Recherche & Découverte",
+      "items": {
+        "naturalLanguageSearch": {
+          "title": "Recherche en Langage Naturel",
+          "description": "Recherchez en utilisant des requêtes conversationnelles comme 'Trouver des entreprises SaaS en Suisse avec plus de 50 employés'",
+          "badge": "Propulsé par l'IA"
+        },
+        "advancedFiltering": {
+          "title": "Filtrage Avancé",
+          "description": "Filtrez par plus de 100 critères incluant l'industrie, la localisation, la taille, la stack technologique, et plus encore.",
+          "badge": "Granulaire"
+        },
+        "realTimeData": {
+          "title": "Données en Temps Réel",
+          "description": "Accédez aux informations d'entreprise les plus à jour, actualisées quotidiennement.",
+          "badge": "En direct"
+        }
+      }
+    },
+    "dataIntelligence": {
+      "categoryTitle": "Intelligence des Données",
+      "items": {
+        "companyProfiles": {
+          "title": "Profils d'Entreprise Complets",
+          "description": "Informations détaillées incluant firmographie, technographie, données sur les employés, et signaux de croissance.",
+          "badge": "Approfondi"
+        },
+        "marketTrends": {
+          "title": "Analyse des Tendances du Marché",
+          "description": "Identifiez les tendances émergentes et les changements de marché avec nos analyses pilotées par l'IA.",
+          "badge": "Prédictif"
+        },
+        "contactEnrichment": {
+          "title": "Enrichissement de Contacts",
+          "description": "Trouvez les coordonnées vérifiées des décideurs clés.",
+          "badge": "Actionnable"
+        }
+      }
+    },
+    "communicationHub": {
+      "categoryTitle": "Centre de Communication",
+      "items": {
+        "multiChannelOutreach": {
+          "title": "Prospection Multicanal",
+          "description": "Engagez les prospects par e-mail, LinkedIn, et d'autres canaux depuis une seule plateforme.",
+          "badge": "Unifié"
+        },
+        "smartTemplates": {
+          "title": "Modèles Intelligents & Test A/B",
+          "description": "Optimisez vos messages avec des modèles intelligents et des capacités de test A/B.",
+          "badge": "Optimisé"
+        },
+        "campaignAnalytics": {
+          "title": "Analyse de Campagne",
+          "description": "Suivez les ouvertures, clics, réponses, et conversions pour mesurer l'efficacité des campagnes.",
+          "badge": "Perspicace"
+        }
+      }
+    },
+    "marketIntelligenceSuite": {
+      "categoryTitle": "Suite d'Intelligence Marché",
+      "items": {
+        "competitorAnalysis": {
+          "title": "Analyse Concurrentielle",
+          "description": "Comparez-vous à vos concurrents et comprenez leurs stratégies.",
+          "badge": "Stratégique"
+        },
+        "opportunitySignals": {
+          "title": "Signaux d'Opportunité",
+          "description": "Soyez alerté des événements clés comme les levées de fonds, les nouvelles embauches, et les changements de stack technologique.",
+          "badge": "Opportun"
+        },
+        "customReporting": {
+          "title": "Rapports Personnalisés",
+          "description": "Créez et exportez des rapports personnalisés adaptés à vos besoins spécifiques.",
+          "badge": "Flexible"
+        }
+      }
+    }
+  },
+  "securitySection": {
+    "title": "Sécurité & Conformité de Niveau Entreprise",
+    "description": "Vos données sont protégées avec les plus hauts standards de sécurité et de conformité.",
+    "items": {
+      "soc2": {
+        "title": "Certifié SOC 2",
+        "description": "Conformité Type II"
+      },
+      "gdpr": {
+        "title": "Conforme RGPD",
+        "description": "Protection des données UE"
+      },
+      "roleBasedAccess": {
+        "title": "Accès Basé sur les Rôles",
+        "description": "Permissions granulaires"
+      },
+      "uptime": {
+        "title": "Disponibilité de 99.9%",
+        "description": "Garantie SLA"
+      }
+    }
+  },
+  "cta": {
+    "title": "Prêt à Transformer Votre Stratégie de Marché ?",
+    "description": "Rejoignez des milliers d'entreprises qui exploitent SIKRY pour obtenir un avantage concurrentiel. Explorez notre plateforme et voyez la différence que l'intelligence alimentée par l'IA peut apporter.",
+    "trialButton": "Commencer l'Essai Gratuit",
+    "demoButton": "Demander une Démo"
+  }
+}

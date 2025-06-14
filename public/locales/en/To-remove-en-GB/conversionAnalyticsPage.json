@@ -1,0 +1,71 @@
+{
+  "title": "Conversion Analytics",
+  "subtitle": "Track and analyze your conversion metrics",
+  "timeRange": {
+    "title": "Time Range",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "last7Days": "Last 7 Days",
+    "last30Days": "Last 30 Days",
+    "thisMonth": "This Month",
+    "lastMonth": "Last Month",
+    "custom": "Custom Range"
+  },
+  "metrics": {
+    "conversionRate": "Conversion Rate",
+    "totalConversions": "Total Conversions",
+    "costPerConversion": "Cost per Conversion",
+    "revenuePerConversion": "Revenue per Conversion",
+    "bounceRate": "Bounce Rate",
+    "averageTimeToConvert": "Average Time to Convert",
+    "funnelDropOff": "Funnel Drop-off Rate",
+    "goalCompletion": "Goal Completion Rate"
+  },
+  "funnel": {
+    "title": "Conversion Funnel",
+    "stages": {
+      "awareness": "Awareness",
+      "interest": "Interest",
+      "consideration": "Consideration",
+      "intent": "Intent",
+      "evaluation": "Evaluation",
+      "purchase": "Purchase"
+    }
+  },
+  "charts": {
+    "funnel": {
+      "title": "Funnel Analysis",
+      "subtitle": "Conversion rates by stage"
+    },
+    "trends": {
+      "title": "Conversion Trends",
+      "subtitle": "Conversion rate over time"
+    },
+    "sources": {
+      "title": "Conversion Sources",
+      "subtitle": "Conversions by traffic source"
+    },
+    "paths": {
+      "title": "Conversion Paths",
+      "subtitle": "Most common conversion paths"
+    }
+  },
+  "segments": {
+    "title": "Conversion Segments",
+    "byDevice": "By Device",
+    "byLocation": "By Location",
+    "bySource": "By Traffic Source",
+    "byCampaign": "By Campaign"
+  },
+  "actions": {
+    "export": "Export Data",
+    "refresh": "Refresh Data",
+    "customize": "Customize View",
+    "share": "Share Report"
+  },
+  "messages": {
+    "loading": "Loading conversion data...",
+    "error": "Error loading conversion data",
+    "noData": "No conversion data available for the selected time range"
+  }
+} 

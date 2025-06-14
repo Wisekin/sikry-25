@@ -1,0 +1,39 @@
+{
+  "header": {
+    "title": "Gap Analysis Letters",
+    "subtitle": "Manage and review AI-generated sales letters from your gap analyses.",
+    "buttons": {
+      "createNew": "Create New Letter"
+    }
+  },
+  "error": {
+    "fetchTitle": "Error Fetching Letters",
+    "unknown": "An unknown error occurred while trying to fetch letters.",
+    "tryAgainButton": "Try Again"
+  },
+  "emptyState": {
+    "title": "No Sales Letters Found",
+    "description": "Generate sales letters from your gap analysis results to see them here."
+  },
+  "letterCard": {
+    "subjectLabel": "Subject",
+    "recipientLabel": "Recipient",
+    "companyLabel": "Company",
+    "idLabel": "ID",
+    "createdLabel": "Created",
+    "buttons": {
+      "preview": "Preview"
+    },
+    "status": {
+      "draft": "Draft",
+      "sent": "Sent",
+      "archived": "Archived"
+    }
+  },
+  "previewDialog": {
+    "subjectPrefix": "Subject",
+    "buttons": {
+      "close": "Close"
+    }
+  }
+}

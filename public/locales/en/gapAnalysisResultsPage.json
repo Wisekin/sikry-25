@@ -1,0 +1,51 @@
+{
+  "header": {
+    "title": "Gap Analysis Results",
+    "subtitle": "Review the findings and recommendations from your gap analysis.",
+    "buttons": {
+      "export": "Export Results"
+    }
+  },
+  "error": {
+    "loadTitle": "Error Loading Results",
+    "unknown": "An unknown error occurred while trying to fetch results.",
+    "tryAgainButton": "Try Again"
+  },
+  "noResults": {
+    "title": "No Gap Analysis Results",
+    "description": "Complete a gap analysis to see your results here."
+  },
+  "summary": {
+    "totalGaps": "Total Gaps Identified",
+    "avgSeverity": "Average Severity",
+    "readinessScore": "Overall Readiness Score",
+    "keyAreas": "Key Areas for Improvement"
+  },
+  "charts": {
+    "severityDistribution": "Severity Distribution",
+    "areaDistribution": "Area Distribution",
+    "noData": "No data available for chart.",
+    "areaPlaceholder": "Area distribution chart will be displayed here."
+  },
+  "detailedResults": {
+    "title": "Detailed Gap Analysis",
+    "description": "Breakdown of identified gaps, severity, and recommendations.",
+    "headers": {
+      "area": "Area",
+      "gapDescription": "Gap Description",
+      "severity": "Severity",
+      "recommendations": "Recommendations",
+      "responsibleTeam": "Responsible Team"
+    },
+    "noDetailedResults": "No detailed gap results to display."
+  },
+  "severity": {
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low"
+  },
+  "common": {
+    "none": "None",
+    "notAssigned": "Not Assigned"
+  }
+}

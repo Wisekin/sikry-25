@@ -1,0 +1,291 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "search": "Search",
+    "companies": "Companies",
+    "marketIntel": "Market Intel",
+    "scrapers": "Scrapers",
+    "statisticsOverview": "Overview",
+    "statisticsCollectionTrends": "Collection Trends",
+    "statisticsGeographicDistribution": "Geographic Distribution",
+    "statisticsSectorDistribution": "Sector Distribution",
+    "statisticsSourceComparison": "Source Comparison",
+    "communications": {
+      "title": "Communications",
+      "overview": "Overview",
+      "campaigns": "Campaigns",
+      "templates": "Templates",
+      "bulkSender": "Bulk Sender"
+    },
+    "financial": {
+      "title": "Financial",
+      "records": "Records",
+      "summary": "Summary",
+      "campaignRoi": "Campaign ROI"
+    },
+    "reengagement": {
+      "title": "Re-engagement",
+      "tasks": "Tasks",
+      "classification": "Classification",
+      "automation": "Automation"
+    },
+    "referrals": {
+      "title": "Referrals",
+      "dashboard": "Dashboard",
+      "tracking": "Tracking",
+      "rewards": "Rewards"
+    },
+    "reviews": {
+      "title": "Reviews",
+      "requests": "Requests",
+      "booster": "Booster",
+      "monitoring": "Monitoring"
+    },
+    "funnels": {
+      "title": "Funnels",
+      "builder": "Builder",
+      "progress": "Progress",
+      "automation": "Automation"
+    },
+    "gapAnalysis": {
+      "title": "Gap Analysis",
+      "form": "Form",
+      "letters": "Letters",
+      "results": "Results"
+    },
+    "vsl": {
+      "title": "VSL",
+      "templates": "Templates",
+      "pages": "Pages",
+      "tracking": "Tracking"
+    },
+    "leadResponse": {
+      "title": "Lead Response",
+      "rules": "Rules",
+      "queue": "Queue",
+      "analytics": "Analytics"
+    },
+    "analytics": {
+      "title": "Analytics",
+      "performance": "Performance",
+      "conversion": "Conversion",
+      "revenue": "Revenue"
+    },
+    "admin": {
+      "title": "Admin",
+      "teamManagement": "Team Management",
+      "billing": "Billing",
+      "antiSpam": "Anti-Spam",
+      "security": "Security",
+      "compliance": "Compliance",
+      "monitoring": "Monitoring",
+      "users": "Users"
+    },
+    "secondary": {
+      "addCompany": "Add Company",
+      "newCampaign": "New Campaign",
+      "templates": "Templates",
+      "newMessage": "New Message",
+      "importCompanies": "Import Companies",
+      "exportData": "Export Data",
+      "runScraper": "Run Scraper",
+      "newScraper": "New Scraper",
+      "scheduleJob": "Schedule Job"
+    },
+    "settings": "Settings",
+    "overview": "Overview",
+    "reengagementTasks": "Tasks",
+    "reengagementClassification": "Classification",
+    "reengagementAutomation": "Automation"
+  },
+  "search": {
+    "placeholder": "Search for companies...",
+    "refine": "Refine",
+    "noResults": {
+      "title": "No Results Found",
+      "description": "Try adjusting your search criteria"
+    },
+    "filters": {
+      "allIndustries": "All Industries",
+      "softwareDev": "Software Development",
+      "fintech": "Fintech",
+      "marketing": "Marketing",
+      "label": "Filters",
+      "employees": "employees"
+    }
+  },
+  "pagination": {
+    "showingResults_one": "Showing 1 result",
+    "showingResults_other": "Showing {{count}} results",
+    "showingCount": "Showing {{count}} of {{total}}",
+    "page": "Page",
+    "of": "of",
+    "showing": "Showing",
+    "results": "results"
+  },
+  "status": {
+    "pending": "Pending",
+    "verified": "Verified",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "connected": "Connected",
+    "notConnected": "Not connected",
+    "completed": "Completed",
+    "sent": "Sent",
+    "running": "Running"
+  },
+  "common": {
+    "loading": "Loading...",
+    "actions": "Actions",
+    "edit": "Edit",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "create": "Create",
+    "previous": "Previous",
+    "view": "View Details"
+  },
+  "companies": {
+    "addNew": "Add New",
+    "import": "Import",
+    "export": "Export",
+    "name": "Name",
+    "domain": "Domain",
+    "title": "Companies",
+    "location": "Location",
+    "size": "Size",
+    "confidence": "Confidence",
+    "status": "Status",
+    "industry": "Industry",
+    "verified": "Verified"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back!",
+    "overview": "Overview",
+    "totalCompanies": "Total Companies",
+    "totalCommunications": "Total Communications",
+    "activeScrapers": "Active Scrapers",
+    "performance": "Performance",
+    "quickActions": "Quick Actions",
+    "recentActivity": "Recent Activity"
+  },
+  "comms": {
+    "newMessage": "New Message",
+    "newCampaign": "New Campaign",
+    "deliveredAt": "Delivered At",
+    "campaigns": "Campaigns",
+    "templates": "Templates",
+    "bulkSender": "Bulk Sender"
+  },
+  "scrapers": {
+    "newScraper": "New Scraper",
+    "run": "Run"
+  },
+  "financial": {
+    "summary": "Summary",
+    "noData": "No financial data available.",
+    "records": "Records",
+    "campaignRoi": "Campaign ROI"
+  },
+  "gapAnalysis": {
+    "letters": "Letters",
+    "form": "Form",
+    "results": "Results"
+  },
+  "leadResponse": {
+    "rulesPage": {
+      "title": "Lead Response Rules",
+      "subtitle": "Manage automated responses to new leads.",
+      "createNewRule": "Create New Rule",
+      "tableTitle": "Rules",
+      "tableDescription": "A list of all the lead response rules in your account.",
+      "tableHeaders": {
+        "name": "Name",
+        "trigger": "Trigger",
+        "actions": "Actions",
+        "status": "Status",
+        "lastModified": "Last Modified"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "createRuleTitle": "Create a new rule",
+      "createRuleDescription": "Set up a new rule to automate your lead responses.",
+      "form": {
+        "nameLabel": "Rule Name",
+        "namePlaceholder": "e.g., 'New Lead from Website'",
+        "triggerLabel": "Trigger",
+        "triggerPlaceholder": "Select a trigger",
+        "actionsLabel": "Actions",
+        "actionPlaceholder": "Select an action",
+        "addAction": "Add Action",
+        "statusLabel": "Status",
+        "statusPlaceholder": "Select a status",
+        "priorityLabel": "Priority",
+        "priorityPlaceholder": "e.g., 1"
+      }
+    },
+    "rules": {
+      "title": "Rules"
+    }
+  },
+  "ai": {
+    "welcome": "Welcome to your AI Assistant",
+    "openAssistant": "Open Assistant",
+    "suggestions": {
+      "findCompanies": "Find companies in the fintech sector in London",
+      "createScraper": "Create a scraper for a specific website",
+      "analyzeMarket": "Analyze market trends for e-commerce",
+      "leadStrategy": "Suggest a lead generation strategy"
+    }
+  },
+  "nav.statisticsOverview": "nav.statisticsOverview",
+  "nav.statisticsGeographicDistribution": "nav.statisticsGeographicDistribution",
+  "nav.statisticsSectorDistribution": "nav.statisticsSectorDistribution",
+  "nav.statisticsSourceComparison": "nav.statisticsSourceComparison",
+  "nav.statisticsCollectionTrends": "nav.statisticsCollectionTrends",
+  "nav.overview": "nav.overview",
+  "companies.title": "companies.title",
+  "pagination.results": "pagination.results",
+  "companies.import": "companies.import",
+  "companies.export": "companies.export",
+  "pagination.of": "pagination.of",
+  "companies.name": "companies.name",
+  "companies.domain": "companies.domain",
+  "companies.industry": "companies.industry",
+  "companies.location": "companies.location",
+  "companies.size": "companies.size",
+  "companies.confidence": "companies.confidence",
+  "companies.status": "companies.status",
+  "pagination.showing": "pagination.showing",
+  "importButton": "importButton",
+  "exportButton": "exportButton",
+  "addNewButton": "addNewButton",
+  "title": "title",
+  "reengagement.tasks": "reengagement.tasks",
+  "reengagement.automation": "reengagement.automation",
+  "reengagement.classification": "reengagement.classification",
+  "scrapers.active": "scrapers.active",
+  "nav.statistics": "nav.statistics",
+  "dashboard.insights": "dashboard.insights",
+  "vsl.templates": "vsl.templates",
+  "vsl.tracking": "vsl.tracking",
+  "vsl.pages": "vsl.pages",
+  "leadResponse.analytics": "leadResponse.analytics",
+  "leadResponse.queue": "leadResponse.queue",
+  "analytics.performance": "analytics.performance",
+  "analytics.revenue": "analytics.revenue",
+  "analytics.conversion": "analytics.conversion",
+  "admin.teamManagement": "admin.teamManagement",
+  "admin.antiSpam": "admin.antiSpam",
+  "admin.compliance": "admin.compliance",
+  "admin.users": "admin.users",
+  "admin.security": "admin.security",
+  "admin.monitoring": "admin.monitoring",
+  "admin.billing": "admin.billing",
+  "ai.title": "ai.title",
+  "ai.placeholder": "ai.placeholder",
+  "ai.quickSuggestions": "ai.quickSuggestions",
+  "ai.close": "ai.close"
+}

@@ -1,0 +1,34 @@
+{
+  "header": {
+    "title": "Gestion VSL",
+    "subtitle": "Créez, gérez et suivez vos pages de Lettre de Vente Vidéo."
+  },
+  "stats": {
+    "totalVSLPages": {
+      "title": "Total Pages VSL"
+    },
+    "activeVSLs": {
+      "title": "VSL Actifs"
+    },
+    "totalViews": {
+      "title": "Vues Totales"
+    },
+    "overallConversionRate": {
+      "title": "Taux Conv. VSL Global"
+    }
+  },
+  "navLinks": {
+    "templates": {
+      "title": "Modèles VSL",
+      "description": "Parcourez, gérez et créez de nouveaux modèles VSL."
+    },
+    "myPages": {
+      "title": "Mes Pages VSL",
+      "description": "Visualisez, modifiez et gérez vos pages VSL créées."
+    },
+    "tracking": {
+      "title": "Suivi des Performances",
+      "description": "Analysez les vues, l'engagement et les conversions de vos VSL."
+    }
+  }
+}

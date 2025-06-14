@@ -1,0 +1,51 @@
+{
+  "header": {
+    "title": "Demandes d'Avis",
+    "subtitle": "Gérez et suivez les invitations d'avis envoyées aux clients."
+  },
+  "metrics": {
+    "sentToday": {
+      "title": "Demandes Envoyées Aujourd'hui"
+    },
+    "openRate": {
+      "title": "Taux d'Ouverture Estimé"
+    },
+    "reviewsFromRequests": {
+      "title": "Avis des Demandes"
+    }
+  },
+  "filters": {
+    "title": "Filtrer les Demandes"
+  },
+  "actions": {
+    "sendNew": "Envoyer une Nouvelle Demande",
+    "resend": "Renvoyer la Demande",
+    "viewDetails": "Voir les Détails"
+  },
+  "table": {
+    "headers": {
+      "dateSent": "Date d'Envoi",
+      "recipient": "Destinataire",
+      "platform": "Plateforme",
+      "campaign": "Campagne",
+      "status": "Statut",
+      "actions": "Actions"
+    },
+    "body": {
+      "noCampaign": "-",
+      "buttons": {
+        "resendRequestTooltip": "Renvoyer la demande",
+        "viewDetailsTooltip": "Voir les détails"
+      }
+    },
+    "emptyMessage": "Aucune demande d'avis trouvée."
+  },
+  "status": {
+    "sent": "Envoyé",
+    "opened": "Ouvert",
+    "clicked": "Cliqué",
+    "reviewed": "Avis Donné",
+    "failed": "Échoué",
+    "bounced": "Retourné"
+  }
+}

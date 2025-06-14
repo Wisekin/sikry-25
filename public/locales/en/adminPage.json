@@ -1,0 +1,131 @@
+{
+  "header": {
+    "title": "Admin Dashboard",
+    "subtitle": "Oversee and manage platform settings and operations.",
+    "button": "Global Settings"
+  },
+  "detailedSections": {
+    "button": "View Detailed Sections"
+  },
+  "tabs": {
+    "users": "Users",
+    "security": "Security",
+    "billing": "Billing",
+    "users_content": { 
+      "title": "User Management Overview",
+      "description": "View user statistics and manage roles."
+    },
+    "security_content": { 
+      "title": "Security Configuration",
+      "description": "Configure security policies and monitor threats."
+    },
+    "billing_content": { 
+      "title": "Billing & Subscriptions",
+      "description": "Manage subscriptions and view billing history."
+    }
+  },
+  "quickStats": {
+    "totalUsers": {
+      "title": "Total Users",
+      "change": "+2 this week"
+    },
+    "monthlyUsage": {
+      "title": "Monthly Usage",
+      "description": "Platform resource consumption"
+    },
+    "complianceScore": {
+      "title": "Compliance Score",
+      "description": "Data protection adherence"
+    },
+    "systemHealth": {
+      "title": "System Health",
+      "description": "Overall operational status"
+    }
+  },
+  "adminSections": {
+    "title": "Admin Sections",
+    "description": "Navigate to specific administrative areas."
+  },
+  "sections": { 
+    "teamManagement": { 
+      "title": "Team Management",
+      "description": "Manage team members and roles."
+    },
+    "billingUsage": { 
+      "title": "Billing & Usage",
+      "description": "Monitor billing and platform usage."
+    },
+    "securitySettings": { 
+      "title": "Security Settings",
+      "description": "Configure security parameters."
+    },
+    "compliance": { 
+      "title": "Compliance & Reporting",
+      "description": "Manage compliance and generate reports."
+    },
+    "users": { 
+      "title": "User Management",
+      "placeholder": "User management content will be displayed here."
+    },
+    "monitoring": {
+        "title": "System Monitoring",
+        "placeholder": "System monitoring content will be displayed here."
+    },
+    "antiSpam": {
+        "title": "Anti-Spam Rules",
+        "placeholder": "Anti-spam rules content will be displayed here."
+    }
+  },
+  "recentActivity": {
+    "title": "Recent Activity",
+    "button": "View Full Activity Log",
+    "actions": {
+      "updatedPermissions": "updated permissions for '{{user}}'.",
+      "completedScan": "completed its daily security scan.",
+      "updatedBilling": "updated the company billing address.",
+      "detectedRisk": "detected a high-risk login attempt."
+    }
+  },
+  "systemStatus": {
+    "title": "System Status Overview",
+    "description": "Real-time metrics of platform performance."
+  },
+  "systemMetrics": { 
+    "api": {
+      "name": "API Response"
+    },
+    "cpu": {
+      "name": "CPU Load"
+    },
+    "memory": {
+      "name": "Memory Usage"
+    },
+    "errors": {
+      "name": "Error Rate"
+    }
+  },
+  "customTooltip": {
+    "msUnit": "ms",
+    "percentageUnit": "%"
+  },
+  "legacyStats": { 
+    "totalUsers": "Total Users",
+    "activeSubscriptions": "Active Subscriptions",
+    "securityAlerts": "Security Alerts",
+    "complianceStatus": "Compliance Status"
+  },
+  "legacyMetrics": { 
+    "title": "Platform Metrics",
+    "description": "Real-time performance indicators.",
+    "apiLatency": "API Latency",
+    "userGrowth": "User Growth",
+    "spamRate": "Spam Detection Rate"
+  },
+  "legacyHealth": { 
+    "title": "System Health",
+    "description": "Live status of core services."
+  },
+  "legacyActions": { 
+    "title": "Quick Actions"
+  }
+}

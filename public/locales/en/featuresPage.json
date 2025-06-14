@@ -1,0 +1,126 @@
+{
+  "nav": {
+    "home": "Home",
+    "features": "Features",
+    "pricing": "Pricing",
+    "getStartedButton": "Get Started"
+  },
+  "hero": {
+    "badge": "Discover SIKRY",
+    "title": {
+      "main": "Unlock Market Insights with ",
+      "highlight": "Unparalleled Precision"
+    },
+    "description": "Navigate complex market landscapes with our AI-powered data intelligence platform. Discover, analyze, and act on opportunities faster than ever before."
+  },
+  "featureCategories": {
+    "searchAndDiscovery": {
+      "categoryTitle": "Search & Discovery",
+      "items": {
+        "naturalLanguageSearch": {
+          "title": "Natural Language Search",
+          "description": "Search using conversational queries like 'Find SaaS companies in Switzerland with 50+ employees'",
+          "badge": "AI-Powered"
+        },
+        "advancedFiltering": {
+          "title": "Advanced Filtering",
+          "description": "Filter by over 100 criteria including industry, location, size, tech stack, and more.",
+          "badge": "Granular"
+        },
+        "realTimeData": {
+          "title": "Real-Time Data",
+          "description": "Access the most up-to-date company information, refreshed daily.",
+          "badge": "Live"
+        }
+      }
+    },
+    "dataIntelligence": {
+      "categoryTitle": "Data Intelligence",
+      "items": {
+        "companyProfiles": {
+          "title": "Comprehensive Company Profiles",
+          "description": "Detailed insights including firmographics, technographics, employee data, and growth signals.",
+          "badge": "In-Depth"
+        },
+        "marketTrends": {
+          "title": "Market Trend Analysis",
+          "description": "Identify emerging trends and market shifts with our AI-driven analytics.",
+          "badge": "Predictive"
+        },
+        "contactEnrichment": {
+          "title": "Contact Enrichment",
+          "description": "Find verified contact details for key decision-makers.",
+          "badge": "Actionable"
+        }
+      }
+    },
+    "communicationHub": {
+      "categoryTitle": "Communication Hub",
+      "items": {
+        "multiChannelOutreach": {
+          "title": "Multi-Channel Outreach",
+          "description": "Engage prospects across email, LinkedIn, and other channels from one platform.",
+          "badge": "Unified"
+        },
+        "smartTemplates": {
+          "title": "Smart Templates & A/B Testing",
+          "description": "Optimize your messaging with intelligent templates and A/B testing capabilities.",
+          "badge": "Optimized"
+        },
+        "campaignAnalytics": {
+          "title": "Campaign Analytics",
+          "description": "Track opens, clicks, replies, and conversions to measure campaign effectiveness.",
+          "badge": "Insightful"
+        }
+      }
+    },
+    "marketIntelligenceSuite": {
+      "categoryTitle": "Market Intelligence Suite",
+      "items": {
+        "competitorAnalysis": {
+          "title": "Competitor Analysis",
+          "description": "Benchmark against competitors and understand their strategies.",
+          "badge": "Strategic"
+        },
+        "opportunitySignals": {
+          "title": "Opportunity Signals",
+          "description": "Get alerted to key events like funding rounds, new hires, and tech stack changes.",
+          "badge": "Timely"
+        },
+        "customReporting": {
+          "title": "Custom Reporting",
+          "description": "Build and export custom reports tailored to your specific needs.",
+          "badge": "Flexible"
+        }
+      }
+    }
+  },
+  "securitySection": {
+    "title": "Enterprise-Grade Security & Compliance",
+    "description": "Your data is protected with the highest standards of security and compliance.",
+    "items": {
+      "soc2": {
+        "title": "SOC 2 Certified",
+        "description": "Type II compliance"
+      },
+      "gdpr": {
+        "title": "GDPR Compliant",
+        "description": "EU data protection"
+      },
+      "roleBasedAccess": {
+        "title": "Role-Based Access",
+        "description": "Granular permissions"
+      },
+      "uptime": {
+        "title": "99.9% Uptime",
+        "description": "SLA guarantee"
+      }
+    }
+  },
+  "cta": {
+    "title": "Ready to Transform Your Market Strategy?",
+    "description": "Join thousands of businesses leveraging SIKRY to gain a competitive edge. Explore our platform and see the difference AI-powered intelligence can make.",
+    "trialButton": "Start Free Trial",
+    "demoButton": "Request a Demo"
+  }
+}

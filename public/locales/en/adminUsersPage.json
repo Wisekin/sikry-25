@@ -1,0 +1,109 @@
+{
+  "header": {
+    "title": "Users",
+    "subtitle": "Manage your team members and their roles.",
+    "inviteUserButton": "Invite User"
+  },
+  "overview": {
+    "stats": {
+      "totalUsers": {
+        "title": "Total Users",
+        "description": "Active members"
+      },
+      "pendingInvites": {
+        "title": "Pending Invites",
+        "description": "Awaiting response"
+      },
+      "newUsers": {
+        "title": "New Users",
+        "description": "This month"
+      }
+    },
+    "mainContent": {
+      "title": "Users Overview",
+      "description": "Manage your team members and their roles."
+    }
+  },
+  "usersTab": {
+    "title": "Users",
+    "description": "View and manage all users",
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    }
+  },
+  "invitesTab": {
+    "title": "Pending Invites",
+    "description": "Manage user invitations"
+  },
+  "searchInputPlaceholder": "Search by name or email...",
+  "list": {
+    "title": "All Users",
+    "description": "Showing {{count}} users.",
+    "searchPlaceholder": "Search by name or email..."
+  },
+  "table": {
+    "name": "Name",
+    "email": "Email",
+    "role": "Role",
+    "status": "Status",
+    "lastLogin": "Last Login",
+    "created": "Created",
+    "actions": "Actions"
+  },
+  "title": "User Management",
+  "subtitle": "Manage system users and permissions",
+  "actions": {
+    "addUser": "Add User",
+    "editUser": "Edit User",
+    "deleteUser": "Delete User",
+    "resetPassword": "Reset Password",
+    "exportUsers": "Export Users"
+  },
+  "filters": {
+    "title": "Filters",
+    "role": "Role",
+    "status": "Status",
+    "dateRange": "Date Range",
+    "search": "Search Users"
+  },
+  "roles": {
+    "admin": "Administrator",
+    "manager": "Manager",
+    "user": "User",
+    "viewer": "Viewer"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "suspended": "Suspended",
+    "pending": "Pending"
+  },
+  "form": {
+    "name": "Full Name",
+    "email": "Email Address",
+    "role": "Role",
+    "status": "Status",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "permissions": "Permissions"
+  },
+  "permissions": {
+    "title": "Permissions",
+    "view": "View",
+    "create": "Create",
+    "edit": "Edit",
+    "delete": "Delete",
+    "export": "Export",
+    "import": "Import"
+  },
+  "messages": {
+    "noUsers": "No users found",
+    "loading": "Loading users...",
+    "error": "Error loading users",
+    "success": "User saved successfully",
+    "deleteConfirm": "Are you sure you want to delete this user?",
+    "deleteSuccess": "User deleted successfully",
+    "resetPasswordSuccess": "Password reset email sent successfully"
+  }
+}

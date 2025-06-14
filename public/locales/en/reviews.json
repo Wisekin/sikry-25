@@ -1,0 +1,13 @@
+{
+  "title": "Review Booster",
+  "sent": "Sent",
+  "clicked": "Clicked",
+  "completed": "Completed",
+  "rate": "Rate",
+  "clickRate": "Click-Through Rate",
+  "completionRate": "Completion Rate",
+  "platformBreakdown": "Platform Breakdown",
+  "requests": "requests",
+  "requestReview": "Request a Review",
+  "recentActivity": "Recent Activity"
+}

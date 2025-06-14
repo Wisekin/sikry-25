@@ -1,0 +1,65 @@
+{
+  "header": {
+    "title": "Review Booster",
+    "subtitle": "Implement strategies and campaigns to proactively increase positive reviews."
+  },
+  "metrics": {
+    "activeCampaigns": {
+      "title": "Active Booster Campaigns"
+    },
+    "reviewsFromBooster": {
+      "title": "Reviews from Booster"
+    },
+    "avgRating": {
+      "title": "Avg. Rating (Booster)",
+      "unit": "/ 5"
+    }
+  },
+  "strategies": {
+    "title": "Booster Strategies",
+    "emailSequence": {
+      "name": "Post-Purchase Email Sequence",
+      "description": "Automatically send review requests via email a few days after a customer makes a purchase.",
+      "actionText": "Configure Sequence"
+    },
+    "smsCampaign": {
+      "name": "Targeted SMS Blasts",
+      "description": "Send review links via SMS to specific customer segments who recently had positive interactions.",
+      "actionText": "Launch SMS Campaign"
+    },
+    "qrGenerator": {
+      "name": "In-Store QR Code",
+      "description": "Generate unique QR codes for print materials at physical locations to encourage on-the-spot reviews.",
+      "actionText": "Generate QR Code"
+    },
+    "socialContest": {
+      "name": "Social Media Review Contest",
+      "description": "Run a contest on social media to incentivize customers to leave reviews.",
+      "actionText": "Setup Contest"
+    }
+  },
+  "campaigns": {
+    "title": "Active & Recent Campaigns",
+    "table": {
+      "headers": {
+        "name": "Campaign Name",
+        "strategy": "Strategy",
+        "startDate": "Start Date",
+        "status": "Status",
+        "reviewsGenerated": "Reviews Gen.",
+        "avgRating": "Avg. Rating",
+        "actions": "Actions"
+      }
+    },
+    "status": {
+      "active": "Active",
+      "paused": "Paused",
+      "completed": "Completed",
+      "draft": "Draft"
+    },
+    "actions": {
+      "manage": "Manage Campaign"
+    },
+    "emptyMessage": "No active review booster campaigns."
+  }
+}

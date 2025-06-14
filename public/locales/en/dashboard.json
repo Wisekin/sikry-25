@@ -1,0 +1,51 @@
+{
+  "welcome": "Welcome back",
+  "overview": {
+    "title": "Overview",
+    "totalCompanies": "Total Companies",
+    "activeCampaigns": "Active Campaigns",
+    "pendingTasks": "Pending Tasks",
+    "recentActivity": "Recent Activity"
+  },
+  "recentActivity": {
+    "title": "Recent Activity",
+    "noActivity": "No recent activity",
+    "viewAll": "View All"
+  },
+  "quickActions": {
+    "title": "Quick Actions",
+    "newCampaign": "New Campaign",
+    "addCompany": "Add Company",
+    "createTask": "Create Task",
+    "viewReports": "View Reports"
+  },
+  "stats": {
+    "companies": {
+      "title": "Companies",
+      "total": "Total",
+      "new": "New",
+      "active": "Active"
+    },
+    "campaigns": {
+      "title": "Campaigns",
+      "total": "Total",
+      "active": "Active",
+      "completed": "Completed"
+    },
+    "tasks": {
+      "title": "Tasks",
+      "total": "Total",
+      "pending": "Pending",
+      "completed": "Completed"
+    }
+  },
+  "noRecentActivity": "No recent activity to display",
+  "viewAll": "View All",
+  "composeMessage": "Compose Message",
+  "createCampaign": "Create Campaign",
+  "addCompany": "Add Company",
+  "runReport": "Run Report",
+  "upcomingTasks": "Upcoming Tasks",
+  "noUpcomingTasks": "No upcoming tasks",
+  "dueToday": "Due Today"
+}

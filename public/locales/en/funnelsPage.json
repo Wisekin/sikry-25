@@ -1,0 +1,44 @@
+{
+  "header": {
+    "title": "Funnels Overview",
+    "subtitle": "Design, monitor, and optimize your sales and marketing funnels."
+  },
+  "overviewStats": {
+    "activeFunnels": {
+      "title": "Active Funnels"
+    },
+    "totalLeadsInFunnels": {
+      "title": "Total Leads in Funnels",
+      "change": "+50 this week"
+    },
+    "overallConversionRate": {
+      "title": "Overall Conversion Rate"
+    },
+    "revenueFromFunnels": {
+      "title": "Revenue from Funnels (USD)",
+      "change": "+$5k last month"
+    }
+  },
+  "navLinks": {
+    "builder": {
+      "title": "Funnel Builder",
+      "description": "Visually design and configure your multi-step funnels."
+    },
+    "progress": {
+      "title": "Funnel Progress",
+      "description": "Track lead progression and conversion rates through each funnel stage."
+    },
+    "automation": {
+      "title": "Funnel Automation",
+      "description": "Set up automated actions and triggers within your funnels."
+    }
+  },
+  "chart": {
+    "title": "Top Performing Funnels (by Conversion Rate)",
+    "label": {
+      "conversionRate": "% Conv.",
+      "revenue": "Revenue: ${{amount}}"
+    },
+    "emptyMessage": "No funnel performance data available yet."
+  }
+}

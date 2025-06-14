@@ -1,0 +1,46 @@
+{
+  "header": {
+    "title": "My Referral Dashboard",
+    "subtitle": "Share your link, track your referrals, and see your rewards."
+  },
+  "linkSection": {
+    "title": "Your Unique Referral Link",
+    "buttons": {
+      "copyLink": "Copy Link",
+      "share": "Share"
+    },
+    "copySuccessAlert": "Referral link copied to clipboard!"
+  },
+  "userStats": {
+    "invitesClicks": {
+      "title": "Invites/Clicks"
+    },
+    "successfulReferrals": {
+      "title": "Successful Referrals",
+      "change": "+{{count}} this month"
+    },
+    "pendingReferrals": {
+      "title": "Pending Referrals"
+    },
+    "rewardsEarned": {
+      "title": "Total Rewards Earned (USD)"
+    }
+  },
+  "referredFriendsTable": {
+    "title": "Your Referred Friends",
+    "headers": {
+      "nameEmail": "Name/Email",
+      "dateReferred": "Date Referred",
+      "status": "Status",
+      "rewardEarned": "Reward Earned"
+    },
+    "status": {
+      "joined": "Joined",
+      "pendingAction": "Pending Action",
+      "rewardEarned": "Reward Earned",
+      "inactive": "Inactive"
+    },
+    "emptyMessage": "You haven't referred anyone yet. Share your link to get started!",
+    "noRewardSymbol": "-"
+  }
+}

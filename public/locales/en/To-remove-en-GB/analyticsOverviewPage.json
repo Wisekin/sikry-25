@@ -1,0 +1,60 @@
+{
+  "title": "Analytics Overview",
+  "subtitle": "View your key performance metrics and insights",
+  "timeRange": {
+    "title": "Time Range",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "last7Days": "Last 7 Days",
+    "last30Days": "Last 30 Days",
+    "thisMonth": "This Month",
+    "lastMonth": "Last Month",
+    "custom": "Custom Range"
+  },
+  "metrics": {
+    "totalRevenue": "Total Revenue",
+    "activeUsers": "Active Users",
+    "conversionRate": "Conversion Rate",
+    "averageOrderValue": "Average Order Value",
+    "totalOrders": "Total Orders",
+    "customerRetention": "Customer Retention",
+    "bounceRate": "Bounce Rate",
+    "pageViews": "Page Views"
+  },
+  "charts": {
+    "revenue": {
+      "title": "Revenue Overview",
+      "subtitle": "Daily revenue trends"
+    },
+    "users": {
+      "title": "User Activity",
+      "subtitle": "Active users over time"
+    },
+    "conversion": {
+      "title": "Conversion Funnel",
+      "subtitle": "Conversion rates by stage"
+    },
+    "retention": {
+      "title": "Customer Retention",
+      "subtitle": "Customer retention rates"
+    }
+  },
+  "segments": {
+    "title": "Segments",
+    "newCustomers": "New Customers",
+    "returningCustomers": "Returning Customers",
+    "highValueCustomers": "High Value Customers",
+    "atRiskCustomers": "At Risk Customers"
+  },
+  "actions": {
+    "export": "Export Data",
+    "refresh": "Refresh Data",
+    "customize": "Customize View",
+    "share": "Share Report"
+  },
+  "messages": {
+    "loading": "Loading analytics data...",
+    "error": "Error loading analytics data",
+    "noData": "No data available for the selected time range"
+  }
+} 

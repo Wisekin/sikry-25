@@ -1,0 +1,47 @@
+{
+  "title": "Tendances de Collecte de Données",
+  "subtitle": "Analysez les tendances d'acquisition de données dans le temps",
+  "loading": {
+    "title": "Tendances de Collecte de Données",
+    "subtitle": "Chargement des données de tendances..."
+  },
+  "error": {
+    "title": "Impossible de charger les données",
+    "tryAgain": "Réessayer"
+  },
+  "metrics": {
+    "newRecords": {
+      "title": "Nouveaux Enregistrements Cette Période",
+      "value": "{{count}}"
+    },
+    "avgDaily": {
+      "title": "Collecte Moyenne Quotidienne",
+      "value": "{{count}}"
+    },
+    "peakCollection": {
+      "title": "Pic de Collecte",
+      "value": "{{count}} (le {{date}})"
+    }
+  },
+  "chart": {
+    "title": "Volume de Collecte dans le Temps",
+    "noData": "Aucune donnée de tendance disponible pour les filtres sélectionnés",
+    "periods": {
+      "daily": "Quotidien",
+      "weekly": "Hebdomadaire",
+      "monthly": "Mensuel"
+    },
+    "dateRange": {
+      "from": "Du",
+      "to": "au"
+    },
+    "tooltip": {
+      "records": "Enregistrements Collectés"
+    }
+  },
+  "filters": {
+    "period": "Sélectionner la Période",
+    "startDate": "Date de Début",
+    "endDate": "Date de Fin"
+  }
+} 

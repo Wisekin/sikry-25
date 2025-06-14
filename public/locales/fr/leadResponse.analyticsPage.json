@@ -1,0 +1,31 @@
+{
+  "title": "Analytique des réponses aux leads",
+  "subtitle": "Surveillez la performance du traitement des leads et les délais de réponse.",
+  "summary": {
+    "totalProcessed": "Total des leads traités",
+    "avgResponseTime": "Temps de réponse moyen",
+    "successRate": "Taux de succès",
+    "failureRate": "Taux d'échec"
+  },
+  "charts": {
+    "leadsProcessedTitle": "Leads traités au fil du temps",
+    "leadsProcessedLabel": "Leads traités",
+    "responseTimeTitle": "Tendance du temps de réponse",
+    "avgResponseTimeLabel": "Temps de réponse moyen"
+  },
+  "table": {
+    "title": "Tableau de performance des règles",
+    "description": "Détail de l'efficacité des règles et des temps de traitement.",
+    "headers": {
+      "ruleName": "Nom de la règle",
+      "processed": "Traités",
+      "successRate": "Taux de succès",
+      "avgTime": "Temps de réponse moyen"
+    }
+  },
+  "common": {
+    "minutesAbbr": "min"
+  },
+  "common.filter": "common.filter",
+  "common.minutesShort": "common.minutesShort"
+}

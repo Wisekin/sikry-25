@@ -1,0 +1,35 @@
+{
+  "header": {
+    "title": "Sécurité",
+    "subtitle": "Gérez les paramètres de sécurité de votre organisation."
+  },
+  "twoFactor": {
+    "title": "Authentification à deux facteurs (2FA)",
+    "description": "Améliorez la sécurité en exigeant une deuxième forme de vérification pour tous les utilisateurs.",
+    "enforce": "Appliquer la 2FA pour tous les utilisateurs"
+  },
+  "sso": {
+    "title": "Authentification unique (SSO)",
+    "description": "Permettez aux utilisateurs de se connecter à l'aide de votre fournisseur d'identité d'entreprise.",
+    "button": "Configurer le SSO"
+  },
+  "apiKeys": {
+    "title": "Clés API",
+    "description": "Gérez les clés API pour un accès programmatique aux données de votre organisation.",
+    "button": "Gérer les clés API"
+  },
+  "activeThreats": {
+    "title": "Menaces Actives",
+    "description": "Nécessite une attention immédiate"
+  },
+  "twoFaStatus": {
+    "title": "Statut 2FA",
+    "description": "Utilisateurs avec 2FA activée",
+    "valueFormat": "{{percentage}} %"
+  },
+  "securityScore": {
+    "title": "Score de Sécurité",
+    "description": "Notation globale de la sécurité",
+    "valueFormat": "{{score}}/{{maxScore}}"
+  }
+}

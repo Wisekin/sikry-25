@@ -1,0 +1,39 @@
+{
+  "title": "Dashboard",
+  "subtitle": "Welcome back! Here's an overview of your activities.",
+  "header": {
+    "addNewCompanyButton": "Add New Company"
+  },
+  "stats": {
+    "totalCompanies": "Total Companies",
+    "companiesTracked": "Number of companies being tracked.",
+    "totalCommunications": "Total Communications",
+    "communicationsSent": "Number of communications sent.",
+    "activeScrapers": "Active Scrapers",
+    "scrapersRunning": "Number of scrapers currently running."
+  },
+  "quickActions": {
+    "title": "Quick Actions",
+    "description": "Perform common tasks quickly.",
+    "buttons": {
+        "addNewCompany": "Add New Company",
+        "newMessage": "New Message",
+        "newScraper": "New Scraper",
+        "newCampaign": "New Campaign"
+    },
+    "viewCompanies": "View Companies",
+    "viewCommunications": "View Communications",
+    "manageScrapers": "Manage Scrapers",
+    "viewAnalytics": "View Analytics"
+  },
+  "recentActivity": {
+    "title": "Recent Activity",
+    "description": "What's happened recently.",
+    "noActivity": "No recent activity to display."
+  },
+  "cta": {
+    "title": "Explore Market Intelligence",
+    "description": "Discover new insights and opportunities.",
+    "button": "Go to Market Intelligence"
+  }
+}

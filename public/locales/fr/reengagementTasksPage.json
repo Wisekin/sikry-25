@@ -1,0 +1,54 @@
+{
+  "header": {
+    "title": "Tâches de Réactivation",
+    "subtitle": "Gérez et suivez vos activités de réactivation."
+  },
+  "metrics": {
+    "openTasks": {
+      "title": "Tâches Ouvertes",
+      "change": "+3 aujourd'hui"
+    },
+    "completedToday": {
+      "title": "Terminées Aujourd'hui"
+    },
+    "overdueTasks": {
+      "title": "Tâches En Retard",
+      "change": "{{count}} urgentes"
+    }
+  },
+  "taskList": {
+    "title": "Liste des Tâches",
+    "buttons": {
+      "filter": "Filtrer",
+      "createNew": "Créer une Nouvelle Tâche"
+    },
+    "table": {
+      "headers": {
+        "description": "Description",
+        "leadSegment": "Prospect/Segment",
+        "assignedTo": "Assigné à",
+        "dueDate": "Date d'Échéance",
+        "priority": "Priorité",
+        "status": "Statut",
+        "actions": "Actions"
+      },
+      "body": {
+        "notApplicable": "N/A",
+        "unassigned": "Non Assigné"
+      },
+      "emptyMessage": "Aucune tâche trouvée."
+    },
+    "status": {
+      "open": "Ouverte",
+      "inProgress": "En Cours",
+      "completed": "Terminée",
+      "overdue": "En Retard"
+    },
+    "priority": {
+      "high": "Haute",
+      "medium": "Moyenne",
+      "low": "Basse"
+    }
+  },
+  "taskList.status.inprogress": "taskList.status.inprogress"
+}

@@ -1,0 +1,46 @@
+{
+  "title": "Scrapers",
+  "description": "Manage and monitor your web scraping jobs",
+  "createScraper": "Create Scraper",
+  "activeScrapers": "Active Scrapers",
+  "currentlyRunning": "Currently running",
+  "successRate": "Success Rate",
+  "totalJobs": "Total Jobs",
+  "last24Hours": "Last 24 hours",
+  "v2Scrapers": "V2 Scrapers",
+  "nextGenScrapers": "Next-gen scrapers",
+  "scraperManagement": "Scraper Management",
+  "searchPlaceholder": "Search scrapers...",
+  "filterByStatus": "Filter by status",
+  "filterByType": "Filter by type",
+  "allStatuses": "All Statuses",
+  "active": "Active",
+  "inactive": "Inactive",
+  "running": "Running",
+  "error": "Error",
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "running": "Running",
+    "error": "Error"
+  },
+  "actions": {
+    "start": "Start",
+    "stop": "Stop",
+    "pause": "Pause",
+    "configure": "Configure",
+    "viewStats": "View Stats"
+  },
+  "stats": {
+    "lastRun": "Last Run",
+    "successRate": "Success Rate",
+    "totalRuns": "Total Runs"
+  },
+  "loading": "Loading scrapers...",
+  "noScrapers": "No scrapers found",
+  "createFirstScraper": "Create your first scraper to get started",
+  "allTypes": "allTypes",
+  "v2": "v2",
+  "v1": "v1",
+  "api": "api"
+}

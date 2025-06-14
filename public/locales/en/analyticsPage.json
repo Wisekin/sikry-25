@@ -1,0 +1,60 @@
+{
+  "title": "Lead Response Analytics",
+  "subtitle": "Track and analyze lead response performance",
+  "timeRange": {
+    "title": "Time Range",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "last7Days": "Last 7 Days",
+    "last30Days": "Last 30 Days",
+    "thisMonth": "This Month",
+    "lastMonth": "Last Month",
+    "custom": "Custom Range"
+  },
+  "metrics": {
+    "totalLeads": "Total Leads",
+    "responseRate": "Response Rate",
+    "averageResponseTime": "Average Response Time",
+    "conversionRate": "Conversion Rate",
+    "satisfactionScore": "Satisfaction Score",
+    "queueTime": "Average Queue Time",
+    "resolutionRate": "Resolution Rate",
+    "abandonmentRate": "Abandonment Rate"
+  },
+  "charts": {
+    "leads": {
+      "title": "Lead Volume",
+      "subtitle": "Number of leads over time"
+    },
+    "response": {
+      "title": "Response Times",
+      "subtitle": "Average response time trends"
+    },
+    "conversion": {
+      "title": "Conversion Funnel",
+      "subtitle": "Lead conversion stages"
+    },
+    "satisfaction": {
+      "title": "Satisfaction Trends",
+      "subtitle": "Customer satisfaction over time"
+    }
+  },
+  "segments": {
+    "title": "Lead Segments",
+    "bySource": "By Source",
+    "byPriority": "By Priority",
+    "byAgent": "By Agent",
+    "byStatus": "By Status"
+  },
+  "actions": {
+    "export": "Export Data",
+    "refresh": "Refresh Data",
+    "customize": "Customize View",
+    "share": "Share Report"
+  },
+  "messages": {
+    "loading": "Loading analytics data...",
+    "error": "Error loading analytics data",
+    "noData": "No analytics data available for the selected time range"
+  }
+}

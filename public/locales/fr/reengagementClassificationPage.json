@@ -1,0 +1,51 @@
+{
+  "header": {
+    "title": "Classification des prospects",
+    "subtitle": "Définissez, gérez et surveillez les classifications de prospects pour un réengagement ciblé."
+  },
+  "metrics": {
+    "hotLeads": {
+      "title": "Prospects chauds",
+      "change": "+5 cette semaine"
+    },
+    "warmLeads": {
+      "title": "Prospects tièdes",
+      "change": "-2 cette semaine"
+    },
+    "coldLeads": {
+      "title": "Prospects froids",
+      "change": "+20 cette semaine"
+    },
+    "unclassifiedLeads": {
+      "title": "Non classifiés"
+    }
+  },
+  "rules": {
+    "title": "Règles de classification",
+    "buttons": {
+      "addNew": "Ajouter une nouvelle règle"
+    },
+    "emptyMessage": "Aucune règle de classification définie."
+  },
+  "leads": {
+    "title": "Aperçu des prospects",
+    "buttons": {
+      "filter": "Filtrer les prospects"
+    },
+    "description": "Une liste de prospects avec leur classification actuelle. Des options de filtrage avancé et de classification manuelle seront disponibles ici.",
+    "table": {
+      "headers": {
+        "name": "Nom",
+        "email": "E-mail",
+        "classification": "Classification",
+        "lastActivity": "Dernière activité"
+      }
+    }
+  },
+  "classification": {
+    "hot": "Chaud",
+    "warm": "Tiède",
+    "cold": "Froid",
+    "unclassified": "Non classifié"
+  }
+}

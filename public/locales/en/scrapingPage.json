@@ -1,0 +1,31 @@
+{
+  "fieldDetector": {
+    "title": "AI Field Detector",
+    "description": "Automatically detect and extract data fields from web pages",
+    "detectedFields": "Detected Fields"
+  },
+  "selectorTester": {
+    "title": "CSS Selector Tester",
+    "description": "Test CSS selectors against live web pages",
+    "targetUrl": "Target URL",
+    "cssSelector": "CSS Selector",
+    "testResults": "Test Results"
+  },
+  "aiSelector": {
+    "title": "AI Selector Generator",
+    "description": "Describe what you want to extract and let AI generate CSS selectors",
+    "prompt": "Describe the data you want to extract",
+    "generatedSelectors": "Generated Selectors"
+  },
+  "v2ScraperEditor": {
+    "title": "V2 Scraper Editor",
+    "description": "Configure and manage your V2 scraper.",
+    "scraperName": "Scraper Name",
+    "targetUrlPattern": "Target URL Pattern",
+    "aiInstructions": "AI Instructions"
+  },
+  "scrapePreview": {
+    "title": "Scrape Preview",
+    "description": "Preview extracted data before running full scrape"
+  }
+}

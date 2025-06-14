@@ -1,0 +1,46 @@
+{
+  "header": {
+    "title": "Analyse des revenus",
+    "subtitle": "Obtenez des informations sur vos flux de revenus et vos performances financières."
+  },
+  "loading": "Calcul des flux de revenus...",
+  "error": {
+    "fetch": "Échec de la récupération des données de revenus.",
+    "title": "Impossible de charger les données de revenus",
+    "tryAgain": "Réessayer"
+  },
+  "noData": "Aucune donnée de revenus disponible pour les filtres sélectionnés.",
+  "filters": {
+    "period": "Période :",
+    "last7days": "7 derniers jours",
+    "last30days": "30 derniers jours",
+    "last3months": "3 derniers mois",
+    "last12months": "12 derniers mois",
+    "breakdown": "Répartition par :",
+    "byProduct": "Produit/Service",
+    "bySegment": "Segment de clientèle",
+    "byRegion": "Région"
+  },
+  "summary": {
+    "totalRevenue": "Revenu total",
+    "arpu": "ARPU",
+    "mrr": "MRR",
+    "ltv": "LTV"
+  },
+  "charts": {
+    "trend": {
+      "title": "Tendances des revenus au fil du temps",
+      "noData": "Aucune donnée de tendance des revenus pour cette période."
+    },
+    "breakdown": {
+      "title": "Répartition des revenus par {{context}}",
+      "title_product": "Répartition des revenus par produit",
+      "title_segment": "Répartition des revenus par segment",
+      "name_product": "Nom du produit/service",
+      "name_segment": "Segment de clientèle",
+      "revenue": "Revenu",
+      "percentage": "% du total",
+      "noData": "Aucune donnée de répartition disponible."
+    }
+  }
+}

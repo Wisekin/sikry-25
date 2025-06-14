@@ -1,0 +1,65 @@
+{
+  "title": "Communications",
+  "description": "Manage your communications and track engagement.",
+  "tabs": {
+    "inbox": "Inbox",
+    "sent": "Sent",
+    "drafts": "Drafts",
+    "templates": "Templates",
+    "bulkSender": "Bulk Sender"
+  },
+  "filters": {
+    "all": "All",
+    "unread": "Unread",
+    "starred": "Starred",
+    "important": "Important",
+    "filter": "Filter"
+  },
+  "search": {
+    "placeholder": "Search communications..."
+  },
+  "composeButton": "Compose",
+  "noMessages": {
+    "title": "No messages",
+    "description": "You don't have any messages in this folder.",
+    "action": "Compose New Message"
+  },
+  "messageList": {
+    "from": "From",
+    "to": "To",
+    "subject": "Subject",
+    "date": "Date",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "status": {
+    "sent": "Sent",
+    "delivered": "Delivered",
+    "read": "Read",
+    "failed": "Failed",
+    "draft": "Draft"
+  },
+  "actions": {
+    "view": "View",
+    "reply": "Reply",
+    "forward": "Forward",
+    "delete": "Delete",
+    "markAsRead": "Mark as Read",
+    "markAsUnread": "Mark as Unread",
+    "moveToFolder": "Move to Folder",
+    "selectAll": "Select All",
+    "deselectAll": "Deselect All"
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page",
+    "of": "of",
+    "itemsPerPage": "items per page"
+  },
+  "emptyState": {
+    "title": "No communications yet",
+    "description": "Start by composing a new message or check back later for new communications.",
+    "action": "Compose Message"
+  }
+}

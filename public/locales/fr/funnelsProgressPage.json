@@ -1,0 +1,53 @@
+{
+  "header": {
+    "title": "Progression et analyses de l'entonnoir",
+    "subtitle": "Suivez le mouvement des prospects et les taux de conversion à travers vos entonnoirs."
+  },
+  "stats": {
+    "totalLeads": {
+      "title": "Total des prospects dans l'entonnoir"
+    },
+    "convertedLeads": {
+      "title": "Prospects convertis"
+    },
+    "conversionRate": {
+      "title": "Taux de conv. de l'entonnoir"
+    },
+    "avgTimeInFunnel": {
+      "title": "Temps moy. dans l'entonnoir",
+      "unit": "jours"
+    }
+  },
+  "selector": {
+    "label": "Sélectionner l'entonnoir :"
+  },
+  "stages": {
+    "titleSuffix": "- Étapes",
+    "card": {
+      "leadsInStageLabel": "Prospects à l'étape",
+      "conversionToStageLabel": "Conv. vers l'étape : {{rate}}%",
+      "dropOffRateLabel": "Abandon : {{rate}}%"
+    }
+  },
+  "leadsTable": {
+    "titlePrefix": "Prospects dans '{{funnelName}}'",
+    "buttons": {
+      "filterLeads": "Filtrer les prospects"
+    },
+    "headers": {
+      "name": "Nom",
+      "email": "E-mail",
+      "currentStage": "Étape actuelle",
+      "entryDate": "Date d'entrée",
+      "timeInStage": "Temps à l'étape",
+      "status": "Statut"
+    },
+    "status": {
+      "progressing": "En progression",
+      "stalled": "Bloqué",
+      "converted": "Converti",
+      "dropped": "Abandonné"
+    },
+    "emptyMessage": "Aucun prospect à afficher pour cet entonnoir."
+  }
+}

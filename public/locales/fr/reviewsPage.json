@@ -1,0 +1,42 @@
+{
+  "header": {
+    "title": "Gestion des Avis",
+    "subtitle": "Surveillez, demandez et boostez les avis de vos clients."
+  },
+  "metrics": {
+    "totalReviews": {
+      "title": "Total des Avis",
+      "change": "+12 la semaine dernière"
+    },
+    "averageRating": {
+      "title": "Note Moyenne",
+      "unit": "/ 5",
+      "change": "-0.1 par rapport au mois dernier"
+    },
+    "newReviews": {
+      "title": "Nouveaux Avis ce Mois"
+    },
+    "requestsSent": {
+      "title": "Demandes d'Avis Envoyées"
+    }
+  },
+  "navLinks": {
+    "requests": {
+      "title": "Demandes d'Avis",
+      "description": "Gérez et envoyez des demandes d'avis à vos clients."
+    },
+    "booster": {
+      "title": "Booster d'Avis",
+      "description": "Utilisez des outils et des campagnes pour augmenter la génération d'avis positifs."
+    },
+    "monitoring": {
+      "title": "Surveillance des Avis",
+      "description": "Suivez les nouveaux avis de différentes plateformes et répondez aux retours."
+    }
+  },
+  "ratingChart": {
+    "title": "Note Moyenne dans le Temps",
+    "tooltip": "Note : {{rating}}",
+    "emptyMessage": "Aucune donnée de note disponible pour le moment."
+  }
+} 

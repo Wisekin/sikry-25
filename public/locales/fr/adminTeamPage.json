@@ -1,0 +1,43 @@
+{
+  "header": {
+    "title": "Gestion de l'Équipe",
+    "description": "Gérez les membres de l'équipe, leurs rôles et leurs permissions.",
+    "inviteButton": "Inviter un Membre"
+  },
+  "overview": {
+    "stats": {
+      "totalMembers": {
+        "title": "Membres Totals",
+        "description": "Actuellement dans l'équipe"
+      },
+      "pendingInvites": {
+        "title": "Invitations en Attente",
+        "description": "En attente d'acceptation"
+      },
+      "activeRoles": {
+        "title": "Rôles Actifs",
+        "description": "Rôles configurés dans le système"
+      }
+    },
+    "main": {
+      "title": "Aperçu de l'Équipe",
+      "description": "Résumé de la structure et de l'activité de l'équipe."
+    }
+  },
+  "members": {
+    "title": "Membres de l'Équipe",
+    "description": "Visualisez et gérez tous les membres de l'équipe.",
+    "status": {
+      "active": "Actif",
+      "inactive": "Inactif"
+    }
+  },
+  "roles": {
+    "title": "Rôles & Permissions",
+    "description": "Définissez et gérez les rôles des utilisateurs et leurs permissions."
+  },
+  "permissions": {
+    "title": "Permissions Globales",
+    "description": "Gérez les paramètres de permission globaux pour la plateforme."
+  }
+}

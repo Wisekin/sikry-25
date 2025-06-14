@@ -1,0 +1,23 @@
+{
+  "header": {
+    "title": "VSL Templates",
+    "subtitle": {
+      "loading": "Loading available VSL templates...",
+      "default": "Browse, manage, and create new Video Sales Letter templates.",
+      "error": "Error"
+    }
+  },
+  "buttons": {
+    "createNewTemplate": "Create New Template",
+    "useTemplate": "Use Template",
+    "preview": "Preview",
+    "tryAgain": "Try Again"
+  },
+  "error": {
+    "loadFailedTitle": "Could not load VSL templates"
+  },
+  "emptyState": {
+    "title": "No VSL Templates Found",
+    "description": "Get started by creating your first VSL template."
+  }
+}

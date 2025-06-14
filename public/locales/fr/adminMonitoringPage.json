@@ -1,0 +1,34 @@
+{
+  "header": {
+    "title": "Surveillance du Système",
+    "description": "Surveillez la santé du système, les alertes et les métriques de performance.",
+    "refreshButton": "Actualiser les Données"
+  },
+  "overview": {
+    "systemStatus": {
+      "title": "État du Système",
+      "value": "Opérationnel",
+      "description": "Tous les systèmes sont normaux"
+    },
+    "activeAlerts": {
+      "title": "Alertes Actives",
+      "description": "Problèmes critiques nécessitant une attention"
+    },
+    "notifications": {
+      "title": "Notifications Récentes",
+      "description": "Événements et mises à jour du système"
+    },
+    "mainContent": {
+      "title": "Aperçu de la Surveillance",
+      "description": "Tableau de bord de l'état actuel du système et des métriques clés."
+    }
+  },
+  "alerts": {
+    "title": "Journal des Alertes",
+    "description": "Visualisez et gérez les alertes système."
+  },
+  "metrics": {
+    "title": "Métriques de Performance",
+    "description": "Indicateurs de performance détaillés du système."
+  }
+}

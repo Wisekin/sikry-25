@@ -1,0 +1,53 @@
+{
+  "header": {
+    "title": "Funnel Progress & Analytics",
+    "subtitle": "Track lead movement and conversion rates through your funnels."
+  },
+  "stats": {
+    "totalLeads": {
+      "title": "Total Leads in Funnel"
+    },
+    "convertedLeads": {
+      "title": "Converted Leads"
+    },
+    "conversionRate": {
+      "title": "Funnel Conv. Rate"
+    },
+    "avgTimeInFunnel": {
+      "title": "Avg. Time in Funnel",
+      "unit": "days"
+    }
+  },
+  "selector": {
+    "label": "Select Funnel:"
+  },
+  "stages": {
+    "titleSuffix": "- Stages",
+    "card": {
+      "leadsInStageLabel": "Leads in Stage",
+      "conversionToStageLabel": "Conv. to Stage: {{rate}}%",
+      "dropOffRateLabel": "Drop-off: {{rate}}%"
+    }
+  },
+  "leadsTable": {
+    "titlePrefix": "Leads in '{{funnelName}}'",
+    "buttons": {
+      "filterLeads": "Filter Leads"
+    },
+    "headers": {
+      "name": "Name",
+      "email": "Email",
+      "currentStage": "Current Stage",
+      "entryDate": "Entry Date",
+      "timeInStage": "Time in Stage",
+      "status": "Status"
+    },
+    "status": {
+      "progressing": "Progressing",
+      "stalled": "Stalled",
+      "converted": "Converted",
+      "dropped": "Dropped"
+    },
+    "emptyMessage": "No leads to display for this funnel."
+  }
+}

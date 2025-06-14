@@ -1,0 +1,44 @@
+{
+  "header": {
+    "title": "My VSL Pages",
+    "subtitle": {
+      "loading": "Loading your VSL pages...",
+      "default": "Manage your created Video Sales Letters.",
+      "error": "Error"
+    }
+  },
+  "buttons": {
+    "createNewVSLPage": "Create New VSL Page",
+    "tryAgain": "Try Again"
+  },
+  "error": {
+    "loadFailedTitle": "Could not load VSL pages"
+  },
+  "emptyState": {
+    "title": "No VSL Pages Found",
+    "description": "Get started by creating a new VSL page from a template."
+  },
+  "table": {
+    "headers": {
+      "pageTitle": "Page Title",
+      "template": "Template",
+      "status": "Status",
+      "views": "Views",
+      "conversions": "Conversions",
+      "convRate": "Conv. Rate",
+      "created": "Created",
+      "actions": "Actions"
+    },
+    "actions": {
+      "viewLiveTooltip": "View Live Page",
+      "editTooltip": "Edit Page",
+      "statsTooltip": "View Stats",
+      "deleteTooltip": "Delete Page"
+    }
+  },
+  "status": {
+    "draft": "Draft",
+    "published": "Published",
+    "archived": "Archived"
+  }
+}

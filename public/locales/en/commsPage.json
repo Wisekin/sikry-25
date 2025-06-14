@@ -1,0 +1,271 @@
+{
+  "header": {
+    "title": "Communications Hub",
+    "description": "Manage all your outgoing and incoming messages.",
+    "newButton": "New Communication"
+  },
+  "stats": {
+    "total": "Total",
+    "sent": "Sent",
+    "delivered": "Delivered",
+    "opened": "Opened",
+    "replied": "Replied"
+  },
+  "tabs": {
+    "all": "All",
+    "pending": "Pending",
+    "sent": "Sent",
+    "delivered": "Delivered",
+    "opened": "Opened"
+  },
+  "loading": "Loading communications...",
+  "title": "Communications",
+  "description": "Manage your communications and track engagement.",
+  "filters": {
+    "all": "All",
+    "unread": "Unread",
+    "starred": "Starred",
+    "important": "Important",
+    "filter": "Filter",
+    "status": "Status",
+    "channel": "Channel",
+    "company": "Company",
+    "contact": "Contact",
+    "subject": "Subject",
+    "sentDate": "Sent Date",
+    "resetButton": "Reset Filters",
+    "datePlaceholder": "Select dates"
+  },
+  "search": {
+    "placeholder": "Search communications...",
+    "subjectPlaceholder": "Search subject..."
+  },
+  "composeButton": "Compose",
+  "noMessages": {
+    "title": "No messages",
+    "description": "You don't have any messages in this folder.",
+    "action": "Compose New Message"
+  },
+  "messageList": {
+    "from": "From",
+    "to": "To",
+    "subject": "Subject",
+    "date": "Date",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "status": {
+    "sent": "Sent",
+    "delivered": "Delivered",
+    "read": "Read",
+    "failed": "Failed",
+    "draft": "Draft"
+  },
+  "actions": {
+    "view": "View",
+    "reply": "Reply",
+    "forward": "Forward",
+    "delete": "Delete",
+    "markAsRead": "Mark as Read",
+    "markAsUnread": "Mark as Unread",
+    "moveToFolder": "Move to Folder",
+    "selectAll": "Select All",
+    "deselectAll": "Deselect All"
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page",
+    "of": "of",
+    "itemsPerPage": "items per page"
+  },
+  "emptyState": {
+    "title": "No communications yet",
+    "description": "Start by composing a new message or check back later for new communications.",
+    "action": "Compose Message"
+  },
+  "statusOptions": {
+    "pending": "Pending",
+    "sent": "Sent",
+    "delivered": "Delivered",
+    "opened": "Opened",
+    "replied": "Replied",
+    "failed": "Failed"
+  },
+  "channelOptions": {
+    "email": "Email",
+    "sms": "SMS",
+    "whatsapp": "WhatsApp",
+    "call": "Call",
+    "linkedin": "LinkedIn",
+    "other": "Other"
+  },
+  "campaignsList": {
+    "meta": {
+      "title": "Campaigns | SIKRY",
+      "description": "Manage your communication campaigns"
+    },
+    "header": {
+      "title": "Campaigns",
+      "description": "Manage your communication campaigns and track their performance.",
+      "newButton": "New Campaign"
+    },
+    "tabs": {
+      "active": "Active",
+      "draft": "Draft",
+      "completed": "Completed",
+      "all": "All Campaigns"
+    }
+  },
+  "newCampaignPage": {
+    "header": {
+      "title": "New Campaign",
+      "description": "Create a new communication campaign"
+    },
+    "detailsCard": {
+      "title": "Campaign Details"
+    },
+    "form": {
+      "nameLabel": "Campaign Name",
+      "namePlaceholder": "Enter campaign name",
+      "typeLabel": "Campaign Type",
+      "typePlaceholder": "Select campaign type",
+      "campaignTypes": {
+        "email": "Email Campaign",
+        "linkedin": "LinkedIn Campaign",
+        "phone": "Phone Campaign",
+        "multiChannel": "Multi-Channel Campaign"
+      },
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Enter campaign description",
+      "startDateLabel": "Start Date",
+      "endDateLabel": "End Date",
+      "targetAudienceLabel": "Target Audience",
+      "targetAudiencePlaceholder": "Select target audience",
+      "targetAudienceOptions": {
+        "all": "All Contacts",
+        "leads": "Leads",
+        "customers": "Customers",
+        "custom": "Custom List"
+      },
+      "templateLabel": "Template",
+      "templatePlaceholder": "Select a template",
+      "templateOptions": {
+        "welcome": "Welcome Email",
+        "followUp": "Follow-up Message",
+        "promotion": "Promotional Offer"
+      }
+    },
+    "buttons": {
+      "saveDraft": "Save as Draft",
+      "createCampaign": "Create Campaign"
+    },
+    "addTypeDialog": {
+      "title": "Add New Campaign Type",
+      "valueLabel": "Type Value",
+      "valuePlaceholder": "e.g., sms",
+      "labelLabel": "Type Label",
+      "labelPlaceholder": "e.g., SMS Campaign",
+      "iconLabel": "Icon",
+      "iconPlaceholder": "Select an icon",
+      "iconOptions": {
+        "mail": "Mail",
+        "linkedin": "LinkedIn",
+        "phone": "Phone",
+        "users": "Users"
+      },
+      "addButton": "Add Type"
+    }
+  },
+  "templatesList": {
+    "header": {
+      "title": "Templates",
+      "description": "Manage your communication templates for different channels.",
+      "newButton": "New Template"
+    },
+    "card": {
+      "modifiedLabel": "Modified {{date}}"
+    },
+    "types": {
+      "email": "Email",
+      "linkedin": "LinkedIn",
+      "phone": "Phone"
+    },
+    "mockTemplates": {
+      "emailWelcome": {
+        "name": "Welcome Email",
+        "description": "Welcome email for new users"
+      },
+      "linkedinConnection": {
+        "name": "LinkedIn Connection Request",
+        "description": "Template for LinkedIn connection requests"
+      },
+      "salesCallScript": {
+        "name": "Sales Call Script",
+        "description": "Script for initial sales calls"
+      }
+    }
+  },
+  "templateDetailPage": {
+    "notFound": "Template not found",
+    "buttons": {
+      "edit": "Edit",
+      "duplicate": "Duplicate",
+      "delete": "Delete"
+    },
+    "contentCard": {
+      "title": "Template Content"
+    },
+    "detailsCard": {
+      "title": "Template Details",
+      "typeLabel": "Type",
+      "lastModifiedLabel": "Last Modified",
+      "variablesLabel": "Variables"
+    }
+  },
+  "newTemplatePage": {
+    "header": {
+      "title": "New Template",
+      "description": "Create a new communication template"
+    },
+    "detailsCard": {
+      "title": "Template Details"
+    },
+    "form": {
+      "nameLabel": "Template Name",
+      "namePlaceholder": "Enter template name",
+      "typeLabel": "Template Type",
+      "typePlaceholder": "Select template type",
+      "templateTypes": {
+        "email": "Email",
+        "linkedin": "LinkedIn",
+        "phone": "Phone"
+      },
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Enter template description",
+      "contentLabel": "Template Content",
+      "contentPlaceholder": "Enter template content"
+    },
+    "buttons": {
+      "createTemplate": "Create Template"
+    },
+    "addTypeDialog": {
+      "title": "Add New Template Type",
+      "valueLabel": "Type Value",
+      "valuePlaceholder": "e.g., sms",
+      "labelLabel": "Type Label",
+      "labelPlaceholder": "e.g., SMS",
+      "iconLabel": "Icon",
+      "iconPlaceholder": "Select an icon",
+      "iconOptions": {
+        "mail": "Mail",
+        "linkedin": "LinkedIn",
+        "phone": "Phone"
+      },
+      "addButton": "Add Type"
+    }
+  },
+  "bulkSender.header.description": "bulkSender.header.description",
+  "bulkSender.header.newButton": "bulkSender.header.newButton",
+  "bulkSender.content.title": "bulkSender.content.title"
+}

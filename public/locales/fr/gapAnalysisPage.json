@@ -1,0 +1,36 @@
+{
+  "form": {
+    "numberPlaceholder": "Entrez un nombre",
+    "responsePlaceholder": "Entrez votre réponse"
+  },
+  "results": {
+    "generated": "Généré",
+    "justNow": "à l'instant",
+    "regenerations_one": "{{count}} régénération",
+    "regenerations_other": "{{count}} régénérations",
+    "readyTitle": "Prêt à générer",
+    "readyDescription": "Cliquez sur \"Générer la lettre\" pour créer une lettre de vente personnalisée basée sur votre évaluation",
+    "generateButton": "Générer la lettre",
+    "recommendationsTitle": "Recommandations",
+    "recommendationsDescription": "Domaines clés à améliorer en fonction de votre évaluation",
+    "focusMessage": "Concentrez-vous sur l'amélioration de votre {{area}} pour obtenir de meilleurs résultats",
+    "newAssessmentButton": "Commencer une nouvelle évaluation",
+    "exportButton": "Exporter les résultats"
+  },
+  "header": {
+    "title": "Analyse des écarts d'activité",
+    "step": "Étape {{currentStep}} sur {{totalSteps}} - Répondez à quelques questions pour obtenir des informations personnalisées",
+    "complete": "Terminé"
+  },
+  "questions": {
+    "scalePoor": "Faible",
+    "scaleExcellent": "Excellent",
+    "booleanYes": "Oui"
+  },
+  "navigation": {
+    "previous": "Précédent",
+    "next": "Suivant",
+    "completeAnalysis": "Terminer l'analyse"
+  },
+  "buttons.newAnalysis": "buttons.newAnalysis"
+}

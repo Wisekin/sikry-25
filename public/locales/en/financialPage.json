@@ -1,0 +1,184 @@
+{
+  "dashboard": {
+    "title": "Financial Dashboard",
+    "description": "Track and manage your financial activities."
+  },
+  "buttons": {
+    "addRecord": "Add Record"
+  },
+  "filter": {
+    "searchPlaceholder": "Search records by description, category...",
+    "sourceTypeLabel": "Source Type",
+    "sourceTypeOptions": {
+      "campaign": "Campaign",
+      "contact": "Contact",
+      "scraper": "Scraper",
+      "subscription": "Subscription",
+      "manual": "Manual"
+    },
+    "typeLabel": "Type",
+    "currencyLabel": "Currency"
+  },
+  "campaignROITable": {
+    "title": "Campaign ROI",
+    "headers": {
+      "campaign": "Campaign",
+      "revenue": "Revenue",
+      "costs": "Costs",
+      "netProfit": "Net Profit",
+      "roi": "ROI"
+    }
+  },
+  "recordsTable": {
+    "title": "Financial Records",
+    "headers": {
+      "source": "Source",
+      "amount": "Amount",
+      "category": "Category"
+    }
+  },
+  "types": {
+    "revenue": "Revenue",
+    "cost": "Cost",
+    "expense": "Expense",
+    "refund": "Refund"
+  },
+  "campaignROI": {
+    "header": {
+      "title": "Campaign ROI Analysis",
+      "subtitle": "Evaluate the performance of your marketing campaigns."
+    },
+    "metrics": {
+      "overallROI": {
+        "title": "Overall Campaign ROI",
+        "changeText": "{{value}} vs last period"
+      },
+      "topCampaign": {
+        "title": "Top Campaign",
+        "roiLabel": "ROI: {{value}}%"
+      },
+      "totalTracked": {
+        "title": "Total Campaigns Tracked"
+      }
+    },
+    "filters": {
+      "title": "Filters",
+      "startDatePlaceholder": "Start Date",
+      "endDatePlaceholder": "End Date",
+      "statusOptions": {
+        "all": "All Statuses",
+        "active": "Active",
+        "completed": "Completed",
+        "planned": "Planned"
+      },
+      "applyButton": "Apply Filters"
+    },
+    "table": {
+      "title": "Campaign Performance Details",
+      "headers": {
+        "campaignName": "Campaign Name",
+        "spend": "Spend",
+        "revenue": "Revenue",
+        "netProfit": "Net Profit",
+        "roiPercentage": "ROI (%)",
+        "status": "Status"
+      },
+      "noData": "No campaign data found."
+    },
+    "statuses": {
+      "active": "Active",
+      "completed": "Completed",
+      "planned": "Planned"
+    }
+  },
+  "recordsPage": {
+    "header": {
+      "title": "Financial Records",
+      "subtitle": "View and manage your financial transactions."
+    },
+    "metrics": {
+      "totalRevenue": {
+        "title": "Total Revenue"
+      },
+      "totalExpenses": {
+        "title": "Total Expenses"
+      },
+      "netProfit": {
+        "title": "Net Profit"
+      },
+      "changeSuffix": "{{value}} this month",
+      "currencyUnit": {
+        "usd": "USD"
+      }
+    },
+    "table": {
+      "title": "Transaction List",
+      "headers": {
+        "date": "Date",
+        "description": "Description",
+        "type": "Type",
+        "amount": "Amount",
+        "currency": "Currency"
+      },
+      "noData": "No financial records found."
+    },
+    "types": {
+      "income": "Income",
+      "expense": "Expense"
+    }
+  },
+  "summaryPage": {
+    "header": {
+      "title": "Financial Summary",
+      "subtitle": "An overview of your company's financial health."
+    },
+    "metrics": {
+      "totalRevenueYTD": {
+        "title": "Total Revenue (YTD)"
+      },
+      "totalExpensesYTD": {
+        "title": "Total Expenses (YTD)"
+      },
+      "netProfitYTD": {
+        "title": "Net Profit (YTD)"
+      },
+      "avgTransactionValue": {
+        "title": "Avg. Transaction Value"
+      },
+      "monthlyBurnRate": {
+        "title": "Monthly Burn Rate"
+      },
+      "revenueGrowth": {
+        "title": "Revenue Growth"
+      },
+      "changeSuffix": {
+        "vsLastYear": "{{value}} vs last year",
+        "vsLastMonth": "{{value}} vs last month",
+        "ytd": "{{value}} YTD"
+      },
+      "currencyUnit": {
+        "usd": "USD"
+      }
+    },
+    "charts": {
+      "monthlyPerformance": {
+        "title": "Monthly Performance",
+        "legendRevenue": "Revenue",
+        "legendExpenses": "Expenses",
+        "tooltipRevenue": "Revenue: {{value}}",
+        "tooltipExpenses": "Expenses: {{value}}"
+      },
+      "expenseCategories": {
+        "title": "Expense Categories",
+        "categories": {
+          "salaries": "Salaries",
+          "marketing": "Marketing",
+          "operations": "Operations",
+          "software": "Software"
+        },
+        "tooltipLabel": "{{name}}: {{value}}%"
+      }
+    }
+  },
+  "common.all": "common.all"
+}

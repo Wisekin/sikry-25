@@ -1,0 +1,36 @@
+{
+  "form": {
+    "numberPlaceholder": "Enter number",
+    "responsePlaceholder": "Enter your response"
+  },
+  "results": {
+    "generated": "Generated",
+    "justNow": "just now",
+    "regenerations_one": "{{count}} regeneration",
+    "regenerations_other": "{{count}} regenerations",
+    "readyTitle": "Ready to Generate",
+    "readyDescription": "Click \"Generate Letter\" to create a personalized sales letter based on your assessment",
+    "generateButton": "Generate Letter",
+    "recommendationsTitle": "Recommendations",
+    "recommendationsDescription": "Key areas for improvement based on your assessment",
+    "focusMessage": "Focus on improving your {{area}} to drive better results",
+    "newAssessmentButton": "Start New Assessment",
+    "exportButton": "Export Results"
+  },
+  "header": {
+    "title": "Business Gap Analysis",
+    "step": "Step {{currentStep}} of {{totalSteps}} - Answer a few questions to get personalized insights",
+    "complete": "Complete"
+  },
+  "questions": {
+    "scalePoor": "Poor",
+    "scaleExcellent": "Excellent",
+    "booleanYes": "Yes"
+  },
+  "navigation": {
+    "previous": "Previous",
+    "next": "Next",
+    "completeAnalysis": "Complete Analysis"
+  },
+  "buttons.newAnalysis": "buttons.newAnalysis"
+}

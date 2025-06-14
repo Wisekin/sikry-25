@@ -1,0 +1,58 @@
+{
+  "title": "Security Settings",
+  "subtitle": "Manage system security and access controls",
+  "sections": {
+    "authentication": "Authentication",
+    "authorization": "Authorization",
+    "audit": "Audit Logs",
+    "encryption": "Encryption"
+  },
+  "authentication": {
+    "title": "Authentication Settings",
+    "twoFactor": "Two-Factor Authentication",
+    "passwordPolicy": "Password Policy",
+    "sessionTimeout": "Session Timeout",
+    "loginAttempts": "Login Attempts",
+    "ipRestrictions": "IP Restrictions"
+  },
+  "authorization": {
+    "title": "Authorization Settings",
+    "roles": "Role Management",
+    "permissions": "Permission Management",
+    "accessControl": "Access Control Lists",
+    "apiKeys": "API Key Management"
+  },
+  "audit": {
+    "title": "Audit Logs",
+    "userActivity": "User Activity",
+    "systemEvents": "System Events",
+    "securityEvents": "Security Events",
+    "exportLogs": "Export Logs"
+  },
+  "encryption": {
+    "title": "Encryption Settings",
+    "dataEncryption": "Data Encryption",
+    "keyManagement": "Key Management",
+    "certificates": "SSL Certificates",
+    "backup": "Backup Encryption"
+  },
+  "actions": {
+    "save": "Save Changes",
+    "reset": "Reset to Default",
+    "export": "Export Settings",
+    "import": "Import Settings"
+  },
+  "messages": {
+    "loading": "Loading security settings...",
+    "error": "Error loading security settings",
+    "success": "Security settings saved successfully",
+    "confirmReset": "Are you sure you want to reset all security settings to default?",
+    "resetSuccess": "Security settings reset successfully"
+  },
+  "status": {
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "warning": "Warning",
+    "error": "Error"
+  }
+} 

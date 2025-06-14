@@ -1,0 +1,39 @@
+{
+  "header": {
+    "title": "Constructeur d'entonnoirs",
+    "subtitle": "Concevez visuellement vos entonnoirs automatisés de marketing et de vente."
+  },
+  "elementsPanel": {
+    "title": "Éléments d'entonnoir",
+    "items": {
+      "formSubmitted": "Formulaire soumis",
+      "tagAddedTrigger": "Tag ajouté (Déclencheur)",
+      "sendEmail": "Envoyer un e-mail",
+      "addTagAction": "Ajouter un tag (Action)",
+      "waitPeriod": "Période d'attente",
+      "emailOpenedCondition": "E-mail ouvert ?"
+    }
+  },
+  "canvas": {
+    "defaultFunnelName": "Nouvel entonnoir sans titre",
+    "buttons": {
+      "load": "Charger",
+      "save": "Enregistrer l'entonnoir",
+      "new": "Nouvel entonnoir"
+    },
+    "emptyMessage": "Faites glisser les éléments du panneau de gauche pour construire votre entonnoir."
+  },
+  "propertiesPanel": {
+    "title": "Propriétés",
+    "selectedLabel": "Sélectionné :",
+    "typeLabel": "Type :",
+    "stepNameLabel": "Nom de l'étape",
+    "emailTemplateIdLabel": "ID du modèle d'e-mail",
+    "emailTemplateIdPlaceholder": "ex: bienvenue_mod_01",
+    "waitDurationLabel": "Durée d'attente (jours)",
+    "buttons": {
+      "removeStep": "Supprimer l'étape"
+    },
+    "emptyMessage": "Sélectionnez une étape sur le canevas ou faites glisser un nouvel élément pour voir ses propriétés."
+  }
+}

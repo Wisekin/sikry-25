@@ -1,0 +1,41 @@
+{
+  "header": {
+    "title": "Mes Pages VSL",
+    "subtitle": "Gérez vos Lettres de Vente Vidéo créées.",
+    "loadingSubtitle": "Chargement de vos pages VSL...",
+    "errorSubtitle": "Erreur"
+  },
+  "errors": {
+    "fetchFailed": "Échec de la récupération des pages VSL",
+    "loadFailed": "Impossible de charger les pages VSL"
+  },
+  "actions": {
+    "createNew": "Créer une Nouvelle Page VSL",
+    "tryAgain": "Réessayer",
+    "refresh": "Actualiser",
+    "view": "Voir la Page",
+    "edit": "Modifier la Page",
+    "analytics": "Voir les Analyses",
+    "settings": "Paramètres de la Page",
+    "delete": "Supprimer la Page"
+  },
+  "emptyState": {
+    "title": "Aucune Page VSL Trouvée",
+    "description": "Commencez par créer une nouvelle page VSL à partir d'un modèle."
+  },
+  "table": {
+    "headers": {
+      "title": "Titre de la Page",
+      "template": "Modèle",
+      "status": "Statut",
+      "views": "Vues",
+      "conversions": "Conversions",
+      "actions": "Actions"
+    },
+    "status": {
+      "draft": "Brouillon",
+      "published": "Publié",
+      "archived": "Archivé"
+    }
+  }
+}

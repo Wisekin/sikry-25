@@ -1,0 +1,31 @@
+{
+  "title": "Lead Response Queue",
+  "subtitle": "View and manage queued leads for rule processing.",
+  "common": {
+    "refresh": "Refresh",
+    "actions": "Actions"
+  },
+  "table": {
+    "title": "Queue Table",
+    "description": "All leads currently queued for processing.",
+    "headers": {
+      "leadId": "Lead ID",
+      "ruleTriggered": "Rule Triggered",
+      "status": "Status",
+      "queuedAt": "Queued At",
+      "lastAttempt": "Last Attempt",
+      "errorMessage": "Error Message"
+    }
+  },
+  "actions": {
+    "retry": "Retry",
+    "cancel": "Cancel"
+  },
+  "status": {
+    "completed": "Completed",
+    "processing": "Processing",
+    "failed": "Failed",
+    "retrying": "Retrying",
+    "pending": "Pending"
+  }
+}

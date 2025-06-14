@@ -1,0 +1,59 @@
+{
+  "header": {
+    "title": "Suivi des parrainages",
+    "subtitle": "Surveillez toutes les activités de parrainage et leurs statuts."
+  },
+  "stats": {
+    "totalInitiated": {
+      "title": "Total des parrainages initiés"
+    },
+    "pendingConversion": {
+      "title": "En attente de conversion complète"
+    },
+    "successfullyConverted": {
+      "title": "Convertis avec succès"
+    },
+    "totalRewardsDisbursed": {
+      "title": "Total des récompenses versées (USD)"
+    }
+  },
+  "filters": {
+    "title": "Filtrer les parrainages",
+    "placeholders": {
+      "referrerName": "Nom du parrain",
+      "refereeEmail": "E-mail du filleul"
+    },
+    "statusOptions": {
+      "all": "Tous les statuts",
+      "invited": "Invité",
+      "signedUp": "Inscrit",
+      "pendingCriteria": "Critères en attente",
+      "converted": "Converti",
+      "rewardPaid": "Récompense payée",
+      "expired": "Expiré",
+      "failed": "Échoué"
+    },
+    "buttons": {
+      "apply": "Appliquer les filtres"
+    }
+  },
+  "table": {
+    "title": "Tous les enregistrements de parrainage",
+    "headers": {
+      "dateInitiated": "Date d'initiation",
+      "referrer": "Parrain",
+      "refereeEmail": "E-mail du filleul",
+      "refereeName": "Nom du filleul",
+      "status": "Statut",
+      "reward": "Récompense",
+      "actions": "Actions"
+    },
+    "body": {
+      "noRewardSymbol": "-",
+      "buttons": {
+        "editStatusTooltip": "Modifier le statut"
+      }
+    },
+    "emptyMessage": "Aucun enregistrement de parrainage trouvé."
+  }
+}

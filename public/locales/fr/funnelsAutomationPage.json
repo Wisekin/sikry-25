@@ -1,0 +1,48 @@
+{
+  "header": {
+    "title": "Automatisation de l'entonnoir",
+    "subtitle": "Configurez des actions et des déclencheurs automatisés pour vos entonnoirs de vente."
+  },
+  "selector": {
+    "label": "Configurer l'automatisation pour :"
+  },
+  "stats": {
+    "activeRules": {
+      "title": "Règles actives dans l'entonnoir"
+    },
+    "automatedActionsToday": {
+      "title": "Actions automatisées aujourd'hui"
+    },
+    "errorsToday": {
+      "title": "Erreurs aujourd'hui",
+      "needsAttention": "Nécessite attention",
+      "allClear": "Aucun problème"
+    }
+  },
+  "rules": {
+    "titlePrefix": "Règles d'automatisation pour '{{funnelName}}'",
+    "buttons": {
+      "addNewRule": "Ajouter une nouvelle règle"
+    },
+    "ruleCard": {
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "buttons": {
+        "deactivateTooltip": "Désactiver la règle",
+        "activateTooltip": "Activer la règle",
+        "editTooltip": "Modifier la règle",
+        "deleteTooltip": "Supprimer la règle"
+      },
+      "triggerLabel": "Déclencheur :",
+      "actionsLabel": "Actions :",
+      "timesTriggeredLabel": "Déclenchée {{count}} fois",
+      "errorsLabel": "Erreurs : {{count}}"
+    },
+    "emptyMessage": "Aucune règle d'automatisation configurée pour cet entonnoir pour le moment."
+  },
+  "emptyState": {
+    "message": "Sélectionnez un entonnoir pour voir ses règles d'automatisation."
+  }
+}

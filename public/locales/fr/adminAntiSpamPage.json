@@ -1,0 +1,64 @@
+{
+  "header": {
+    "title": "Configuration Anti-Spam",
+    "description": "Gérez les paramètres anti-spam, les règles et les filtres."
+  },
+  "status": {
+    "title": "État Actuel du Spam",
+    "description": "Aperçu des métriques de détection de spam."
+  },
+  "spamMetrics": {
+    "detectionRate": "Taux de Détection",
+    "falsePositives": "Faux Positifs",
+    "blockedMessages": "Messages Bloqués",
+    "quarantined": "Messages en Quarantaine"
+  },
+  "filterConfig": {
+    "title": "Configuration des Filtres",
+    "description": "Ajustez les paramètres pour la détection et le filtrage du spam.",
+    "enableSpamDetection": {
+      "label": "Activer la Détection de Spam",
+      "description": "Interrupteur principal pour tout le filtrage de spam."
+    },
+    "autoQuarantine": {
+      "label": "Mise en Quarantaine Auto",
+      "description": "Déplacer automatiquement le spam détecté en quarantaine."
+    },
+    "senderReputation": {
+      "label": "Analyse de la Réputation de l'Expéditeur",
+      "description": "Utiliser les scores des expéditeurs pour identifier le spam potentiel."
+    },
+    "spamThreshold": {
+      "label": "Score Seuil de Spam",
+      "description": "Les messages obtenant un score supérieur sont considérés comme du spam (1-10)."
+    }
+  },
+  "whitelist": {
+    "title": "Gestion de la Liste Blanche",
+    "description": "Les e-mails et domaines sur cette liste contourneront les filtres anti-spam.",
+    "placeholder": "Entrez les e-mails ou domaines, un par ligne...",
+    "updateButton": "Mettre à Jour la Liste Blanche"
+  },
+  "blacklist": {
+    "title": "Gestion de la Liste Noire",
+    "description": "Les e-mails et domaines sur cette liste seront toujours marqués comme spam.",
+    "placeholder": "Entrez les e-mails ou domaines, un par ligne...",
+    "updateButton": "Mettre à Jour la Liste Noire"
+  },
+  "compliance": {
+    "title": "Paramètres de Conformité",
+    "description": "Assurez l'adhésion aux réglementations anti-spam.",
+    "gdpr": {
+      "label": "Mode de Conformité RGPD",
+      "description": "Activez des règles plus strictes pour l'adhésion au RGPD."
+    },
+    "canSpam": {
+      "label": "Conformité à la Loi CAN-SPAM",
+      "description": "Assurez-vous que les e-mails respectent les exigences de la loi CAN-SPAM."
+    },
+    "unsubscribe": {
+      "label": "Liens de Désabonnement Obligatoires",
+      "description": "Ajoutez automatiquement des liens de désabonnement à tous les e-mails sortants."
+    }
+  }
+}

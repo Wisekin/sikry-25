@@ -1,0 +1,46 @@
+{
+  "title": "Scrapeurs",
+  "description": "Gérez et surveillez vos tâches de scraping web",
+  "createScraper": "Créer un Scrapeur",
+  "activeScrapers": "Scrapeurs Actifs",
+  "currentlyRunning": "En cours d'exécution",
+  "successRate": "Taux de Réussite",
+  "totalJobs": "Total des Tâches",
+  "last24Hours": "Dernières 24 heures",
+  "v2Scrapers": "Scrapeurs V2",
+  "nextGenScrapers": "Scrapeurs nouvelle génération",
+  "scraperManagement": "Gestion des Scrapeurs",
+  "searchPlaceholder": "Rechercher des scrapeurs...",
+  "filterByStatus": "Filtrer par statut",
+  "filterByType": "Filtrer par type",
+  "allStatuses": "Tous les Statuts",
+  "active": "Actif",
+  "inactive": "Inactif",
+  "running": "En cours",
+  "error": "Erreur",
+  "status": {
+    "active": "Actif",
+    "inactive": "Inactif",
+    "running": "En cours",
+    "error": "Erreur"
+  },
+  "actions": {
+    "start": "Démarrer",
+    "stop": "Arrêter",
+    "pause": "Pause",
+    "configure": "Configurer",
+    "viewStats": "Voir les Statistiques"
+  },
+  "stats": {
+    "lastRun": "Dernière Exécution",
+    "successRate": "Taux de Réussite",
+    "totalRuns": "Total des Exécutions"
+  },
+  "loading": "Chargement des scrapeurs...",
+  "noScrapers": "Aucun scrapeur trouvé",
+  "createFirstScraper": "Créez votre premier scrapeur pour commencer",
+  "allTypes": "allTypes",
+  "v1": "v1",
+  "v2": "v2",
+  "api": "api"
+}

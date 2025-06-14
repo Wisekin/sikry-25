@@ -1,0 +1,74 @@
+{
+  "header": {
+    "title": "Tableau de bord d'analyse d'entreprise",
+    "subtitle": "Surveillez les métriques clés, suivez les performances et obtenez des informations précieuses sur vos opérations commerciales."
+  },
+  "keyMetrics": {
+    "totalCompanies": "Total des entreprises",
+    "companiesThisMonth": "+{{count}} ce mois-ci",
+    "activeScrapers": "Scrapers actifs",
+    "lastRun": "Dernière exécution : {{time}}",
+    "campaigns": "Campagnes",
+    "deliveryRate": "Taux de livraison de {{rate}}%",
+    "dataQuality": "Qualité des données",
+    "qualityIncrease": "+{{percent}}% par rapport au mois dernier"
+  },
+  "charts": {
+    "collectionTrends": "Tendances de la collecte",
+    "sectorAnalysis": "Analyse sectorielle",
+    "performanceMetrics": "Métrique de performance",
+    "companiesAdded": "Entreprises ajoutées",
+    "distribution": "Distribution",
+    "qualityScore": "Score de qualité des données"
+  },
+  "actions": {
+    "expand": "Développer",
+    "collapse": "Réduire"
+  },
+  "tables": {
+    "topSources": "Sources les plus performantes :",
+    "dataSourcePerformance": "Performance des sources de données",
+    "source": "Source",
+    "records": "Enregistrements",
+    "quality": "Qualité",
+    "status": "Statut",
+    "linkedinScraper": "Scraper LinkedIn",
+    "companyWebsites": "Sites web d'entreprises",
+    "publicDirectories": "Annuaires publics",
+    "apiIntegrations": "Intégrations API",
+    "active": "Actif",
+    "monitoring": "Surveillance",
+    "needsAttention": "Nécessite une attention"
+  },
+  "tabs": {
+    "overview": "Aperçu",
+    "performance": "Performance",
+    "dataSources": "Sources de données",
+    "quality": "Qualité",
+    "dataCollectionSummary": "Résumé de la collecte de données",
+    "totalRecords": "Total des enregistrements",
+    "thisMonth": "Ce mois-ci",
+    "successRate": "Taux de réussite",
+    "topIndustries": "Principales industries",
+    "technology": "Technologie",
+    "finance": "Finance",
+    "healthcare": "Santé",
+    "regionalDistribution": "Distribution régionale",
+    "dach": "Région DACH",
+    "eu": "UE",
+    "global": "Mondial",
+    "uptime": "Disponibilité",
+    "avgResponse": "Réponse moyenne",
+    "errorRate": "Taux d'erreur"
+  },
+  "qualityBreakdown": {
+    "title": "Répartition de la qualité des données",
+    "subtitle": "Un aperçu des dimensions clés de la qualité des données.",
+    "completeness": "Complétude",
+    "accuracy": "Précision",
+    "consistency": "Cohérence",
+    "timeliness": "Actualité",
+    "uniqueness": "Unicité",
+    "validity": "Validité"
+  }
+}

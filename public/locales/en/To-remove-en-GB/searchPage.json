@@ -1,0 +1,50 @@
+{
+  "title": "Company Search",
+  "searchPlaceholder": "Search by company name, domain, or industry...",
+  "noResults": "No results found.",
+  "error": "Error: Failed to fetch results",
+  "exportButton": "Export Results",
+  "filters": {
+    "title": "Advanced Filters",
+    "industry": "Industry",
+    "allIndustries": "All Industries",
+    "location": "Location",
+    "locationPlaceholder": "e.g., Geneva, Switzerland",
+    "minConfidence": "Minimum Confidence",
+    "sources": "Sources",
+    "applyFilters": "Apply Filters",
+    "resetFilters": "Reset Filters"
+  },
+  "results": {
+    "viewAs": "View as:",
+    "grid": "Grid",
+    "list": "List",
+    "map": "Map",
+    "sortBy": "Sort by:",
+    "relevance": "Relevance",
+    "name": "Name",
+    "location": "Location",
+    "confidence": "Confidence"
+  },
+  "company": {
+    "employees": "Employees",
+    "industry": "Industry",
+    "location": "Location",
+    "website": "Website",
+    "confidence": "Confidence Score",
+    "lastUpdated": "Last Updated",
+    "viewDetails": "View Details",
+    "contactInfo": "Contact Information",
+    "technologies": "Technologies"
+  },
+  "sources": {
+    "google": "Google",
+    "linkedin": "LinkedIn",
+    "crunchbase": "Crunchbase"
+  },
+  "actions": {
+    "refresh": "Refresh",
+    "loading": "Loading...",
+    "error": "Error loading results"
+  }
+}

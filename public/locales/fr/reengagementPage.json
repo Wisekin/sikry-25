@@ -1,0 +1,48 @@
+{
+  "header": {
+    "title": "Réactivation des Prospects",
+    "subtitle": "Revitalisez les prospects inactifs et augmentez les conversions."
+  },
+  "overviewStats": {
+    "coldLeads": {
+      "title": "Prospects Froids Identifiés",
+      "change": "+50 cette semaine"
+    },
+    "activeCampaigns": {
+      "title": "Campagnes Actives",
+      "change": "+2 nouvelles"
+    },
+    "successfulReEngagements": {
+      "title": "Réactivations Réussies",
+      "change": "+25 derniers 7 jours"
+    },
+    "engagementRateLift": {
+      "title": "Augmentation du Taux d'Engagement",
+      "change": "vs. période précédente"
+    }
+  },
+  "navLinks": {
+    "classification": {
+      "title": "Classification des Prospects",
+      "description": "Définissez et gérez les critères de classification des prospects (chaud, tiède, froid) pour cibler efficacement les efforts de réactivation."
+    },
+    "tasks": {
+      "title": "Tâches de Réactivation",
+      "description": "Visualisez, assignez et suivez les tâches manuelles ou automatisées liées à vos campagnes de réactivation et au suivi des prospects."
+    },
+    "automation": {
+      "title": "Règles d'Automatisation",
+      "description": "Configurez des workflows automatisés et des déclencheurs pour réactiver les prospects en fonction de leur classification et de leur comportement."
+    }
+  },
+  "funnel": {
+    "title": "Entonnoir de Réactivation",
+    "stages": {
+      "identified": "Identifiés",
+      "contacted": "Contactés",
+      "responded": "Ont Répondu",
+      "reEngaged": "Réactivés"
+    },
+    "tooltip": "{{stageName}} : {{count}}"
+  }
+}

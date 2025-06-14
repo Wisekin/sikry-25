@@ -1,0 +1,42 @@
+{
+  "header": {
+    "title": "Reviews Management",
+    "subtitle": "Monitor, request, and boost your customer reviews."
+  },
+  "metrics": {
+    "totalReviews": {
+      "title": "Total Reviews",
+      "change": "+12 last week"
+    },
+    "averageRating": {
+      "title": "Average Rating",
+      "unit": "/ 5",
+      "change": "-0.1 from last month"
+    },
+    "newReviews": {
+      "title": "New Reviews This Month"
+    },
+    "requestsSent": {
+      "title": "Review Requests Sent"
+    }
+  },
+  "navLinks": {
+    "requests": {
+      "title": "Review Requests",
+      "description": "Manage and send out review requests to your customers."
+    },
+    "booster": {
+      "title": "Review Booster",
+      "description": "Utilize tools and campaigns to boost positive review generation."
+    },
+    "monitoring": {
+      "title": "Review Monitoring",
+      "description": "Track new reviews from various platforms and respond to feedback."
+    }
+  },
+  "ratingChart": {
+    "title": "Average Rating Over Time",
+    "tooltip": "Rating: {{rating}}",
+    "emptyMessage": "No rating data available yet."
+  }
+}

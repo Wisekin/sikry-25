@@ -1,0 +1,54 @@
+{
+  "header": {
+    "title": "Automatisation de Réactivation",
+    "subtitle": "Configurez et gérez des workflows automatisés pour réactiver les prospects."
+  },
+  "metrics": {
+    "activeRules": {
+      "title": "Règles d'Automatisation Actives",
+      "change": "Total {{count}} règles"
+    },
+    "leadsProcessed": {
+      "title": "Prospects Traités Aujourd'hui (Auto)"
+    },
+    "automatedConversions": {
+      "title": "Réactivations Automatisées",
+      "change": "+3 cette semaine"
+    }
+  },
+  "list": {
+    "title": "Liste des Règles d'Automatisation",
+    "buttons": {
+      "createNew": "Créer une Nouvelle Règle"
+    },
+    "emptyMessage": "Aucune règle d'automatisation configurée."
+  },
+  "ruleCard": {
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "buttons": {
+      "deactivate": {
+        "tooltip": "Désactiver"
+      },
+      "activate": {
+        "tooltip": "Activer"
+      },
+      "edit": {
+        "tooltip": "Modifier la Règle"
+      },
+      "delete": {
+        "tooltip": "Supprimer la Règle"
+      }
+    },
+    "triggerLabel": "Déclencheur :",
+    "actionsLabel": "Actions :",
+    "performance": {
+      "label": "Performance :",
+      "emailsSent": "E-mails Envoyés : {{count}}",
+      "openRate": "Taux d'Ouverture : {{rate}}%",
+      "clickRate": "Taux de Clic : {{rate}}%"
+    }
+  }
+}

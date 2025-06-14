@@ -1,0 +1,86 @@
+{
+  "loading": "Loading analytics...",
+  "title": "Analytics Dashboard",
+  "description": "Track performance across all your marketing channels",
+  "timeRanges": {
+    "hours24": "24 Hours",
+    "days7": "7 Days",
+    "days30": "30 Days",
+    "days90": "90 Days"
+  },
+  "keyMetrics": {
+    "totalPageViews": "Total Page Views",
+    "conversionRate": "Conversion Rate",
+    "avgResponseTime": "Avg Response Time",
+    "revenueAttribution": "Revenue Attribution",
+    "fromLastPeriod": {
+      "views": "+12% from last period",
+      "rate": "+2.1% from last period",
+      "time": "-30s from last period",
+      "revenue": "+18% from last period"
+    }
+  },
+  "tabs": {
+    "vslPerformance": "VSL Performance",
+    "leadResponse": "Lead Response",
+    "funnels": "Funnels",
+    "revenue": "Revenue"
+  },
+  "vslPerformance": {
+    "viewsConversionsTrend": "Views & Conversions Trend",
+    "viewsConversionsDescription": "Daily performance over the selected period",
+    "topPerformingPages": "Top Performing Pages",
+    "topPerformingPagesDescription": "Best converting VSL pages",
+    "viewsLeads": "{{views}} views • {{leads}} leads"
+  },
+  "leadResponse": {
+    "responsePerformance": "Response Performance",
+    "responsePerformanceDescription": "Lead response metrics and SLA compliance",
+    "slaCompliance": "SLA Compliance",
+    "successRate": "Success Rate",
+    "channelDistribution": "Channel Distribution",
+    "channelDistributionDescription": "Response channel usage breakdown",
+    "channels": {
+      "email": "Email",
+      "sms": "SMS",
+      "calls": "Calls"
+    },
+    "sent": "{{count}} sent",
+    "attempted": "{{count}} attempted"
+  },
+  "funnels": {
+    "activeFunnels": "Active Funnels",
+    "activeFunnelsDescription": "Currently running",
+    "totalContacts": "Total Contacts",
+    "totalContactsDescription": "In active funnels",
+    "completionRate": "Completion Rate",
+    "completionRateDescription": "Average across all funnels"
+  },
+  "revenue": {
+    "revenueAttribution": "Revenue Attribution",
+    "revenueAttributionDescription": "Revenue breakdown by channel",
+    "vslPages": "VSL Pages",
+    "leadResponse": "Lead Response",
+    "funnels": "Funnels",
+    "total": "Total",
+    "revenueTrend": "Revenue Trend",
+    "revenueTrendDescription": "Daily revenue over time"
+  },
+  "realTimeMetrics": {
+    "title": "Real-Time Metrics",
+    "live": "LIVE",
+    "activeScrapers": "Active Scrapers",
+    "dataPointsToday": "Data Points Today",
+    "successRate": "Success Rate",
+    "avgResponse": "Avg Response",
+    "activityFeed": "Live Activity Feed",
+    "events": {
+      "extract": "Company data extracted",
+      "start": "New scraper started",
+      "send": "Email campaign sent",
+      "limit": "Rate limit reached",
+      "enrich": "Data enrichment completed"
+    },
+    "ago": "{{time}} ago"
+  }
+}

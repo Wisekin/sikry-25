@@ -1,0 +1,46 @@
+{
+  "title": "Bulk Sender",
+  "description": "Send communications in bulk to multiple recipients.",
+  "compose": {
+    "title": "Compose Message",
+    "subject": "Subject",
+    "subjectPlaceholder": "Enter message subject",
+    "message": "Message",
+    "messagePlaceholder": "Type your message here...",
+    "attachments": "Attachments",
+    "addAttachment": "Add Attachment"
+  },
+  "recipients": {
+    "title": "Recipients",
+    "selectRecipients": "Select Recipients",
+    "totalSelected": "{{count}} recipients selected",
+    "noRecipients": "No recipients selected. Please add recipients to send messages.",
+    "addRecipients": "Add Recipients"
+  },
+  "schedule": {
+    "title": "Schedule",
+    "sendNow": "Send Now",
+    "scheduleForLater": "Schedule for Later",
+    "dateTime": "Date & Time",
+    "timezone": "Timezone"
+  },
+  "preview": {
+    "title": "Preview",
+    "previewRecipient": "Preview Recipient",
+    "previewMessage": "Preview your message as it will appear to recipients.",
+    "noPreview": "Compose a message to see a preview."
+  },
+  "actions": {
+    "send": "Send Messages",
+    "schedule": "Schedule Messages",
+    "cancel": "Cancel",
+    "sending": "Sending...",
+    "scheduled": "Messages Scheduled"
+  },
+  "validation": {
+    "subjectRequired": "Subject is required",
+    "messageRequired": "Message is required",
+    "recipientsRequired": "At least one recipient is required",
+    "scheduleRequired": "Please select a valid date and time for scheduling"
+  }
+}

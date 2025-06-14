@@ -1,0 +1,72 @@
+{
+  "title": "Team Management",
+  "subtitle": "Manage team members and roles",
+  "actions": {
+    "addMember": "Add Team Member",
+    "editMember": "Edit Team Member",
+    "removeMember": "Remove Team Member",
+    "exportTeam": "Export Team Data"
+  },
+  "filters": {
+    "title": "Filters",
+    "role": "Role",
+    "department": "Department",
+    "status": "Status",
+    "search": "Search Team Members"
+  },
+  "table": {
+    "name": "Name",
+    "email": "Email",
+    "role": "Role",
+    "department": "Department",
+    "status": "Status",
+    "joined": "Joined",
+    "actions": "Actions"
+  },
+  "roles": {
+    "title": "Team Roles",
+    "admin": "Administrator",
+    "manager": "Manager",
+    "member": "Team Member",
+    "viewer": "Viewer"
+  },
+  "departments": {
+    "title": "Departments",
+    "engineering": "Engineering",
+    "design": "Design",
+    "marketing": "Marketing",
+    "sales": "Sales",
+    "support": "Support",
+    "other": "Other"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "onLeave": "On Leave",
+    "pending": "Pending"
+  },
+  "form": {
+    "name": "Full Name",
+    "email": "Email Address",
+    "role": "Role",
+    "department": "Department",
+    "status": "Status",
+    "permissions": "Permissions"
+  },
+  "permissions": {
+    "title": "Team Permissions",
+    "view": "View",
+    "create": "Create",
+    "edit": "Edit",
+    "delete": "Delete",
+    "manage": "Manage"
+  },
+  "messages": {
+    "noMembers": "No team members found",
+    "loading": "Loading team data...",
+    "error": "Error loading team data",
+    "success": "Team member saved successfully",
+    "deleteConfirm": "Are you sure you want to remove this team member?",
+    "deleteSuccess": "Team member removed successfully"
+  }
+} 

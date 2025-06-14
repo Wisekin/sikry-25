@@ -1,0 +1,35 @@
+{
+  "title": "Lead Response Analytics",
+  "subtitle": "Overview of lead response metrics",
+  "error": {
+    "fetchFailed": "Failed to fetch analytics data.",
+    "unknown": "An unknown error occurred.",
+    "title": "Error"
+  },
+  "noData": {
+    "title": "No Data Available",
+    "description": "There is currently no analytics data to display."
+  },
+  "summary": {
+    "totalProcessed": "Total Leads Processed",
+    "avgResponseTime": "Average Response Time",
+    "successRate": "Success Rate",
+    "failureRate": "Failure Rate"
+  },
+  "charts": {
+    "leadsProcessedTitle": "Leads Processed Over Time",
+    "leadsProcessedLabel": "Leads Processed",
+    "responseTimeTitle": "Response Time Over Time",
+    "avgResponseTimeLabel": "Average Response Time"
+  },
+  "table": {
+    "title": "Rule Performance",
+    "description": "Performance metrics for lead response rules.",
+    "headers": {
+      "ruleName": "Rule Name",
+      "processed": "Processed",
+      "successRate": "Success Rate",
+      "avgTime": "Average Time"
+    }
+  }
+}

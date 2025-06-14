@@ -1,0 +1,32 @@
+{
+  "title": "Lead Response Analytics",
+  "subtitle": "Monitor lead processing performance and response times.",
+  "summary": {
+    "totalProcessed": "Total Leads Processed",
+    "avgResponseTime": "Avg. Response Time",
+    "successRate": "Success Rate",
+    "failureRate": "Failure Rate"
+  },
+  "charts": {
+    "leadsProcessedTitle": "Leads Processed Over Time",
+    "leadsProcessedLabel": "Leads Processed",
+    "responseTimeTitle": "Response Time Trend",
+    "avgResponseTimeLabel": "Average Response Time"
+  },
+  "table": {
+    "title": "Rule Performance Table",
+    "description": "Breakdown of rule effectiveness and processing times.",
+    "headers": {
+      "ruleName": "Rule Name",
+      "processed": "Processed",
+      "successRate": "Success Rate",
+      "avgTime": "Avg. Response Time"
+    }
+  },
+  "common": {
+    "minutesAbbr": "min"
+  },
+  "common.filter": "common.filter",
+  "common.minutesShort": "common.minutesShort"
+}
+ 

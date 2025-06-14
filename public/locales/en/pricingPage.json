@@ -1,0 +1,108 @@
+{
+  "nav": {
+    "home": "Home",
+    "features": "Features",
+    "pricing": "Pricing",
+    "getStartedButton": "Get Started"
+  },
+  "hero": {
+    "badgeText": "Transparent Pricing",
+    "title": {
+      "main": "Find the Perfect Plan for ",
+      "highlight": "Your Business"
+    },
+    "description": "No hidden fees, no surprises. Choose the plan that scales with your company's ambition and data needs."
+  },
+  "plans": {
+    "starter": {
+      "name": "Starter",
+      "price": "$49",
+      "period": "/month",
+      "description": "Ideal for individuals and small teams getting started with data intelligence.",
+      "features": [
+        "1,000 company searches/month",
+        "Basic data extraction (email, phone)",
+        "Standard filtering options",
+        "Limited template access",
+        "Email support"
+      ],
+      "limitations": [
+        "No API access",
+        "No multi-channel outreach"
+      ],
+      "ctaButton": "Choose Starter"
+    },
+    "professional": {
+      "name": "Professional",
+      "price": "$99",
+      "period": "/month",
+      "description": "For growing businesses needing more power and features.",
+      "features": [
+        "10,000 company searches/month",
+        "Advanced data extraction (technographics, social)",
+        "Full filtering options",
+        "Full template access & A/B testing",
+        "Multi-channel outreach (Email, LinkedIn)",
+        "Priority email support"
+      ],
+      "limitations": [
+        "Limited API credits",
+        "Max 5 users"
+      ],
+      "ctaButton": "Choose Professional",
+      "popularBadge": "Most Popular"
+    },
+    "enterprise": {
+      "name": "Enterprise",
+      "price": "Custom",
+      "period": "",
+      "description": "Tailored solutions for large organizations with specific needs.",
+      "features": [
+        "Unlimited company searches",
+        "Full data extraction suite",
+        "Custom filtering & reporting",
+        "Custom templates & campaign workflows",
+        "All communication channels",
+        "Dedicated account manager & SLA",
+        "Full API access & integrations"
+      ],
+      "limitations": [],
+      "ctaButton": "Contact Sales"
+    }
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "questions": [
+      {
+        "question": "What's included in the free trial?",
+        "answer": "Our free trial gives you access to most Professional plan features for 14 days, including a limited number of company searches and data extractions. No credit card required."
+      },
+      {
+        "question": "Can I change my plan later?",
+        "answer": "Yes, you can upgrade or downgrade your plan at any time. Changes will be prorated for the current billing cycle."
+      },
+      {
+        "question": "What payment methods do you accept?",
+        "answer": "We accept all major credit cards (Visa, Mastercard, American Express) and PayPal. For Enterprise plans, we also support invoicing and bank transfers."
+      },
+      {
+        "question": "Is there a discount for annual billing?",
+        "answer": "Yes, we offer a discount equivalent to two months free if you choose to pay annually for the Starter or Professional plans."
+      },
+      {
+        "question": "What happens if I exceed my plan limits?",
+        "answer": "You will be notified before exceeding your limits. You can choose to upgrade your plan or purchase add-on packs for additional searches or extractions for the current month."
+      },
+      {
+        "question": "Do you offer support for all plans?",
+        "answer": "All plans include email support. Professional plans receive priority email support, and Enterprise plans have a dedicated account manager and phone support options."
+      }
+    ]
+  },
+  "cta": {
+    "title": "Still Have Questions? We're Here to Help.",
+    "description": "Our team is ready to assist you in choosing the best plan or creating a custom solution for your unique business needs.",
+    "trialButton": "Start Your Free Trial",
+    "demoButton": "Talk to Sales"
+  }
+}

@@ -1,0 +1,57 @@
+.dark {
+  /* Primary Colors */
+  --primary: 220 38% 80%;
+  --primary-foreground: 220 38% 20%;
+
+  /* Secondary Colors */
+  --secondary: 220 8.9% 15%;
+  --secondary-foreground: 220 14.3% 85%;
+
+  /* Accent Colors */
+  --accent: 220 8.9% 15%;
+  --accent-foreground: 220 14.3% 85%;
+
+  /* Neutral Colors */
+  --background: 220 8.9% 8%;
+  --foreground: 220 14.3% 85%;
+
+  /* Muted Colors */
+  --muted: 220 8.9% 15%;
+  --muted-foreground: 220 8.9% 65%;
+
+  /* Border Colors */
+  --border: 220 8.9% 15%;
+  --input: 220 8.9% 15%;
+  --ring: 220 38% 80%;
+
+  /* Card Colors */
+  --card: 220 8.9% 10%;
+  --card-foreground: 220 14.3% 85%;
+
+  /* Popover Colors */
+  --popover: 220 8.9% 10%;
+  --popover-foreground: 220 14.3% 85%;
+
+  /* Destructive Colors */
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+
+  /* Success Colors */
+  --success: 142.1 70.6% 45.3%;
+  --success-foreground: 0 0% 98%;
+
+  /* Warning Colors */
+  --warning: 47.9 95.8% 53.1%;
+  --warning-foreground: 26 83.3% 14.1%;
+
+  /* Info Colors */
+  --info: 221.2 83.2% 53.3%;
+  --info-foreground: 0 0% 98%;
+
+  /* Chart Colors */
+  --chart-1: 220 70% 50%;
+  --chart-2: 160 60% 45%;
+  --chart-3: 30 80% 55%;
+  --chart-4: 280 65% 60%;
+  --chart-5: 340 75% 55%;
+}

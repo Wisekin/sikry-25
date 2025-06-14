@@ -1,0 +1,35 @@
+{
+  "header": {
+    "title": "VSL Management",
+    "subtitle": "Create, manage, and track your Video Sales Letter pages."
+  },
+  "stats": {
+    "totalVSLPages": {
+      "title": "Total VSL Pages"
+    },
+    "activeVSLs": {
+      "title": "Active VSLs"
+    },
+    "totalViews": {
+      "title": "Total Views"
+    },
+    "overallConversionRate": {
+      "title": "Overall VSL Conv. Rate"
+    }
+  },
+  "navLinks": {
+    "templates": {
+      "title": "VSL Templates",
+      "description": "Browse, manage, and create new VSL templates."
+    },
+    "myPages": {
+      "title": "My VSL Pages",
+      "description": "View, edit, and manage your created VSL pages."
+    },
+    "tracking": {
+      "title": "Performance Tracking",
+      "description": "Analyze views, engagement, and conversions for your VSLs."
+    }
+  },
+  "navigation.templates.title": "navigation.templates.title"
+}

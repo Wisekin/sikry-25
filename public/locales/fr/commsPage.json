@@ -1,0 +1,269 @@
+{
+  "header": {
+    "title": "Centre de Communications",
+    "description": "Gérez tous vos messages sortants et entrants.",
+    "newButton": "Nouvelle Communication"
+  },
+  "stats": {
+    "total": "Total",
+    "sent": "Envoyés",
+    "delivered": "Distribués",
+    "opened": "Ouverts",
+    "replied": "Répondus"
+  },
+  "tabs": {
+    "all": "Tous",
+    "pending": "En attente",
+    "sent": "Envoyés",
+    "delivered": "Distribués",
+    "opened": "Ouverts"
+  },
+  "loading": "Chargement des communications...",
+  "title": "Communications",
+  "description": "Gérez vos communications et suivez l'engagement.",
+  "filters": {
+    "all": "Tous",
+    "unread": "Non lu",
+    "starred": "Suivi",
+    "important": "Important",
+    "filter": "Filtrer",
+    "status": "Statut",
+    "channel": "Canal",
+    "company": "Entreprise",
+    "contact": "Contact",
+    "subject": "Sujet",
+    "sentDate": "Date d'envoi",
+    "resetButton": "Réinitialiser les filtres",
+    "datePlaceholder": "Sélectionner des dates"
+  },
+  "search": {
+    "placeholder": "Rechercher des communications...",
+    "subjectPlaceholder": "Rechercher par sujet..."
+  },
+  "composeButton": "Composer",
+  "noMessages": {
+    "title": "Aucun message",
+    "description": "Vous n'avez aucun message dans ce dossier.",
+    "action": "Composer un nouveau message"
+  },
+  "messageList": {
+    "from": "De",
+    "to": "À",
+    "subject": "Sujet",
+    "date": "Date",
+    "status": "Statut",
+    "actions": "Actions"
+  },
+  "status": {
+    "sent": "Envoyé",
+    "delivered": "Livré",
+    "read": "Lu",
+    "failed": "Échec",
+    "draft": "Brouillon"
+  },
+  "actions": {
+    "view": "Voir",
+    "reply": "Répondre",
+    "forward": "Transférer",
+    "delete": "Supprimer",
+    "markAsRead": "Marquer comme lu",
+    "markAsUnread": "Marquer comme non lu",
+    "moveToFolder": "Déplacer vers",
+    "selectAll": "Tout sélectionner",
+    "deselectAll": "Tout désélectionner"
+  },
+  "pagination": {
+    "previous": "Précédent",
+    "next": "Suivant",
+    "page": "Page",
+    "of": "sur",
+    "itemsPerPage": "éléments par page"
+  },
+  "emptyState": {
+    "title": "Aucune communication pour le moment",
+    "description": "Commencez par composer un nouveau message ou revenez plus tard.",
+    "action": "Composer un message"
+  },
+  "statusOptions": {
+    "pending": "En attente",
+    "sent": "Envoyé",
+    "delivered": "Livré",
+    "opened": "Ouvert",
+    "replied": "Répondu",
+    "failed": "Échoué"
+  },
+  "channelOptions": {
+    "email": "E-mail",
+    "sms": "SMS",
+    "whatsapp": "WhatsApp",
+    "call": "Appel",
+    "linkedin": "LinkedIn",
+    "other": "Autre"
+  },
+  "campaignsList": {
+    "meta": {
+      "title": "Campagnes | SIKRY",
+      "description": "Gérez vos campagnes de communication"
+    },
+    "header": {
+      "title": "Campagnes",
+      "description": "Gérez vos campagnes de communication et suivez leurs performances.",
+      "newButton": "Nouvelle Campagne"
+    },
+    "tabs": {
+      "active": "Actives",
+      "draft": "Brouillons",
+      "completed": "Terminées",
+      "all": "Toutes les Campagnes"
+    }
+  },
+  "newCampaignPage": {
+    "header": {
+      "title": "Nouvelle Campagne",
+      "description": "Créer une nouvelle campagne de communication"
+    },
+    "detailsCard": {
+      "title": "Détails de la Campagne"
+    },
+    "form": {
+      "nameLabel": "Nom de la Campagne",
+      "namePlaceholder": "Entrez le nom de la campagne",
+      "typeLabel": "Type de Campagne",
+      "typePlaceholder": "Sélectionnez le type de campagne",
+      "campaignTypes": {
+        "email": "Campagne E-mail",
+        "linkedin": "Campagne LinkedIn",
+        "phone": "Campagne Téléphonique",
+        "multiChannel": "Campagne Multi-Canal"
+      },
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Entrez la description de la campagne",
+      "startDateLabel": "Date de Début",
+      "endDateLabel": "Date de Fin",
+      "targetAudienceLabel": "Audience Cible",
+      "targetAudiencePlaceholder": "Sélectionnez l'audience cible",
+      "targetAudienceOptions": {
+        "all": "Tous les Contacts",
+        "leads": "Pistes",
+        "customers": "Clients",
+        "custom": "Liste Personnalisée"
+      },
+      "templateLabel": "Modèle",
+      "templatePlaceholder": "Sélectionnez un modèle",
+      "templateOptions": {
+        "welcome": "E-mail de Bienvenue",
+        "followUp": "Message de Suivi",
+        "promotion": "Offre Promotionnelle"
+      }
+    },
+    "buttons": {
+      "saveDraft": "Enregistrer comme Brouillon",
+      "createCampaign": "Créer la Campagne"
+    },
+    "addTypeDialog": {
+      "title": "Ajouter un Nouveau Type de Campagne",
+      "valueLabel": "Valeur du Type",
+      "valuePlaceholder": "ex., sms",
+      "labelLabel": "Étiquette du Type",
+      "labelPlaceholder": "ex., Campagne SMS",
+      "iconLabel": "Icône",
+      "iconPlaceholder": "Sélectionnez une icône",
+      "iconOptions": {
+        "mail": "Courrier",
+        "linkedin": "LinkedIn",
+        "phone": "Téléphone",
+        "users": "Utilisateurs"
+      },
+      "addButton": "Ajouter le Type"
+    }
+  },
+  "templatesList": {
+    "header": {
+      "title": "Modèles",
+      "description": "Gérez vos modèles de communication pour différents canaux.",
+      "newButton": "Nouveau Modèle"
+    },
+    "card": {
+      "modifiedLabel": "Modifié le {{date}}"
+    },
+    "types": {
+      "email": "E-mail",
+      "linkedin": "LinkedIn",
+      "phone": "Téléphone"
+    },
+    "mockTemplates": {
+      "emailWelcome": {
+        "name": "E-mail de Bienvenue",
+        "description": "E-mail de bienvenue pour les nouveaux utilisateurs"
+      },
+      "linkedinConnection": {
+        "name": "Demande de Connexion LinkedIn",
+        "description": "Modèle pour les demandes de connexion LinkedIn"
+      },
+      "salesCallScript": {
+        "name": "Script d'Appel Commercial",
+        "description": "Script pour les premiers appels commerciaux"
+      }
+    }
+  },
+  "templateDetailPage": {
+    "notFound": "Modèle introuvable",
+    "buttons": {
+      "edit": "Modifier",
+      "duplicate": "Dupliquer",
+      "delete": "Supprimer"
+    },
+    "contentCard": {
+      "title": "Contenu du Modèle"
+    },
+    "detailsCard": {
+      "title": "Détails du Modèle",
+      "typeLabel": "Type",
+      "lastModifiedLabel": "Dernière Modification",
+      "variablesLabel": "Variables"
+    }
+  },
+  "newTemplatePage": {
+    "header": {
+      "title": "Nouveau Modèle",
+      "description": "Créer un nouveau modèle de communication"
+    },
+    "detailsCard": {
+      "title": "Détails du Modèle"
+    },
+    "form": {
+      "nameLabel": "Nom du Modèle",
+      "namePlaceholder": "Entrez le nom du modèle",
+      "typeLabel": "Type de Modèle",
+      "typePlaceholder": "Sélectionnez le type de modèle",
+      "templateTypes": {
+        "email": "E-mail",
+        "linkedin": "LinkedIn",
+        "phone": "Téléphone"
+      },
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Entrez la description du modèle",
+      "contentLabel": "Contenu du Modèle",
+      "contentPlaceholder": "Entrez le contenu du modèle"
+    },
+    "buttons": {
+      "createTemplate": "Créer le Modèle"
+    },
+    "addTypeDialog": {
+      "title": "Ajouter un Nouveau Type de Modèle",
+      "valueLabel": "Valeur du Type",
+      "valuePlaceholder": "ex., sms",
+      "labelLabel": "Étiquette du Type",
+      "labelPlaceholder": "ex., SMS",
+      "iconLabel": "Icône",
+      "iconPlaceholder": "Sélectionnez une icône",
+      "iconOptions": {
+        "mail": "Courrier",
+        "linkedin": "LinkedIn",
+        "phone": "Téléphone"
+      },
+      "addButton": "Ajouter le Type"
+    }
+  },
+  "bulkSender.header.newButton": "bulkSender.header.newButton"
+}

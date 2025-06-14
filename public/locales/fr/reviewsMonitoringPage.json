@@ -1,0 +1,70 @@
+{
+  "header": {
+    "title": "Surveillance des avis",
+    "subtitle": "Suivez et répondez aux avis clients provenant de diverses plateformes."
+  },
+  "stats": {
+    "newReviewsToday": {
+      "title": "Nouveaux avis aujourd'hui"
+    },
+    "pendingReply": {
+      "title": "En attente de réponse"
+    },
+    "overallSentiment": {
+      "title": "Sentiment général",
+      "positiveSuffix": "% Positif"
+    }
+  },
+  "filters": {
+    "platforms": {
+      "all": "Toutes les plateformes",
+      "google": "Google",
+      "trustpilot": "Trustpilot",
+      "facebook": "Facebook"
+    },
+    "ratings": {
+      "all": "Toutes les notes",
+      "5stars": "5 étoiles",
+      "4stars": "4 étoiles",
+      "3stars": "3 étoiles",
+      "2stars": "2 étoiles",
+      "1star": "1 étoile"
+    },
+    "statuses": {
+      "all": "Tous les statuts",
+      "new": "Nouveau",
+      "viewed": "Vu",
+      "replied": "Répondu",
+      "pendingReply": "En attente de réponse"
+    },
+    "buttons": {
+      "apply": "Appliquer les filtres"
+    }
+  },
+  "reviewCard": {
+    "onPlatform": "sur {{platform}}",
+    "ratingOutOfFive": "({{rating}}/5)",
+    "yourReplyLabel": "Votre réponse :",
+    "statusLabel": "Statut : {{status}}",
+    "links": {
+      "viewOriginal": "Voir l'original"
+    },
+    "buttons": {
+      "reply": "Répondre"
+    }
+  },
+  "sentiment": {
+    "positive": "Positif",
+    "neutral": "Neutre",
+    "negative": "Négatif"
+  },
+  "status": {
+    "new": "Nouveau",
+    "viewed": "Vu",
+    "replied": "Répondu",
+    "pendingReply": "En attente de réponse"
+  },
+  "reviewsList": {
+    "emptyMessage": "Aucun avis à afficher."
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "title": "Compliance Management",
+  "subtitle": "Manage regulatory compliance and data protection",
+  "sections": {
+    "gdpr": "GDPR Compliance",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "dataRetention": "Data Retention"
+  },
+  "gdpr": {
+    "title": "GDPR Compliance",
+    "dataProcessing": "Data Processing",
+    "dataProtection": "Data Protection",
+    "userRights": "User Rights",
+    "dataBreach": "Data Breach Response",
+    "consent": "Consent Management"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "dataCollection": "Data Collection",
+    "dataUsage": "Data Usage",
+    "dataSharing": "Data Sharing",
+    "userChoices": "User Choices",
+    "updates": "Policy Updates"
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "usage": "Usage Terms",
+    "restrictions": "Restrictions",
+    "liability": "Liability",
+    "termination": "Termination",
+    "updates": "Terms Updates"
+  },
+  "dataRetention": {
+    "title": "Data Retention",
+    "policies": "Retention Policies",
+    "schedules": "Retention Schedules",
+    "deletion": "Data Deletion",
+    "archiving": "Data Archiving",
+    "compliance": "Compliance Reports"
+  },
+  "actions": {
+    "save": "Save Changes",
+    "export": "Export Reports",
+    "audit": "Run Audit",
+    "update": "Update Policies"
+  },
+  "messages": {
+    "loading": "Loading compliance settings...",
+    "error": "Error loading compliance settings",
+    "success": "Compliance settings saved successfully",
+    "auditComplete": "Compliance audit completed successfully",
+    "updateSuccess": "Policies updated successfully"
+  },
+  "status": {
+    "compliant": "Compliant",
+    "nonCompliant": "Non-Compliant",
+    "warning": "Warning",
+    "error": "Error"
+  }
+} 

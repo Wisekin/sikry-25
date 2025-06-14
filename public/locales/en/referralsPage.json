@@ -1,0 +1,42 @@
+{
+  "header": {
+    "title": "Referral Program Overview",
+    "subtitle": "Monitor and manage your company's referral program."
+  },
+  "overviewStats": {
+    "totalReferrers": {
+      "title": "Total Referrers",
+      "change": "+10 this month"
+    },
+    "successfulReferrals": {
+      "title": "Successful Referrals",
+      "change": "+30 this month"
+    },
+    "conversionRate": {
+      "title": "Conversion Rate",
+      "change": "-2% vs last month"
+    },
+    "totalRewardsPaid": {
+      "title": "Total Rewards Paid (USD)",
+      "change": "+$500 this month"
+    }
+  },
+  "navLinks": {
+    "myDashboard": {
+      "title": "My Referral Dashboard",
+      "description": "View your personal referral link, track your invites, and see your earned rewards."
+    },
+    "tracking": {
+      "title": "Referral Tracking",
+      "description": "Monitor the status of all referrals, see who signed up, and their progress towards earning rewards."
+    },
+    "rewardsProgram": {
+      "title": "View Rewards Program",
+      "description": "Understand the referral reward structure, eligibility criteria, and how to claim rewards."
+    }
+  },
+  "chart": {
+    "title": "Referrals Over Time",
+    "tooltip": "Referrals: {{count}}"
+  }
+}

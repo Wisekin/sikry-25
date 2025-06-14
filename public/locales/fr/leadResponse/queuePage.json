@@ -1,0 +1,32 @@
+{
+  "title": "File d'attente des réponses aux leads",
+  "subtitle": "Gérer et surveiller les éléments de la file d'attente des réponses aux leads",
+  "error": {
+    "fetchFailed": "Échec de la récupération des données de la file d'attente.",
+    "unknown": "Une erreur inconnue est survenue.",
+    "actionFailed": "Action échouée",
+    "title": "Erreur"
+  },
+  "status": {
+    "pending": "En attente",
+    "retrying": "Nouvel essai",
+    "completed": "Terminé",
+    "failed": "Échoué",
+    "processing": "En traitement"
+  },
+  "tableTitle": "Éléments de la file d'attente",
+  "tableDescription": "Liste des éléments de la file d'attente des réponses aux leads.",
+  "noItems": "Aucun élément trouvé dans la file d'attente.",
+  "tableHeaders": {
+    "leadId": "ID du lead",
+    "ruleTriggered": "Règle déclenchée",
+    "status": "Statut",
+    "queuedAt": "Mis en file",
+    "lastAttempt": "Dernière tentative",
+    "errorMessage": "Message d'erreur"
+  },
+  "actions": {
+    "retry": "Réessayer",
+    "cancel": "Annuler"
+  }
+}

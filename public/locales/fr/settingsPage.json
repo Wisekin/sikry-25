@@ -1,0 +1,188 @@
+{
+  "header": {
+    "title": "Paramètres du Compte",
+    "subtitle": "Gérez le profil et les préférences de votre entreprise"
+  },
+  "overviewCards": {
+    "profile": {
+      "title": "Statut du Profil",
+      "value": "Complet",
+      "description": "Tous les champs remplis"
+    },
+    "security": {
+      "title": "Score de Sécurité",
+      "description": "Sécurité excellente"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "description": "Alertes activées",
+      "valueActive_one": "{{count}} Active",
+      "valueActive_other": "{{count}} Actives"
+    }
+  },
+  "insightsBanner": {
+    "title": "Recommandation de Sécurité",
+    "description": "Activez l'authentification à deux facteurs pour une sécurité renforcée",
+    "buttonText": "Activer Maintenant"
+  },
+  "tabs": {
+    "profile": "Profil",
+    "notifications": "Notifications",
+    "security": "Sécurité",
+    "billing": "Facturation",
+    "integrations": "Intégrations"
+  },
+  "profileTab": {
+    "companyInfo": {
+      "title": "Informations sur l'Entreprise",
+      "companyNameLabel": "Nom de l'Entreprise",
+      "firstNameLabel": "Prénom",
+      "lastNameLabel": "Nom de Famille",
+      "emailLabel": "E-mail Professionnel",
+      "saveButton": "Enregistrer les Modifications"
+    },
+    "preferences": {
+      "title": "Préférences",
+      "timezoneLabel": "Fuseau Horaire",
+      "languageLabel": "Langue",
+      "languageOptions": {
+        "en": "Anglais",
+        "fr": "Français",
+        "de": "Allemand"
+      },
+      "darkModeLabel": "Mode Sombre",
+      "darkModeDescription": "Changer le thème de l'interface",
+      "saveButton": "Enregistrer les Préférences"
+    }
+  },
+  "notificationsTab": {
+    "title": "Préférences de Notification",
+    "email": {
+      "label": "Notifications par E-mail",
+      "description": "Recevoir les notifications par e-mail"
+    },
+    "scraperAlerts": {
+      "label": "Alertes de Scraper",
+      "description": "Être notifié en cas d'échec des scrapers"
+    },
+    "weeklyReports": {
+      "label": "Rapports Hebdomadaires",
+      "description": "Recevoir les résumés de performance hebdomadaires"
+    },
+    "marketingEmails": {
+      "label": "E-mails Marketing",
+      "description": "Recevoir les mises à jour produits et des conseils"
+    },
+    "saveButton": "Enregistrer les Paramètres de Notification"
+  },
+  "securityTab": {
+    "auth": {
+      "title": "Authentification",
+      "currentPasswordLabel": "Mot de Passe Actuel",
+      "newPasswordLabel": "Nouveau Mot de Passe",
+      "confirmPasswordLabel": "Confirmer le Mot de Passe",
+      "twoFactorLabel": "Authentification à Deux Facteurs",
+      "twoFactorDescription": "Ajoutez une sécurité supplémentaire à votre compte",
+      "updateButton": "Mettre à Jour la Sécurité"
+    },
+    "apiAccess": {
+      "title": "Accès API",
+      "productionKeyLabel": "Clé de Production",
+      "productionKeyDescription": "Utilisez cette clé dans votre environnement de production",
+      "developmentKeyLabel": "Clé de Développement",
+      "developmentKeyDescription": "Utiliser pour les tests et le développement",
+      "generateNewKeyButton": "Générer une Nouvelle Clé"
+    }
+  },
+  "billingTab": {
+    "subscription": {
+      "title": "Plan d'Abonnement",
+      "planNameProfessional": "Professionnel",
+      "priceSuffixPerMonth": "/mois",
+      "profilesLimitText": "Jusqu'à {{count}} profils d'entreprise",
+      "nextBillingDateLabel": "Prochaine date de facturation :",
+      "usageThisMonthLabel": "Utilisation ce mois-ci :",
+      "upgradeButton": "Mettre à Niveau le Plan"
+    },
+    "paymentMethod": {
+      "title": "Moyen de Paiement",
+      "expiresLabel": "Expire le {{date}}",
+      "updateButton": "Mettre à Jour le Moyen de Paiement",
+      "downloadInvoicesButton": "Télécharger les Factures"
+    }
+  },
+  "integrationsTab": {
+    "connectedServices": {
+      "title": "Services Connectés",
+      "linkedIn": "LinkedIn",
+      "salesforce": "Salesforce",
+      "hubspot": "HubSpot"
+    },
+    "webhook": {
+      "title": "Configuration du Webhook",
+      "endpointUrlLabel": "URL du Point de Terminaison",
+      "eventsToSendLabel": "Événements à envoyer",
+      "eventCompanyFound": "Entreprise trouvée",
+      "eventScraperCompleted": "Scraper terminé",
+      "eventCampaignSent": "Campagne envoyée",
+      "saveButton": "Enregistrer la Configuration"
+    }
+  },
+  "parametersPage": {
+    "general": {
+      "title": "Paramètres Généraux",
+      "description": "Configurer le comportement général et les préférences de la plateforme",
+      "defaultView": {
+        "label": "Vue par Défaut",
+        "placeholder": "Sélectionner la vue par défaut",
+        "options": {
+          "list": "Vue Liste",
+          "grid": "Vue Grille",
+          "map": "Vue Carte"
+        }
+      },
+      "language": {
+        "label": "Langue",
+        "placeholder": "Sélectionner la langue",
+        "options": {
+          "en": "Anglais",
+          "fr": "Français"
+        }
+      },
+      "exportFormat": {
+        "label": "Format d'Exportation",
+        "placeholder": "Sélectionner le format d'exportation",
+        "options": {
+          "csv": "CSV",
+          "xlsx": "Excel (XLSX)",
+          "json": "JSON"
+        }
+      },
+      "dataRetention": {
+        "label": "Rétention des Données (jours)"
+      },
+      "autoRefresh": {
+        "label": "Actualisation Automatique des Données",
+        "description": "Actualiser automatiquement les données toutes les 5 minutes"
+      },
+      "enableNotifications": {
+        "label": "Activer les Notifications",
+        "description": "Recevoir des notifications pour les événements importants"
+      },
+      "darkMode": {
+        "label": "Mode Sombre",
+        "description": "Utiliser le thème sombre pour l'interface"
+      }
+    },
+    "api": {
+      "title": "Paramètres API",
+      "description": "Configurer l'utilisation et les limites de l'API",
+      "requestLimit": {
+        "label": "Limite de Requêtes API (par jour)"
+      }
+    },
+    "buttons": {
+      "save": "Enregistrer les Paramètres"
+    }
+  }
+}

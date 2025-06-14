@@ -1,0 +1,31 @@
+{
+  "fieldDetector": {
+    "title": "Détecteur de champs IA",
+    "description": "Détectez et extrayez automatiquement les champs de données des pages Web",
+    "detectedFields": "Champs détectés"
+  },
+  "selectorTester": {
+    "title": "Testeur de sélecteur CSS",
+    "description": "Testez les sélecteurs CSS sur des pages Web en direct",
+    "targetUrl": "URL cible",
+    "cssSelector": "Sélecteur CSS",
+    "testResults": "Résultats du test"
+  },
+  "aiSelector": {
+    "title": "Générateur de sélecteur IA",
+    "description": "Décrivez ce que vous souhaitez extraire et laissez l'IA générer des sélecteurs CSS",
+    "prompt": "Décrivez les données que vous souhaitez extraire",
+    "generatedSelectors": "Sélecteurs générés"
+  },
+  "v2ScraperEditor": {
+    "title": "Éditeur de scraper V2",
+    "description": "Configurez et gérez votre scraper V2.",
+    "scraperName": "Nom du scraper",
+    "targetUrlPattern": "Modèle d'URL cible",
+    "aiInstructions": "Instructions pour l'IA"
+  },
+  "scrapePreview": {
+    "title": "Aperçu du scrape",
+    "description": "Prévisualisez les données extraites avant d'exécuter le scrape complet"
+  }
+}

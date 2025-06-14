@@ -1,0 +1,58 @@
+{
+  "header": {
+    "title": "VSL Performance Tracking",
+    "subtitle": {
+      "loading": "Loading VSL performance data...",
+      "default": "Analyze views, engagement, and conversions for your VSLs.",
+      "error": "Error"
+    }
+  },
+  "filters": {
+    "vslPageLabel": "VSL Page:",
+    "vslPagePlaceholder": "Select VSL Page",
+    "vslPageAll": "All VSL Pages",
+    "periodLabel": "Period:",
+    "periodPlaceholder": "Select Period",
+    "periods": {
+      "last7days": "Last 7 Days",
+      "last30days": "Last 30 Days",
+      "last3months": "Last 3 Months",
+      "allTime": "All Time"
+    }
+  },
+  "stats": {
+    "totalViews": "Total Views",
+    "totalLeads": "Total Leads",
+    "conversionRate": "Conversion Rate",
+    "avgWatchTime": "Avg. Watch Time"
+  },
+  "chart": {
+    "titlePrefix": "Performance Over Time for",
+    "defaultTitleSuffix": "Selected VSL",
+    "labels": {
+      "views": "Views",
+      "leads": "Leads",
+      "convRate": "Conv. Rate (%)"
+    },
+    "yAxis": {
+      "leftLabel": "Views/Leads",
+      "rightLabel": "Conv. Rate (%)"
+    }
+  },
+  "table": {
+    "title": "Performance by VSL Page",
+    "headers": {
+      "vslTitle": "VSL Title",
+      "views": "Views",
+      "leads": "Leads",
+      "convRate": "Conv. Rate (%)"
+    }
+  },
+  "error": {
+    "loadFailedTitle": "Could not load VSL tracking data",
+    "tryAgainButton": "Try Again"
+  },
+  "emptyState": {
+    "noData": "No VSL tracking data available for the selected filters."
+  }
+}

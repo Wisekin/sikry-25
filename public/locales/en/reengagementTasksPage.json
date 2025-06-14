@@ -1,0 +1,54 @@
+{
+  "header": {
+    "title": "Re-engagement Tasks",
+    "subtitle": "Manage and track your re-engagement activities."
+  },
+  "metrics": {
+    "openTasks": {
+      "title": "Open Tasks",
+      "change": "+3 today"
+    },
+    "completedToday": {
+      "title": "Completed Today"
+    },
+    "overdueTasks": {
+      "title": "Overdue Tasks",
+      "change": "{{count}} urgent"
+    }
+  },
+  "taskList": {
+    "title": "Task List",
+    "buttons": {
+      "filter": "Filter",
+      "createNew": "Create New Task"
+    },
+    "table": {
+      "headers": {
+        "description": "Description",
+        "leadSegment": "Lead/Segment",
+        "assignedTo": "Assigned To",
+        "dueDate": "Due Date",
+        "priority": "Priority",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "body": {
+        "notApplicable": "N/A",
+        "unassigned": "Unassigned"
+      },
+      "emptyMessage": "No tasks found."
+    },
+    "status": {
+      "open": "Open",
+      "inProgress": "In Progress",
+      "completed": "Completed",
+      "overdue": "Overdue"
+    },
+    "priority": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    }
+  },
+  "taskList.status.inprogress": "taskList.status.inprogress"
+}

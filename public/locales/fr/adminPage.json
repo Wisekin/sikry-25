@@ -1,0 +1,137 @@
+{
+  "header": {
+    "title": "Tableau de Bord Admin",
+    "subtitle": "Supervisez et gérez les paramètres et opérations de la plateforme.",
+    "button": "Paramètres Globaux"
+  },
+  "detailedSections": {
+    "button": "Voir les Sections Détaillées"
+  },
+  "tabs": {
+    "users": "Utilisateurs",
+    "security": "Sécurité",
+    "billing": "Facturation",
+    "users_content": {
+      "title": "Aperçu de la Gestion des Utilisateurs",
+      "description": "Visualisez les statistiques des utilisateurs et gérez les rôles."
+    },
+    "security_content": {
+      "title": "Configuration de la Sécurité",
+      "description": "Configurez les politiques de sécurité et surveillez les menaces."
+    },
+    "billing_content": {
+      "title": "Facturation et Abonnements",
+      "description": "Gérez les abonnements et visualisez l'historique de facturation."
+    }
+  },
+  "quickStats": {
+    "totalUsers": {
+      "title": "Utilisateurs Totals",
+      "change": "+2 cette semaine"
+    },
+    "monthlyUsage": {
+      "title": "Utilisation Mensuelle",
+      "description": "Consommation des ressources de la plateforme"
+    },
+    "complianceScore": {
+      "title": "Score de Conformité",
+      "description": "Adhésion à la protection des données"
+    },
+    "systemHealth": {
+      "title": "Santé du Système",
+      "description": "État opérationnel global"
+    }
+  },
+  "adminSections": {
+    "title": "Sections Admin",
+    "description": "Naviguez vers des zones administratives spécifiques."
+  },
+  "sections": {
+    "teamManagement": {
+      "title": "Gestion d'Équipe",
+      "description": "Gérez les membres de l'équipe et leurs rôles."
+    },
+    "billingUsage": {
+      "title": "Facturation & Utilisation",
+      "description": "Surveillez la facturation et l'utilisation de la plateforme."
+    },
+    "securitySettings": {
+      "title": "Paramètres de Sécurité",
+      "description": "Configurez les paramètres de sécurité."
+    },
+    "compliance": {
+      "title": "Conformité & Rapports",
+      "description": "Gérez la conformité et générez des rapports."
+    },
+    "users": {
+      "title": "Gestion des utilisateurs",
+      "placeholder": "Le contenu de la gestion des utilisateurs sera affiché ici."
+    },
+    "monitoring": {
+      "title": "Surveillance du système",
+      "placeholder": "Le contenu de la surveillance du système sera affiché ici."
+    },
+    "antiSpam": {
+      "title": "Règles anti-spam",
+      "placeholder": "Le contenu des règles anti-spam sera affiché ici."
+    }
+  },
+  "recentActivity": {
+    "title": "Activité Récente",
+    "button": "Voir le Journal d'Activité Complet",
+    "actions": {
+      "updatedPermissions": "a mis à jour les permissions pour '{{user}}'.",
+      "completedScan": "a terminé son analyse de sécurité quotidienne.",
+      "updatedBilling": "a mis à jour l'adresse de facturation de l'entreprise.",
+      "detectedRisk": "a détecté une tentative de connexion à haut risque."
+    }
+  },
+  "systemStatus": {
+    "title": "Aperçu de l'État du Système",
+    "description": "Métriques en temps réel des performances de la plateforme."
+  },
+  "systemMetrics": {
+    "api": {
+      "name": "Réponse API"
+    },
+    "cpu": {
+      "name": "Charge CPU"
+    },
+    "memory": {
+      "name": "Utilisation Mémoire"
+    },
+    "errors": {
+      "name": "Taux d'Erreur"
+    }
+  },
+  "customTooltip": {
+    "msUnit": "ms",
+    "percentageUnit": "%"
+  },
+  "legacyTabs": {
+    "overview": "Aperçu",
+    "compliance": "Conformité",
+    "monitoring": "Surveillance",
+    "team": "Équipe"
+  },
+  "legacyStats": {
+    "totalUsers": "Utilisateurs totals",
+    "activeSubscriptions": "Abonnements actifs",
+    "securityAlerts": "Alertes de sécurité",
+    "complianceStatus": "État de conformité"
+  },
+  "legacyMetrics": {
+    "title": "Métriques de la plateforme",
+    "description": "Indicateurs de performance en temps réel.",
+    "apiLatency": "Latence de l'API",
+    "userGrowth": "Croissance des utilisateurs",
+    "spamRate": "Taux de détection de spam"
+  },
+  "legacyHealth": {
+    "title": "Santé du système",
+    "description": "État en direct des services principaux."
+  },
+  "legacyActions": {
+    "title": "Actions rapides"
+  }
+}

@@ -1,0 +1,165 @@
+{
+  "title": "Market Intelligence",
+  "subtitle": "Comprehensive market analysis and competitor insights",
+  "cards": {
+    "marketSize": {
+      "title": "Market Size",
+      "value": "$2.5B",
+      "growth": "+15% YoY"
+    },
+    "keyPlayers": {
+      "title": "Key Players",
+      "count": "12",
+      "description": "Major competitors identified"
+    },
+    "leadScore": {
+      "title": "Lead Score",
+      "score": "85",
+      "improvement": "+5 points this month"
+    },
+    "opportunities": {
+      "title": "Opportunities",
+      "count": "8",
+      "description": "High-potential segments"
+    }
+  },
+  "banner": {
+    "title": "Market Insights",
+    "description": "New market trends and opportunities identified",
+    "button": "View Report"
+  },
+  "sections": {
+    "competitorLandscape": {
+      "title": "Competitor Landscape",
+      "description": "Analysis of key market players and their positioning"
+    },
+    "relationshipMapping": {
+      "title": "Relationship Mapping",
+      "description": "Visual representation of market connections"
+    },
+    "leadScoring": {
+      "title": "Lead Scoring",
+      "description": "Evaluation of potential market opportunities"
+    },
+    "marketTrends": {
+      "title": "Market Trends",
+      "description": "Growth analysis by sector"
+    }
+  },
+  "sectors": {
+    "fintech": {
+      "name": "FinTech",
+      "growth": "+25%"
+    },
+    "healthtech": {
+      "name": "HealthTech",
+      "growth": "+20%"
+    },
+    "saas": {
+      "name": "SaaS",
+      "growth": "+15%"
+    },
+    "ecommerce": {
+      "name": "E-commerce",
+      "growth": "+10%"
+    }
+  },
+  "competitorMatrix": {
+    "title": "Competitor Analysis",
+    "description": "Detailed comparison of key market players",
+    "export": "Export Data",
+    "tableHeaders": {
+      "company": "Company",
+      "marketShare": "Market Share",
+      "growth": "Growth",
+      "funding": "Funding",
+      "employees": "Employees",
+      "score": "Score",
+      "threatLevel": "Threat Level"
+    },
+    "threatLevels": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "competitors": {
+      "competitorA": {
+        "name": "Competitor A",
+        "funding": "$50M",
+        "employees": "200-500"
+      },
+      "competitorB": {
+        "name": "Competitor B",
+        "funding": "$25M",
+        "employees": "100-200"
+      },
+      "competitorC": {
+        "name": "Competitor C",
+        "funding": "$75M",
+        "employees": "500+"
+      }
+    }
+  },
+  "insightsBanner": {
+    "title": "Market Opportunity Alert",
+    "description": "Fintech sector showing 23% growth potential - 42 high-value targets identified",
+    "button": "Explore Opportunities"
+  },
+  "relationshipGraph": {
+    "title": "Company Relationship Graph",
+    "description": "Visualize connections and partnerships",
+    "placeholder": {
+      "title": "Interactive relationship graph will be available in the next update.",
+      "description": "Force-directed visualization of company connections and partnerships."
+    },
+    "buttons": {
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "reset": "Reset view"
+    }
+  },
+  "leadScoringCard": {
+    "title": "Lead Scoring",
+    "description": "AI-powered lead qualification and prioritization",
+    "leads": [
+      {
+        "company": "TechFlow Solutions",
+        "factors": [
+          "High engagement",
+          "Perfect fit",
+          "Budget confirmed"
+        ]
+      },
+      {
+        "company": "Alpine Marketing",
+        "factors": [
+          "Good fit",
+          "Active interest",
+          "Timeline unclear"
+        ]
+      },
+      {
+        "company": "SwissFintech",
+        "factors": [
+          "Strong potential",
+          "Decision maker engaged",
+          "Competitor evaluation"
+        ]
+      }
+    ]
+  },
+  "competitorMatrix.title": "competitorMatrix.title",
+  "relationshipGraph.title": "relationshipGraph.title",
+  "leadScoringCard.title": "leadScoringCard.title",
+  "leadScoringCard.description": "leadScoringCard.description",
+  "cards.keyPlayers.title": "cards.keyPlayers.title",
+  "cards.keyPlayers.count": "cards.keyPlayers.count",
+  "cards.keyPlayers.description": "cards.keyPlayers.description",
+  "cards.leadScore.score": "cards.leadScore.score",
+  "cards.leadScore.improvement": "cards.leadScore.improvement",
+  "cards.opportunities.count": "cards.opportunities.count",
+  "cards.opportunities.description": "cards.opportunities.description",
+  "banner.title": "banner.title",
+  "banner.description": "banner.description",
+  "banner.button": "banner.button"
+}

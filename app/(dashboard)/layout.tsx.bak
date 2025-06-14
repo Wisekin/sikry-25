@@ -1,0 +1,57 @@
+import type React from "react"
+import { TranslationProvider } from "@/providers/TranslationProvider";
+import { SidebarNav } from "@/components/core/navigation/SidebarNav";
+import { TopNav } from "@/components/core/navigation/TopNav";
+import { ThemeProvider } from "@/providers/ThemeProvider";
+import { AuthProvider } from "@/providers/AuthProvider";
+import SupabaseProvider from "@/providers/SupabaseProvider";
+import "../globals.css"; // Should be at the top
+import { Logo } from "@/components/core/branding/Logo";
+
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <SupabaseProvider>
+      <AuthProvider>
+  <SupabaseProvider>
+    <AuthProvider>
+      <TranslationProvider>
+        <div className="min-h-screen bg-background">
+          <div className="flex h-screen overflow-hidden">
+        {/* Full-height Sidebar with fixed header/footer */}
+        <div className="hidden md:flex md:w-64 flex-col h-full bg-sidebar border-r">
+          {/* Fixed Sidebar Header */}
+       
+          
+          {/* Scrollable Sidebar Content */}
+          <div className="flex-1 overflow-y-auto">
+            <SidebarNav />
+          </div>
+          
+      
+        </div>
+
+        {/* Main content area */}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          {/* TopNav that aligns with sidebar header */}
+          <div className="h-16 flex-shrink-0 bg-background border-b">
+            <TopNav />
+          </div>
+          
+          {/* Scrollable main content */}
+          <main className="flex-1 overflow-y-auto bg-background pt-8">
+            <ThemeProvider attribute="class" defaultTheme="brand" enableSystem>
+              <div className="flex-grow ml-5 mr-5">
+                {children}
+              </div>
+            </ThemeProvider>
+          </main>
+        </div>
+      </div>
+    </div>
+  </TranslationProvider>
+)
+}

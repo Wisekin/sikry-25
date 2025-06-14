@@ -1,0 +1,115 @@
+{
+  "title": "Entreprises",
+  "listTitle": "Liste des Entreprises",
+  "importButton": "Importer",
+  "exportButton": "Exporter",
+  "addNewButton": "Ajouter une Nouvelle Entreprise",
+  "filters": {
+    "title": "Filtres",
+    "searchPlaceholder": "Rechercher par nom ou domaine...",
+    "selectIndustryPlaceholder": "Sélectionner l'industrie",
+    "industries": {
+      "all": "Toutes les industries",
+      "technology": "Technologie",
+      "marketing": "Marketing",
+      "finance": "Finance"
+    },
+    "employeesSuffix": "employés"
+  },
+  "tableHeaders": {
+    "name": "Nom",
+    "domain": "Domaine",
+    "industry": "Industrie",
+    "location": "Emplacement",
+    "size": "Taille",
+    "confidence": "Confiance",
+    "status": "Statut"
+  },
+  "noResults": {
+    "title": "Aucune Entreprise Trouvée",
+    "description": "Essayez d'ajuster vos critères de recherche ou de filtre."
+  },
+  "confidencePercentage": "{{value}} %",
+  "companySizeValue": "{{count}} employés",
+  "detailsView": {
+    "loadingText": "Chargement des détails de l'entreprise...",
+    "notFound": {
+      "title": "Entreprise introuvable",
+      "description": "L'entreprise que vous recherchez n'existe pas ou n'a pas pu être chargée."
+    },
+    "goBackToListButton": "Retour à la liste des entreprises"
+  },
+  "tabs": {
+    "overview": {
+      "title": "Aperçu",
+      "extractedData": {
+        "title": "Données Extraites",
+        "description": "Informations détectées automatiquement avec scores de confiance.",
+        "emailAddressesTitle": "Adresses E-mail",
+        "phoneNumbersTitle": "Numéros de Téléphone",
+        "technologiesTitle": "Technologies"
+      },
+      "dataQualityMetrics": {
+        "title": "Métrique de Qualité des Données",
+        "description": "Performance historique de l'extraction de données.",
+        "overallConfidenceLabel": "Confiance Globale",
+        "dataCompletenessLabel": "Complétude des Données",
+        "sourceReliabilityLabel": "Fiabilité des Sources",
+        "scrapingHistoryTitle": "Historique de Scraping",
+        "fieldsFoundText_one": "{{count}} champ",
+        "fieldsFoundText_other": "{{count}} champs",
+        "percentageValue": "{{value}} %"
+      }
+    },
+    "engagement": "Engagement",
+    "insights": {
+      "tabTitle": "Perspectives",
+      "title": "Perspectives Générées par IA",
+      "description": "Analyse intelligente des données de l'entreprise et de sa position sur le marché.",
+      "comingSoon": {
+        "title": "Perspectives IA Bientôt Disponibles",
+        "description": "L'intelligence marché avancée et l'analyse concurrentielle seront disponibles dans la prochaine mise à jour."
+      }
+    },
+    "configuration": {
+      "tabTitle": "Configuration",
+      "title": "Configuration du Scraping",
+      "description": "Personnalisez les paramètres d'extraction de données et de détection de champs.",
+      "autoDetection": {
+        "title": "Paramètres de Détection Automatique",
+        "emailLabel": "Détection d'E-mails",
+        "phoneLabel": "Détection de Téléphones",
+        "techStackLabel": "Détection de la Stack Technologique",
+        "socialMediaLabel": "Détection des Médias Sociaux"
+      },
+      "confidenceThresholds": {
+        "title": "Seuils de Confiance",
+        "minScoreLabel": "Score de Confiance Minimum"
+      },
+      "buttons": {
+        "save": "Enregistrer la Configuration",
+        "resetToDefaults": "Réinitialiser aux Valeurs par Défaut"
+      }
+    }
+  },
+  "search.filters.label": "search.filters.label",
+  "search.placeholder": "search.placeholder",
+  "search.filters.allIndustries": "search.filters.allIndustries",
+  "search.filters.softwareDev": "search.filters.softwareDev",
+  "search.filters.marketing": "search.filters.marketing",
+  "search.filters.fintech": "search.filters.fintech",
+  "companies.title": "companies.title",
+  "pagination.showing": "pagination.showing",
+  "pagination.of": "pagination.of",
+  "companies.name": "companies.name",
+  "companies.domain": "companies.domain",
+  "companies.industry": "companies.industry",
+  "companies.location": "companies.location",
+  "companies.size": "companies.size",
+  "companies.confidence": "companies.confidence",
+  "companies.status": "companies.status",
+  "common.actions": "common.actions",
+  "search.noResults.title": "search.noResults.title",
+  "search.noResults.description": "search.noResults.description",
+  "common.loading": "common.loading"
+}

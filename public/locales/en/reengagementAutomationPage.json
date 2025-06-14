@@ -1,0 +1,54 @@
+{
+  "header": {
+    "title": "Re-engagement Automation",
+    "subtitle": "Set up and manage automated workflows to re-engage leads."
+  },
+  "metrics": {
+    "activeRules": {
+      "title": "Active Automation Rules",
+      "change": "Total {{count}} rules"
+    },
+    "leadsProcessed": {
+      "title": "Leads Processed Today (Auto)"
+    },
+    "automatedConversions": {
+      "title": "Automated Re-engagements",
+      "change": "+3 this week"
+    }
+  },
+  "list": {
+    "title": "Automation Rule List",
+    "buttons": {
+      "createNew": "Create New Rule"
+    },
+    "emptyMessage": "No automation rules configured."
+  },
+  "ruleCard": {
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "buttons": {
+      "deactivate": {
+        "tooltip": "Deactivate"
+      },
+      "activate": {
+        "tooltip": "Activate"
+      },
+      "edit": {
+        "tooltip": "Edit Rule"
+      },
+      "delete": {
+        "tooltip": "Delete Rule"
+      }
+    },
+    "triggerLabel": "Trigger:",
+    "actionsLabel": "Actions:",
+    "performance": {
+      "label": "Performance:",
+      "emailsSent": "Emails Sent: {{count}}",
+      "openRate": "Open Rate: {{rate}}%",
+      "clickRate": "Click Rate: {{rate}}%"
+    }
+  }
+}

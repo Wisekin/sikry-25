@@ -1,0 +1,47 @@
+{
+  "title": "Data Collection Trends",
+  "subtitle": "Analyze trends in data acquisition over time",
+  "loading": {
+    "title": "Data Collection Trends",
+    "subtitle": "Loading trend data..."
+  },
+  "error": {
+    "title": "Could not load data",
+    "tryAgain": "Try Again"
+  },
+  "metrics": {
+    "newRecords": {
+      "title": "New Records This Period",
+      "value": "{{count}}"
+    },
+    "avgDaily": {
+      "title": "Avg Daily Collection",
+      "value": "{{count}}"
+    },
+    "peakCollection": {
+      "title": "Peak Collection",
+      "value": "{{count}} (on {{date}})"
+    }
+  },
+  "chart": {
+    "title": "Collection Volume Over Time",
+    "noData": "No trend data available for the selected filters",
+    "periods": {
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly"
+    },
+    "dateRange": {
+      "from": "From",
+      "to": "to"
+    },
+    "tooltip": {
+      "records": "Records Collected"
+    }
+  },
+  "filters": {
+    "period": "Select Period",
+    "startDate": "Start Date",
+    "endDate": "End Date"
+  }
+} 

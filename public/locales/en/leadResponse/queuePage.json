@@ -1,0 +1,32 @@
+{
+  "title": "Lead Response Queue",
+  "subtitle": "Manage and monitor lead response queue items",
+  "error": {
+    "fetchFailed": "Failed to fetch queue data.",
+    "unknown": "An unknown error occurred.",
+    "actionFailed": "Action failed",
+    "title": "Error"
+  },
+  "status": {
+    "pending": "Pending",
+    "retrying": "Retrying",
+    "completed": "Completed",
+    "failed": "Failed",
+    "processing": "Processing"
+  },
+  "tableTitle": "Queue Items",
+  "tableDescription": "List of lead response queue items.",
+  "noItems": "No queue items found.",
+  "tableHeaders": {
+    "leadId": "Lead ID",
+    "ruleTriggered": "Rule Triggered",
+    "status": "Status",
+    "queuedAt": "Queued At",
+    "lastAttempt": "Last Attempt",
+    "errorMessage": "Error Message"
+  },
+  "actions": {
+    "retry": "Retry",
+    "cancel": "Cancel"
+  }
+}

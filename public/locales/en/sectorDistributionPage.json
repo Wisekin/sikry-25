@@ -1,0 +1,56 @@
+{
+  "title": "Sector Distribution",
+  "subtitle": "Analyze the distribution of companies across different business sectors and industries.",
+  "loading": {
+    "title": "Loading sector data...",
+    "subtitle": "Please wait while we fetch the distribution data."
+  },
+  "error": {
+    "title": "Could not load data",
+    "tryAgain": "Try Again"
+  },
+  "metrics": {
+    "totalSectors": {
+      "title": "Total Sectors",
+      "value": "{{count}} sectors"
+    },
+    "topSector": {
+      "title": "Top Sector",
+      "value": "{{sector}} ({{count}} companies)"
+    },
+    "sectorDiversity": {
+      "title": "Sector Diversity",
+      "value": "{{percentage}}% unique sectors"
+    }
+  },
+  "chart": {
+    "title": "Sector Distribution",
+    "noData": "No sector data available for the selected filters.",
+    "sectors": {
+      "technology": "Technology",
+      "healthcare": "Healthcare",
+      "finance": "Finance",
+      "manufacturing": "Manufacturing",
+      "retail": "Retail",
+      "energy": "Energy",
+      "telecommunications": "Telecommunications",
+      "transportation": "Transportation",
+      "construction": "Construction",
+      "agriculture": "Agriculture",
+      "other": "Other"
+    },
+    "tooltip": {
+      "companies": "{{count}} companies",
+      "percentage": "{{percentage}}% of total",
+      "growth": "{{growth}}% growth"
+    }
+  },
+  "filters": {
+    "sector": "Sector",
+    "industry": "Industry",
+    "minCompanies": "Minimum Companies",
+    "growthRate": "Minimum Growth Rate",
+    "apply": "Apply Filters",
+    "clear": "Clear Filters"
+  }
+} 

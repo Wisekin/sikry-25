@@ -1,0 +1,90 @@
+{
+  "header": {
+    "defaultProgramName": "Our Awesome Referral Program",
+    "subtitle": "Learn about the rewards you can earn by referring friends."
+  },
+  "metrics": {
+    "referrerRewardStandard": {
+      "title": "Referrer Reward (Standard)"
+    },
+    "refereeRewardStandard": {
+      "title": "Referee Reward (Standard)"
+    },
+    "friendsToInvite": {
+      "title": "Friends To Invite",
+      "value": "Unlimited"
+    }
+  },
+  "howItWorks": {
+    "title": "How It Works",
+    "defaultSummary": "Invite your friends to join us! When they sign up and make their first qualifying action (like a purchase or subscription), you both get rewarded. It's a win-win!"
+  },
+  "rewardDetails": {
+    "title": "Reward Details",
+    "tier": {
+      "referrerLabel": "You Get:",
+      "refereeLabel": "Your Friend Gets:",
+      "conditionsLabel": "Conditions:"
+    },
+    "tiers": [
+      {
+        "id": "tier_standard_cash",
+        "name": "Standard Cash Reward",
+        "description": "For each friend who signs up for a paid plan and remains a customer for 30 days.",
+        "rewardForReferrer": "$50 USD Credit",
+        "rewardForReferee": "$25 USD Discount on first order",
+        "conditions": [
+          "Referred friend must be a new customer.",
+          "Referred friend must subscribe to any paid plan.",
+          "Referred friend must complete their first billing cycle (if applicable).",
+          "Referral link must be used for signup."
+        ]
+      },
+      {
+        "id": "tier_enterprise_bonus",
+        "name": "Enterprise Client Bonus",
+        "description": "If your referred friend signs up for an Enterprise level plan.",
+        "rewardForReferrer": "$200 USD Bonus Credit",
+        "rewardForReferee": "10% off first year of Enterprise plan",
+        "conditions": [
+          "All Standard Reward conditions apply.",
+          "Referred friend must sign an annual Enterprise contract."
+        ]
+      }
+    ]
+  },
+  "eligibility": {
+    "title": "Eligibility Criteria",
+    "notes": [
+      "This program is open to all registered users.",
+      "Rewards are subject to verification and may be adjusted or revoked if fraudulent activity is detected.",
+      "Self-referrals are not permitted.",
+      "The terms of this program may be updated at any time."
+    ]
+  },
+  "claiming": {
+    "title": "Claiming Your Rewards",
+    "defaultInfo": "Referrer rewards (account credits) are typically applied to your account within 7-10 business days after your referred friend meets all eligibility criteria. Referee discounts are applied automatically at their first checkout when using the referral link."
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "items": [
+      {
+        "question": "How many friends can I refer?",
+        "answer": "There's no limit! The more friends you successfully refer, the more rewards you can earn."
+      },
+      {
+        "question": "When will I see my reward credit?",
+        "answer": "Usually within 7-10 business days after your friend meets the conditions, like completing their first billing cycle."
+      },
+      {
+        "question": "Can I refer someone who has used our service before?",
+        "answer": "No, the referral program is designed for new customers only."
+      },
+      {
+        "question": "What happens if my friend forgets to use my link?",
+        "answer": "Unfortunately, the referral must be tracked through your unique link to qualify for rewards."
+      }
+    ]
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "header": {
+    "title": "System Monitoring",
+    "description": "Monitor system health, alerts, and performance metrics.",
+    "refreshButton": "Refresh Data"
+  },
+  "overview": {
+    "systemStatus": {
+      "title": "System Status",
+      "value": "Operational",
+      "description": "All systems normal"
+    },
+    "activeAlerts": {
+      "title": "Active Alerts",
+      "description": "Critical issues needing attention"
+    },
+    "notifications": {
+      "title": "Recent Notifications",
+      "description": "System events and updates"
+    },
+    "mainContent": {
+      "title": "Monitoring Overview",
+      "description": "Dashboard for current system status and key metrics."
+    }
+  },
+  "alerts": {
+    "title": "Alerts Log",
+    "description": "View and manage system alerts.",
+    "noAlerts": "No recent alerts to display.",
+    "type": "Type",
+    "message": "Message",
+    "timestamp": "Timestamp",
+    "severity": "Severity"
+  },
+  "metrics": {
+    "title": "Performance Metrics",
+    "description": "Detailed system performance indicators.",
+    "cpuUsage": "CPU Usage",
+    "memoryUsage": "Memory Usage",
+    "diskUsage": "Disk Usage",
+    "networkTraffic": "Network Traffic"
+  },
+  "legacyPageTitle": "System Monitoring", 
+  "legacyPageDescription": "Monitor system health and performance metrics.", 
+  "legacySystemStatus": { 
+    "title": "System Status",
+    "status": "Status",
+    "uptime": "Uptime",
+    "version": "Version",
+    "lastUpdated": "Last Updated"
+  },
+  "logs": {
+    "title": "System Logs",
+    "noLogs": "No logs to display.",
+    "level": "Level",
+    "message": "Message",
+    "timestamp": "Timestamp"
+  }
+}

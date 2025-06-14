@@ -1,0 +1,74 @@
+{
+  "header": {
+    "title": "Enterprise Analytics Dashboard",
+    "subtitle": "Monitor key metrics, track performance, and gain valuable insights into your business operations."
+  },
+  "keyMetrics": {
+    "totalCompanies": "Total Companies",
+    "companiesThisMonth": "+{{count}} this month",
+    "activeScrapers": "Active Scrapers",
+    "lastRun": "Last run: {{time}}",
+    "campaigns": "Campaigns",
+    "deliveryRate": "{{rate}}% delivery rate",
+    "dataQuality": "Data Quality",
+    "qualityIncrease": "+{{percent}}% from last month"
+  },
+  "charts": {
+    "collectionTrends": "Collection Trends",
+    "sectorAnalysis": "Sector Analysis",
+    "performanceMetrics": "Performance Metrics",
+    "companiesAdded": "Companies Added",
+    "distribution": "Distribution",
+    "qualityScore": "Data Quality Score"
+  },
+  "actions": {
+    "expand": "Expand",
+    "collapse": "Collapse"
+  },
+  "tables": {
+    "topSources": "Top Performing Sources:",
+    "dataSourcePerformance": "Data Source Performance",
+    "source": "Source",
+    "records": "Records",
+    "quality": "Quality",
+    "status": "Status",
+    "linkedinScraper": "LinkedIn Scraper",
+    "companyWebsites": "Company Websites",
+    "publicDirectories": "Public Directories",
+    "apiIntegrations": "API Integrations",
+    "active": "Active",
+    "monitoring": "Monitoring",
+    "needsAttention": "Needs Attention"
+  },
+  "tabs": {
+    "overview": "Overview",
+    "performance": "Performance",
+    "dataSources": "Data Sources",
+    "quality": "Quality",
+    "dataCollectionSummary": "Data Collection Summary",
+    "totalRecords": "Total Records",
+    "thisMonth": "This Month",
+    "successRate": "Success Rate",
+    "topIndustries": "Top Industries",
+    "technology": "Technology",
+    "finance": "Finance",
+    "healthcare": "Healthcare",
+    "regionalDistribution": "Regional Distribution",
+    "dach": "DACH Region",
+    "eu": "EU",
+    "global": "Global",
+    "uptime": "Uptime",
+    "avgResponse": "Avg Response",
+    "errorRate": "Error Rate"
+  },
+  "qualityBreakdown": {
+    "title": "Data Quality Breakdown",
+    "subtitle": "An overview of the core data quality dimensions.",
+    "completeness": "Completeness",
+    "accuracy": "Accuracy",
+    "consistency": "Consistency",
+    "timeliness": "Timeliness",
+    "uniqueness": "Uniqueness",
+    "validity": "Validity"
+  }
+}

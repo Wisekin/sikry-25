@@ -1,0 +1,90 @@
+{
+  "header": {
+    "defaultProgramName": "Notre Super Programme de Parrainage",
+    "subtitle": "Découvrez les récompenses que vous pouvez gagner en parrainant des amis."
+  },
+  "metrics": {
+    "referrerRewardStandard": {
+      "title": "Récompense Parrain (Standard)"
+    },
+    "refereeRewardStandard": {
+      "title": "Récompense Filleul (Standard)"
+    },
+    "friendsToInvite": {
+      "title": "Amis à inviter",
+      "value": "Illimité"
+    }
+  },
+  "howItWorks": {
+    "title": "Comment ça marche",
+    "defaultSummary": "Invitez vos amis à nous rejoindre ! Lorsqu'ils s'inscrivent et effectuent leur première action qualifiante (comme un achat ou un abonnement), vous êtes tous les deux récompensés. C'est gagnant-gagnant !"
+  },
+  "rewardDetails": {
+    "title": "Détails des récompenses",
+    "tier": {
+      "referrerLabel": "Vous obtenez :",
+      "refereeLabel": "Votre ami obtient :",
+      "conditionsLabel": "Conditions :"
+    },
+    "tiers": [
+      {
+        "id": "tier_standard_cash",
+        "name": "Récompense en espèces standard",
+        "description": "Pour chaque ami qui s'inscrit à un forfait payant et reste client pendant 30 jours.",
+        "rewardForReferrer": "Crédit de 50 $ USD",
+        "rewardForReferee": "Remise de 25 $ USD sur la première commande",
+        "conditions": [
+          "L'ami parrainé doit être un nouveau client.",
+          "L'ami parrainé doit souscrire à un forfait payant.",
+          "L'ami parrainé doit compléter son premier cycle de facturation (le cas échéant).",
+          "Le lien de parrainage doit être utilisé pour l'inscription."
+        ]
+      },
+      {
+        "id": "tier_enterprise_bonus",
+        "name": "Bonus Client Entreprise",
+        "description": "Si votre ami parrainé s'inscrit à un forfait Entreprise.",
+        "rewardForReferrer": "Bonus de crédit de 200 $ USD",
+        "rewardForReferee": "10% de réduction la première année sur le forfait Entreprise",
+        "conditions": [
+          "Toutes les conditions de la récompense standard s'appliquent.",
+          "L'ami parrainé doit signer un contrat Entreprise annuel."
+        ]
+      }
+    ]
+  },
+  "eligibility": {
+    "title": "Critères d'éligibilité",
+    "notes": [
+      "Ce programme est ouvert à tous les utilisateurs enregistrés.",
+      "Les récompenses sont soumises à vérification et peuvent être ajustées ou révoquées en cas d'activité frauduleuse.",
+      "Les auto-parrainages ne sont pas autorisés.",
+      "Les conditions de ce programme peuvent être modifiées à tout moment."
+    ]
+  },
+  "claiming": {
+    "title": "Réclamer vos récompenses",
+    "defaultInfo": "Les récompenses du parrain (crédits de compte) sont généralement appliquées à votre compte dans un délai de 7 à 10 jours ouvrables après que votre ami parrainé a rempli tous les critères d'éligibilité. Les remises pour les filleuls sont appliquées automatiquement lors de leur premier achat avec le lien de parrainage."
+  },
+  "faq": {
+    "title": "Questions fréquemment posées",
+    "items": [
+      {
+        "question": "Combien d'amis puis-je parrainer ?",
+        "answer": "Aucune limite ! Plus vous parrainez d'amis avec succès, plus vous gagnez de récompenses."
+      },
+      {
+        "question": "Quand recevrai-je mon crédit de récompense ?",
+        "answer": "Généralement dans un délai de 7 à 10 jours ouvrables après que votre ami a rempli les conditions, comme terminer son premier cycle de facturation."
+      },
+      {
+        "question": "Puis-je parrainer quelqu'un qui a déjà utilisé notre service ?",
+        "answer": "Non, le programme de parrainage est réservé aux nouveaux clients uniquement."
+      },
+      {
+        "question": "Que se passe-t-il si mon ami oublie d'utiliser mon lien ?",
+        "answer": "Malheureusement, le parrainage doit être suivi via votre lien unique pour être éligible à une récompense."
+      }
+    ]
+  }
+}

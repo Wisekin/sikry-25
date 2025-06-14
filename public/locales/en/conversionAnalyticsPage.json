@@ -1,0 +1,105 @@
+{
+  "header": {
+    "title": "Conversion Analytics",
+    "subtitle": "Understand how users convert through key funnels." 
+  },
+  "loading": "Loading data...",
+  "error": {
+    "fetch": "Failed to fetch conversion data.", 
+    "title": "Error Loading Data",
+    "tryAgain": "Try Again"
+  },
+  "noData": "No conversion data available for the selected period.",
+  "filters": {
+    "period": "Period",
+    "last7days": "Last 7 Days",
+    "last30days": "Last 30 Days",
+    "last3months": "Last 3 Months",
+    "funnel": "Funnel",
+    "allFunnels": "All Funnels",
+    "onboardingFunnel": "Onboarding Funnel",
+    "salesFunnelQ4": "Sales Funnel Q4"
+  },
+  "summary": {
+    "overallConversionRate": "Overall Conversion Rate",
+    "totalConversions": "Total Conversions",
+    "topConvertingFunnel": "Top Converting Funnel",
+    "avgCostPerConversion": "Avg. Cost Per Conversion"
+  },
+  "charts": {
+    "funnel": {
+      "title": "Funnel Performance",
+      "subtitle": "Conversion rates by stage", 
+      "visitors": "Visitors",
+      "conversion": "Conversion",
+      "entryPoint": "Entry Point",
+      "dropoff": "Drop-off"
+    },
+    "trends": { 
+      "title": "Conversion Trends",
+      "subtitle": "Conversion rate over time"
+    },
+    "source": { 
+      "title": "Conversions by Source",
+      "subtitle": "Conversions by traffic source", 
+      "source": "Source",
+      "conversions": "Conversions",
+      "rate": "Rate"
+    },
+    "paths": {
+      "title": "Conversion Paths",
+      "subtitle": "Most common conversion paths"
+    }
+  },
+  "title": "Conversion Analytics",
+  "subtitle": "Track and analyze your conversion metrics",
+  "timeRange": {
+    "title": "Time Range",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "last7Days": "Last 7 Days",
+    "last30Days": "Last 30 Days",
+    "thisMonth": "This Month",
+    "lastMonth": "Last Month",
+    "custom": "Custom Range"
+  },
+  "metrics": {
+    "conversionRate": "Conversion Rate",
+    "totalConversions": "Total Conversions",
+    "costPerConversion": "Cost per Conversion",
+    "revenuePerConversion": "Revenue per Conversion",
+    "bounceRate": "Bounce Rate",
+    "averageTimeToConvert": "Average Time to Convert",
+    "funnelDropOff": "Funnel Drop-off Rate",
+    "goalCompletion": "Goal Completion Rate"
+  },
+  "funnel": {
+    "title": "Conversion Funnel",
+    "stages": {
+      "awareness": "Awareness",
+      "interest": "Interest",
+      "consideration": "Consideration",
+      "intent": "Intent",
+      "evaluation": "Evaluation",
+      "purchase": "Purchase"
+    }
+  },
+  "segments": {
+    "title": "Conversion Segments",
+    "byDevice": "By Device",
+    "byLocation": "By Location",
+    "bySource": "By Traffic Source",
+    "byCampaign": "By Campaign"
+  },
+  "actions": {
+    "export": "Export Data",
+    "refresh": "Refresh Data",
+    "customize": "Customize View",
+    "share": "Share Report"
+  },
+  "messages": {
+    "loading": "Loading conversion data...",
+    "error": "Error loading conversion data",
+    "noData": "No conversion data available for the selected time range"
+  }
+}

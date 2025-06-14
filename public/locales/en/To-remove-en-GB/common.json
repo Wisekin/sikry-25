@@ -1,0 +1,118 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "search": "Search",
+    "companies": "Companies",
+    "comms": {
+      "title": "Communications",
+      "bulkSender": "Bulk Sender",
+      "templates": "Templates",
+      "campaigns": "Campaigns"
+    },
+    "financial": {
+      "title": "Financial",
+      "invoices": "Invoices",
+      "payments": "Payments",
+      "reports": "Reports"
+    },
+    "reengagement": {
+      "title": "Re-engagement",
+      "campaigns": "Campaigns",
+      "templates": "Templates",
+      "analytics": "Analytics"
+    },
+    "referrals": {
+      "title": "Referrals",
+      "program": "Program",
+      "rewards": "Rewards",
+      "analytics": "Analytics"
+    },
+    "reviews": {
+      "title": "Reviews",
+      "management": "Management",
+      "templates": "Templates",
+      "analytics": "Analytics"
+    },
+    "funnels": {
+      "title": "Funnels",
+      "builder": "Builder",
+      "templates": "Templates",
+      "analytics": "Analytics"
+    },
+    "gapAnalysis": {
+      "title": "Gap Analysis",
+      "reports": "Reports",
+      "templates": "Templates",
+      "analytics": "Analytics"
+    },
+    "vsl": {
+      "title": "VSL",
+      "builder": "Builder",
+      "templates": "Templates",
+      "analytics": "Analytics"
+    },
+    "leadResponse": {
+      "title": "Lead Response",
+      "queue": "Queue",
+      "templates": "Templates",
+      "analytics": "Analytics"
+    },
+    "analytics": {
+      "title": "Analytics",
+      "overview": "Overview",
+      "performance": "Performance",
+      "revenue": "Revenue",
+      "conversion": "Conversion"
+    },
+    "admin": {
+      "title": "Admin",
+      "users": "Users",
+      "billing": "Billing",
+      "security": "Security",
+      "compliance": "Compliance",
+      "antiSpam": "Anti-Spam",
+      "monitoring": "Monitoring",
+      "team": "Team"
+    }
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "update": "Update",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "refresh": "Refresh",
+    "download": "Download",
+    "upload": "Upload",
+    "import": "Import",
+    "export": "Export"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "noData": "No data available",
+    "confirm": "Are you sure?",
+    "yes": "Yes",
+    "no": "No",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "reset": "Reset",
+    "close": "Close",
+    "open": "Open",
+    "more": "More",
+    "less": "Less",
+    "all": "All",
+    "none": "None",
+    "select": "Select",
+    "deselect": "Deselect",
+    "required": "Required",
+    "optional": "Optional"
+  }
+} 

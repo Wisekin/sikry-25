@@ -1,0 +1,48 @@
+{
+  "header": {
+    "title": "Funnel Automation",
+    "subtitle": "Configure automated actions and triggers for your sales funnels."
+  },
+  "selector": {
+    "label": "Configure Automation For:"
+  },
+  "stats": {
+    "activeRules": {
+      "title": "Active Rules in Funnel"
+    },
+    "automatedActionsToday": {
+      "title": "Automated Actions Today"
+    },
+    "errorsToday": {
+      "title": "Errors Today",
+      "needsAttention": "Needs attention",
+      "allClear": "All clear"
+    }
+  },
+  "rules": {
+    "titlePrefix": "Automation Rules for '{{funnelName}}'",
+    "buttons": {
+      "addNewRule": "Add New Rule"
+    },
+    "ruleCard": {
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "buttons": {
+        "deactivateTooltip": "Deactivate Rule",
+        "activateTooltip": "Activate Rule",
+        "editTooltip": "Edit Rule",
+        "deleteTooltip": "Delete Rule"
+      },
+      "triggerLabel": "Trigger:",
+      "actionsLabel": "Actions:",
+      "timesTriggeredLabel": "Times Triggered: {{count}}",
+      "errorsLabel": "Errors: {{count}}"
+    },
+    "emptyMessage": "No automation rules configured for this funnel yet."
+  },
+  "emptyState": {
+    "message": "Select a funnel to view its automation rules."
+  }
+}

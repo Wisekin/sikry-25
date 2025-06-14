@@ -1,0 +1,86 @@
+{
+  "loading": "Chargement des analyses...",
+  "title": "Tableau de Bord Analytique",
+  "description": "Suivez les performances de tous vos canaux marketing",
+  "timeRanges": {
+    "hours24": "24 Heures",
+    "days7": "7 Jours",
+    "days30": "30 Jours",
+    "days90": "90 Jours"
+  },
+  "keyMetrics": {
+    "totalPageViews": "Vues de Page Totales",
+    "conversionRate": "Taux de Conversion",
+    "avgResponseTime": "Temps de Réponse Moyen",
+    "revenueAttribution": "Attribution des Revenus",
+    "fromLastPeriod": {
+      "views": "+12% par rapport à la période précédente",
+      "rate": "+2.1% par rapport à la période précédente",
+      "time": "-30s par rapport à la période précédente",
+      "revenue": "+18% par rapport à la période précédente"
+    }
+  },
+  "tabs": {
+    "vslPerformance": "Performance VSL",
+    "leadResponse": "Réponse aux Prospects",
+    "funnels": "Tunnels de Vente",
+    "revenue": "Revenus"
+  },
+  "vslPerformance": {
+    "viewsConversionsTrend": "Tendance des Vues & Conversions",
+    "viewsConversionsDescription": "Performance quotidienne sur la période sélectionnée",
+    "topPerformingPages": "Pages les Plus Performantes",
+    "topPerformingPagesDescription": "Pages VSL avec le meilleur taux de conversion",
+    "viewsLeads": "{{views}} vues • {{leads}} prospects"
+  },
+  "leadResponse": {
+    "responsePerformance": "Performance des Réponses",
+    "responsePerformanceDescription": "Métriques de réponse aux prospects et conformité SLA",
+    "slaCompliance": "Conformité SLA",
+    "successRate": "Taux de Réussite",
+    "channelDistribution": "Distribution par Canal",
+    "channelDistributionDescription": "Répartition de l'utilisation des canaux de réponse",
+    "channels": {
+      "email": "E-mail",
+      "sms": "SMS",
+      "calls": "Appels"
+    },
+    "sent": "{{count}} envoyés",
+    "attempted": "{{count}} tentés"
+  },
+  "funnels": {
+    "activeFunnels": "Tunnels Actifs",
+    "activeFunnelsDescription": "En cours d'exécution",
+    "totalContacts": "Contacts Totaux",
+    "totalContactsDescription": "Dans les tunnels actifs",
+    "completionRate": "Taux de Complétion",
+    "completionRateDescription": "Moyenne sur tous les tunnels"
+  },
+  "revenue": {
+    "revenueAttribution": "Attribution des Revenus",
+    "revenueAttributionDescription": "Répartition des revenus par canal",
+    "vslPages": "Pages VSL",
+    "leadResponse": "Réponse aux Prospects",
+    "funnels": "Tunnels de Vente",
+    "total": "Total",
+    "revenueTrend": "Tendance des Revenus",
+    "revenueTrendDescription": "Revenus quotidiens au fil du temps"
+  },
+  "realTimeMetrics": {
+    "title": "Métricas en temps réel",
+    "live": "EN DIRECT",
+    "activeScrapers": "Scrapers actifs",
+    "dataPointsToday": "Points de données aujourd'hui",
+    "successRate": "Taux de réussite",
+    "avgResponse": "Réponse moyenne",
+    "activityFeed": "Flux d'activité en direct",
+    "events": {
+      "extract": "Données d'entreprise extraites",
+      "start": "Nouveau scraper démarré",
+      "send": "Campagne d'emailing envoyée",
+      "limit": "Limite de taux atteinte",
+      "enrich": "Enrichissement des données terminé"
+    },
+    "ago": "Il y a {{time}}"
+  }
+}

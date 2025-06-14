@@ -1,0 +1,13 @@
+{
+  "title": "Booster d'avis",
+  "sent": "Envoyés",
+  "clicked": "Cliqués",
+  "completed": "Complétés",
+  "rate": "Taux",
+  "clickRate": "Taux de clics",
+  "completionRate": "Taux de complétion",
+  "platformBreakdown": "Répartition par plateforme",
+  "requests": "demandes",
+  "requestReview": "Demander un avis",
+  "recentActivity": "Activité récente"
+}

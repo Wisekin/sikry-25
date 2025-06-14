@@ -1,0 +1,39 @@
+{
+  "header": {
+    "title": "Funnel Builder",
+    "subtitle": "Visually design your automated marketing and sales funnels."
+  },
+  "elementsPanel": {
+    "title": "Funnel Elements",
+    "items": {
+      "formSubmitted": "Form Submitted",
+      "tagAddedTrigger": "Tag Added",
+      "sendEmail": "Send Email",
+      "addTagAction": "Add Tag",
+      "waitPeriod": "Wait Period",
+      "emailOpenedCondition": "Email Opened?"
+    }
+  },
+  "canvas": {
+    "defaultFunnelName": "New Untitled Funnel",
+    "buttons": {
+      "load": "Load",
+      "save": "Save Funnel",
+      "new": "New Funnel"
+    },
+    "emptyMessage": "Drag elements from the left panel to build your funnel."
+  },
+  "propertiesPanel": {
+    "title": "Properties",
+    "selectedLabel": "Selected:",
+    "typeLabel": "Type:",
+    "stepNameLabel": "Step Name",
+    "emailTemplateIdLabel": "Email Template ID",
+    "emailTemplateIdPlaceholder": "e.g., welcome_tpl_01",
+    "waitDurationLabel": "Wait Duration (days)",
+    "buttons": {
+      "removeStep": "Remove Step"
+    },
+    "emptyMessage": "Select a step on the canvas or drag a new element to see its properties."
+  }
+}

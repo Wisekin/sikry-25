@@ -1,0 +1,39 @@
+{
+  "header": {
+    "title": "Lettres d'analyse des écarts",
+    "subtitle": "Gérez et examinez les lettres de vente générées par IA à partir de vos analyses des écarts.",
+    "buttons": {
+      "createNew": "Créer une nouvelle lettre"
+    }
+  },
+  "error": {
+    "fetchTitle": "Erreur lors de la récupération des lettres",
+    "unknown": "Une erreur inconnue s'est produite lors de la tentative de récupération des lettres.",
+    "tryAgainButton": "Réessayer"
+  },
+  "emptyState": {
+    "title": "Aucune lettre de vente trouvée",
+    "description": "Générez des lettres de vente à partir des résultats de votre analyse des écarts pour les voir ici."
+  },
+  "letterCard": {
+    "subjectLabel": "Objet",
+    "recipientLabel": "Destinataire",
+    "companyLabel": "Entreprise",
+    "idLabel": "ID",
+    "createdLabel": "Créée le",
+    "buttons": {
+      "preview": "Aperçu"
+    },
+    "status": {
+      "draft": "Brouillon",
+      "sent": "Envoyée",
+      "archived": "Archivée"
+    }
+  },
+  "previewDialog": {
+    "subjectPrefix": "Objet",
+    "buttons": {
+      "close": "Fermer"
+    }
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "header": {
+    "title": "Team Management",
+    "description": "Manage team members, roles, and permissions.",
+    "inviteButton": "Invite Team Member"
+  },
+  "overview": {
+    "stats": {
+      "totalMembers": {
+        "title": "Total Members",
+        "description": "Currently in the team"
+      },
+      "pendingInvites": {
+        "title": "Pending Invites",
+        "description": "Awaiting acceptance"
+      },
+      "activeRoles": {
+        "title": "Active Roles",
+        "description": "Configured roles in the system"
+      }
+    },
+    "main": {
+      "title": "Team Overview",
+      "description": "Summary of team structure and activity."
+    }
+  },
+  "members": {
+    "title": "Team Members",
+    "description": "View and manage all team members.",
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    }
+  },
+  "roles": {
+    "title": "Roles & Permissions",
+    "description": "Define and manage user roles and their permissions.",
+    "admin": "Administrator",
+    "manager": "Manager",
+    "member": "Team Member",
+    "viewer": "Viewer"
+  },
+  "permissions": {
+    "title": "Global Permissions",
+    "description": "Manage global permission settings for the platform.",
+    "view": "View",
+    "create": "Create",
+    "edit": "Edit",
+    "delete": "Delete",
+    "manage": "Manage"
+  },
+  "title": "Team Management",
+  "subtitle": "Manage team members and roles",
+  "actions": {
+    "addMember": "Add Team Member",
+    "editMember": "Edit Team Member",
+    "removeMember": "Remove Team Member",
+    "exportTeam": "Export Team Data"
+  },
+  "filters": {
+    "title": "Filters",
+    "role": "Role",
+    "department": "Department",
+    "status": "Status",
+    "search": "Search Team Members"
+  },
+  "table": {
+    "name": "Name",
+    "email": "Email",
+    "role": "Role",
+    "department": "Department",
+    "status": "Status",
+    "joined": "Joined",
+    "actions": "Actions"
+  },
+  "departments": {
+    "title": "Departments",
+    "engineering": "Engineering",
+    "design": "Design",
+    "marketing": "Marketing",
+    "sales": "Sales",
+    "support": "Support",
+    "other": "Other"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "onLeave": "On Leave",
+    "pending": "Pending"
+  },
+  "form": {
+    "name": "Full Name",
+    "email": "Email Address",
+    "role": "Role",
+    "department": "Department",
+    "status": "Status",
+    "permissions": "Permissions"
+  },
+  "messages": {
+    "noMembers": "No team members found",
+    "loading": "Loading team data...",
+    "error": "Error loading team data",
+    "success": "Team member saved successfully",
+    "deleteConfirm": "Are you sure you want to remove this team member?",
+    "deleteSuccess": "Team member removed successfully"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "title": "Lead Response Queue",
+  "subtitle": "Manage and respond to incoming leads",
+  "actions": {
+    "assign": "Assign Lead",
+    "respond": "Respond to Lead",
+    "close": "Close Lead",
+    "export": "Export Queue"
+  },
+  "filters": {
+    "title": "Filters",
+    "status": "Status",
+    "priority": "Priority",
+    "source": "Source",
+    "dateRange": "Date Range",
+    "search": "Search Leads"
+  },
+  "table": {
+    "lead": "Lead",
+    "source": "Source",
+    "status": "Status",
+    "priority": "Priority",
+    "assignedTo": "Assigned To",
+    "created": "Created",
+    "actions": "Actions"
+  },
+  "status": {
+    "new": "New",
+    "assigned": "Assigned",
+    "inProgress": "In Progress",
+    "responded": "Responded",
+    "closed": "Closed",
+    "failed": "Failed"
+  },
+  "priority": {
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low"
+  },
+  "sources": {
+    "website": "Website",
+    "email": "Email",
+    "phone": "Phone",
+    "chat": "Live Chat",
+    "social": "Social Media",
+    "other": "Other"
+  },
+  "form": {
+    "assignTo": "Assign To",
+    "priority": "Priority",
+    "notes": "Notes",
+    "response": "Response",
+    "status": "Status"
+  },
+  "messages": {
+    "noLeads": "No leads in queue",
+    "loading": "Loading queue...",
+    "error": "Error loading queue",
+    "success": "Lead updated successfully",
+    "assignSuccess": "Lead assigned successfully",
+    "respondSuccess": "Response sent successfully",
+    "closeSuccess": "Lead closed successfully"
+  }
+} 

@@ -1,0 +1,51 @@
+{
+  "header": {
+    "title": "Lead Classification",
+    "subtitle": "Define, manage, and monitor lead classifications for targeted re-engagement."
+  },
+  "metrics": {
+    "hotLeads": {
+      "title": "Hot Leads",
+      "change": "+5 this week"
+    },
+    "warmLeads": {
+      "title": "Warm Leads",
+      "change": "-2 this week"
+    },
+    "coldLeads": {
+      "title": "Cold Leads",
+      "change": "+20 this week"
+    },
+    "unclassifiedLeads": {
+      "title": "Unclassified"
+    }
+  },
+  "rules": {
+    "title": "Classification Rules",
+    "buttons": {
+      "addNew": "Add New Rule"
+    },
+    "emptyMessage": "No classification rules defined."
+  },
+  "leads": {
+    "title": "Leads Overview",
+    "buttons": {
+      "filter": "Filter Leads"
+    },
+    "description": "A list of leads with their current classification. Advanced filtering and manual classification options will be available here.",
+    "table": {
+      "headers": {
+        "name": "Name",
+        "email": "Email",
+        "classification": "Classification",
+        "lastActivity": "Last Activity"
+      }
+    }
+  },
+  "classification": {
+    "hot": "Hot",
+    "warm": "Warm",
+    "cold": "Cold",
+    "unclassified": "Unclassified"
+  }
+}
