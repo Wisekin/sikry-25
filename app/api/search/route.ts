@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/src/utils/supabase/server'
-import type { ApiResponse, SearchResult, SearchScope } from '@/src/types'
+import type { ApiResponse, SearchScope } from '@/src/types';
+import type { SearchResult } from '@/src/types/search';
 import { CacheManager } from '@/src/utils/cache/cacheManager'
 import { DbRateLimiter } from '@/src/utils/cache/rateLimiter'
 
@@ -74,9 +75,34 @@ export async function GET(request: NextRequest) {
 
     // Call Supabase (internal DB)
     const supabaseResult = await performSearch(query, scope, teamMember.organization_id);
+    
+    if (!supabaseResult.success) {
+        console.error("Search failed due to database error:", supabaseResult.error);
+        return NextResponse.json(
+            {
+                success: false,
+                message: 'An error occurred during the database search.',
+                errors: [supabaseResult.error]
+            } as ApiResponse,
+            { status: 500 }
+        );
+    }
 
-    // Call Companies House adapter (mock for now)
-    const companiesHouseResults = await companiesHouseAdapter.search(parsedQuery);
+    // Call Companies House adapter and map results
+    let companiesHouseResults: SearchResult[] = [];
+    if (parsedQuery) {
+      const adapterResults = await companiesHouseAdapter.search(parsedQuery);
+      companiesHouseResults = adapterResults.map((item, index) => ({
+        id: `ch-${Date.now()}-${index}`,
+        name: item.name,
+        domain: item.url,
+        description: item.description,
+        industry: item.industry,
+        location_text: item.location,
+        source: 'companies_house',
+        confidence: item.confidence,
+      }));
+    }
 
     // Merge results (simple concat, dedupe by name+location)
     const allResults = [
@@ -140,7 +166,7 @@ export async function GET(request: NextRequest) {
       {
         success: false,
         message: 'Internal server error',
-        errors: [{ code: 'INTERNAL_ERROR', message: 'An unexpected error occurred' }]
+        errors: [{ code: 'INTERNAL_ERROR', message: (error as Error).message || 'An unexpected error occurred' }]
       } as ApiResponse,
       { status: 500 }
     )
@@ -148,34 +174,47 @@ export async function GET(request: NextRequest) {
 }
 
 async function performSearch(query: string, scope: string, organizationId: string) {
+  try {
+    // Base query
+    let searchQuery = supabase.from(scope === 'companies' ? 'discovered_companies' : scope)
+      .select('*')
+      .eq('organization_id', organizationId)
 
-  // Base query
-  let searchQuery = supabase.from(scope === 'companies' ? 'discovered_companies' : scope)
-    .select('*')
-    .eq('organization_id', organizationId)
-
-  // Add search conditions based on scope
-  if (scope === 'companies') {
-    searchQuery = searchQuery.or(`name.ilike.%${query}%, description.ilike.%${query}%`)
-  } else if (scope === 'contacts') {
-    searchQuery = searchQuery.or(`name.ilike.%${query}%, email.ilike.%${query}%`)
-  } else {
-    searchQuery = searchQuery.textSearch('searchable_tsvector', query)
-  }
-
-  const { data, error } = await searchQuery.limit(50)
-
-  if (error) {
-    throw error
-  }
-
-  return {
-    success: true,
-    data,
-    metadata: {
-      query,
-      scope,
-      timestamp: new Date().toISOString()
+    // Add search conditions based on scope
+    if (scope === 'companies') {
+      searchQuery = searchQuery.or(`name.ilike.%${query}%,description.ilike.%${query}%`)
+    } else if (scope === 'contacts') {
+      searchQuery = searchQuery.or(`name.ilike.%${query}%,email.ilike.%${query}%`)
+    } else {
+      searchQuery = searchQuery.textSearch('searchable_tsvector', query)
     }
+
+    const { data, error } = await searchQuery.limit(50)
+
+    if (error) {
+      console.error('Supabase search error in performSearch:', error);
+      return {
+        success: false,
+        data: null,
+        error: { code: 'DB_SEARCH_FAILED', message: 'Failed to execute database search.' }
+      };
+    }
+
+    return {
+      success: true,
+      data,
+      metadata: {
+        query,
+        scope,
+        timestamp: new Date().toISOString()
+      }
+    }
+  } catch (e) {
+      console.error('Unexpected error in performSearch:', e);
+      return {
+        success: false,
+        data: null,
+        error: { code: 'UNEXPECTED_DB_ERROR', message: 'An unexpected error occurred in the database module.' }
+      };
   }
 }

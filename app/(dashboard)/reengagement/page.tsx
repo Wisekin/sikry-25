@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
-import '@/i18n/config.client';
+import '@/src/i18n/config.client';
 import EnterprisePageHeader from '@/src/components/core/layout/EnterprisePageHeader';
 import QualityMetricCard from '@/src/components/ui/quality-metric-card';
 import { Users, Zap, TrendingUp, Filter, Settings, ListChecks } from 'lucide-react';

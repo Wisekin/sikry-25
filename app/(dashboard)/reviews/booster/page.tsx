@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import '@/i18n/config.client';
+import '@/src/i18n/config.client';
 import EnterprisePageHeader from '@/src/components/core/layout/EnterprisePageHeader';
 import QualityMetricCard from '@/src/components/ui/quality-metric-card';
 import { Zap, Rocket, Star, MessageSquareText, Send, Gift, QrCode as QrCodeLucide, Settings, List } from 'lucide-react'; // Zap for booster, Rocket for launch

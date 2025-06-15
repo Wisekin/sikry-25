@@ -15,6 +15,23 @@ import {
   Building2, Users, MapPin, BarChart3, Mail, Phone, Clock, RefreshCw, Star, ExternalLink, Briefcase, Tag
 } from "lucide-react"
 
+// Custom hook to debounce input
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
+
 // --- MOCK DATA & TYPES ---
 interface Company {
   id: string;
@@ -201,21 +218,23 @@ const ResultsGrid = ({ companies, layout = 'grid' }: { companies: Company[], lay
 
 // Main Search Page Content
 function SearchContent() {
-  const { t } = useTranslation(['searchPage', 'common']);
+  const { t } = useTranslation(['searchPage', 'commsPage']);
   const searchParams = useSearchParams();
   const [query, setQuery] = useState(searchParams.get("q") || "");
+  const debouncedQuery = useDebounce(query, 500);
   const [user, setUser] = useState<any>(null);
   const supabase = createClient();
   const [companies, setCompanies] = useState<Company[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [noResults, setNoResults] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list" | "map">("grid");
   const [selectedSources, setSelectedSources] = useState<string[]>(["google", "linkedin"]);
   const [filters, setFilters] = useState({
     industry: t('filters.allIndustries'),
     location: "",
     employeeCount: "All Sizes",
-    confidenceScore: 70, // Default to a reasonable minimum
+    confidenceScore: 70,
     hasEmail: false,
     hasPhone: false,
   });
@@ -249,20 +268,38 @@ function SearchContent() {
 
   useEffect(() => {
     const fetchCompanies = async () => {
+      if (!debouncedQuery) {
+        setCompanies([]);
+        setNoResults(false);
+        setError(null);
+        setLoading(false);
+        return;
+      }
+
       setLoading(true);
       setError(null);
+      setNoResults(false);
+
       try {
         const params = new URLSearchParams();
-        params.set('q', query);
+        params.set('q', debouncedQuery);
         params.set('scope', 'companies');
         if (user) {
           params.set('user', user.id);
         }
         const res = await fetch(`/api/search?${params.toString()}`);
-        if (!res.ok) throw new Error('Failed to fetch results');
+        if (!res.ok) {
+            const errorData = await res.json().catch(() => ({ message: 'Failed to fetch results' }));
+            throw new Error(errorData.message || 'Failed to fetch results');
+        }
         const data = await res.json();
-        // Map backend results to Company interface for display
-        setCompanies((data.data || []).map((item: any, idx: number) => ({
+        
+        const results = data.data || [];
+        if (results.length === 0) {
+          setNoResults(true);
+        }
+
+        setCompanies(results.map((item: any, idx: number) => ({
           id: item.id || `api-${idx}`,
           name: item.name || '',
           domain: item.domain || item.url || '',
@@ -289,8 +326,7 @@ function SearchContent() {
     if (user) {
       fetchCompanies();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, query, user]);
+  }, [debouncedQuery, user]);
 
   const filteredCompanies = companies.filter(company => {
     if (filters.industry !== "All Industries" && company.industry !== filters.industry) return false;
@@ -312,11 +348,14 @@ function SearchContent() {
             {t('companySearch.title', { ns: 'searchPage' })}
           </h1>
           <p className="text-gray-500 mt-1">
-            {loading 
-              ? t('searching', { ns: 'searchPage' }) 
-              : `${filteredCompanies.length} ${t('results.found', { ns: 'searchPage' })}`
-            }
+            {loading && t('searching', { ns: 'searchPage' })}
+            {!loading && !error && !noResults && `${filteredCompanies.length} ${t('results.found', { ns: 'searchPage' })}`}
           </p>
+          {noResults && !loading && (
+            <div className="mt-2 text-sm text-gray-600 bg-gray-50 border border-gray-200 rounded px-3 py-2">
+              {t('noResults', { ns: 'commsPage' })}
+            </div>
+          )}
           {error && (
             <div className="mt-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-2">
               {t('error', { ns: 'searchPage' })} {error}

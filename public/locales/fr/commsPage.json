@@ -268,8 +268,10 @@
       "addButton": "Ajouter le Type"
     }
   },
+  "bulkSender.header.description": "bulkSender.header.description",
   "bulkSender.header.newButton": "bulkSender.header.newButton",
+  "bulkSender.content.title": "bulkSender.content.title",
   "newCampaignPage.addTypeDialog.description": "newCampaignPage.addTypeDialog.description",
   "history.title": "history.title",
-  "noResults": "noResults"
+  "noResults": "Aucun résultat trouvé. Essayez de modifier votre recherche ou vos filtres."
 }

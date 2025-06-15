@@ -997,6 +997,261 @@ I apologize for the difficulty with the file edits. Let me try a different appro
 
 ---
 
+```diff
+        <div className="flex items-center justify-between">
+          <div>
+-           <h1 className="text-3xl font-bold">{t("financialPage:dashboard.title")}</h1>
+-           <p className="text-muted-foreground">{t("financialPage:dashboard.description")}</p>
++           <h1 className="text-3xl font-bold">{t("dashboard.title")}</h1>
++           <p className="text-muted-foreground">{t("dashboard.description")}</p>
+          </div>
+          <div className="flex gap-2">
+            <Button onClick={exportToCSV} variant="outline">
+              <Download className="h-4 w-4 mr-2" />
+-             {t("common:export")}
++             {t("buttons.export")}
+            </Button>
+            <Button>
+              <Plus className="h-4 w-4 mr-2" />
+-             {t("financialPage:buttons.addRecord")}
++             {t("buttons.addRecord")}
+            </Button>
+          </div>
+```
+
+```diff
+            <CardTitle className="flex items-center gap-2">
+              <Filter className="h-5 w-5" />
+-             {t("common:filters")}
++             {t("filter.title")}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="space-y-2">
+-               <label className="text-sm font-medium">{t("common:search")}</label>
++               <label className="text-sm font-medium">{t("filter.search")}</label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+-                   placeholder={t("financialPage:filter.searchPlaceholder")}
++                   placeholder={t("filter.searchPlaceholder")}
+                    value={filters.search || ""}
+                    onChange={(e) => handleFilterChange("search", e.target.value)}
+```
+
+```diff
+  
+              <div className="space-y-2">
+-               <label className="text-sm font-medium">{t("financialPage:filter.sourceTypeLabel")}</label>
++               <label className="text-sm font-medium">{t("filter.sourceTypeLabel")}</label>
+                <Select
+                  value={filters.source_type || "all"}
+                  onValueChange={(value) => handleFilterChange("source_type", value)}
+                >
+                  <SelectTrigger>
+-                   <SelectValue placeholder={t("common:all")} />
++                   <SelectValue placeholder={t("filter.all")} />
+                  </SelectTrigger>
+                  <SelectContent>
+-                   <SelectItem value="all">{t("common:all")}</SelectItem>
+-                   <SelectItem value="campaign">{t("financialPage:filter.sourceTypeOptions.campaign")}</SelectItem>
+-                   <SelectItem value="contact">{t("financialPage:filter.sourceTypeOptions.contact")}</SelectItem>
+-                   <SelectItem value="scraper">{t("financialPage:filter.sourceTypeOptions.scraper")}</SelectItem>
+-                   <SelectItem value="subscription">{t("financialPage:filter.sourceTypeOptions.subscription")}</SelectItem>
+-                   <SelectItem value="manual">{t("financialPage:filter.sourceTypeOptions.manual")}</SelectItem>
++                   <SelectItem value="all">{t("filter.all")}</SelectItem>
++                   <SelectItem value="campaign">{t("filter.sourceTypeOptions.campaign")}</SelectItem>
++                   <SelectItem value="contact">{t("filter.sourceTypeOptions.contact")}</SelectItem>
++                   <SelectItem value="scraper">{t("filter.sourceTypeOptions.scraper")}</SelectItem>
++                   <SelectItem value="subscription">{t("filter.sourceTypeOptions.subscription")}</SelectItem>
++                   <SelectItem value="manual">{t("filter.sourceTypeOptions.manual")}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+  
+              <div className="space-y-2">
+-               <label className="text-sm font-medium">{t("financialPage:filter.typeLabel")}</label>
++               <label className="text-sm font-medium">{t("filter.typeLabel")}</label>
+                <Select value={filters.type || "all"} onValueChange={(value) => handleFilterChange("type", value)}>
+                  <SelectTrigger>
+-                   <SelectValue placeholder={t("common:all")} />
++                   <SelectValue placeholder={t("filter.all")} />
+                  </SelectTrigger>
+                  <SelectContent>
+-                   <SelectItem value="all">{t("common:all")}</SelectItem>
+-                   <SelectItem value="revenue">{t("financialPage:types.revenue")}</SelectItem>
+-                   <SelectItem value="cost">{t("financialPage:types.cost")}</SelectItem>
+-                   <SelectItem value="expense">{t("financialPage:types.expense")}</SelectItem>
+-                   <SelectItem value="refund">{t("financialPage:types.refund")}</SelectItem>
++                   <SelectItem value="all">{t("filter.all")}</SelectItem>
++                   <SelectItem value="revenue">{t("types.revenue")}</SelectItem>
++                   <SelectItem value="cost">{t("types.cost")}</SelectItem>
++                   <SelectItem value="expense">{t("types.expense")}</SelectItem>
++                   <SelectItem value="refund">{t("types.refund")}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+  
+              <div className="space-y-2">
+-               <label className="text-sm font-medium">{t("financialPage:filter.currencyLabel")}</label>
++               <label className="text-sm font-medium">{t("filter.currencyLabel")}</label>
+                <Select
+                  value={filters.currency || "all"}
+                  onValueChange={(value) => handleFilterChange("currency", value)}
+                >
+                  <SelectTrigger>
+-                   <SelectValue placeholder={t("common:all")} />
++                   <SelectValue placeholder={t("filter.all")} />
+                  </SelectTrigger>
+                  <SelectContent>
+-                   <SelectItem value="all">{t("common:all")}</SelectItem>
++                   <SelectItem value="all">{t("filter.all")}</SelectItem>
+                    <SelectItem value="USD">USD</SelectItem>
+                    <SelectItem value="EUR">EUR</SelectItem>
+```
+
+```diff
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5" />
+-             {t("financialPage:campaignROITable.title")}
++             {t("campaignROITable.title")}
+            </CardTitle>
+          </CardHeader>
+```
+
+```diff
+                <thead>
+                  <tr className="border-b">
+-                   <th className="text-left p-2">{t("financialPage:campaignROITable.headers.campaign")}</th>
+-                   <th className="text-right p-2">{t("financialPage:campaignROITable.headers.revenue")}</th>
+-                   <th className="text-right p-2">{t("financialPage:campaignROITable.headers.costs")}</th>
+-                   <th className="text-right p-2">{t("financialPage:campaignROITable.headers.netProfit")}</th>
+-                   <th className="text-right p-2">{t("financialPage:campaignROITable.headers.roi")}</th>
++                   <th className="text-left p-2">{t("campaignROITable.headers.campaign")}</th>
++                   <th className="text-right p-2">{t("campaignROITable.headers.revenue")}</th>
++                   <th className="text-right p-2">{t("campaignROITable.headers.costs")}</th>
++                   <th className="text-right p-2">{t("campaignROITable.headers.netProfit")}</th>
++                   <th className="text-right p-2">{t("campaignROITable.headers.roi")}</th>
+                  </tr>
+                </thead>
+```
+
+```diff
+            <CardTitle className="flex items-center gap-2">
+              <DollarSign className="h-5 w-5" />
+-             {t("financialPage:recordsTable.title")}
++             {t("recordsTable.title")}
+            </CardTitle>
+          </CardHeader>
+```
+
+```diff
+                <thead>
+                  <tr className="border-b">
+-                   <th className="text-left p-2">{t("financialPage:recordsTable.headers.source")}</th>
+-                   <th className="text-right p-2">{t("financialPage:recordsTable.headers.amount")}</th>
+-                   <th className="text-left p-2">{t("financialPage:recordsTable.headers.category")}</th>
++                   <th className="text-left p-2">{t("recordsTable.headers.source")}</th>
++                   <th className="text-right p-2">{t("recordsTable.headers.amount")}</th>
++                   <th className="text-left p-2">{t("recordsTable.headers.category")}</th>
+                  </tr>
+                </thead>
+```
+
+```diff
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className={getTypeColor(record.type)}>
+-                           {t(`financialPage:types.${record.type}`)}
++                           {t(`types.${record.type}`)}
+                          </Badge>
+                          <span>{record.source_type}</span>
+```
+
+---
+
+Now let me update the French translation file to match the new structure:
+
+
+---
+
+```diff
+    },
+    "buttons": {
+-     "addRecord": "Ajouter un Enregistrement"
++     "addRecord": "Ajouter un Enregistrement",
++     "export": "Exporter"
+    },
+    "filter": {
++     "title": "Filtres",
++     "search": "Rechercher",
+      "searchPlaceholder": "Rechercher des enregistrements...",
+      "sourceTypeLabel": "Type de Source",
++     "typeLabel": "Type",
++     "currencyLabel": "Devise",
++     "all": "Tous",
+      "sourceTypeOptions": {
+        "campaign": "Campagne",
+```
+
+```diff
+        "subscription": "Abonnement",
+        "manual": "Manuel"
+-     },
+-     "typeLabel": "Type",
+-     "currencyLabel": "Devise"
++     }
+    },
+    "types": {
+```
+
+---
+
+I've made several changes to fix the translation issues:
+
+1. Updated the financial page component to use the correct translation keys without the namespace prefix (since we're already specifying the namespace in the `useTranslation` hook).
+2. Reorganized the translation keys to be more consistent and avoid using the `common` namespace.
+3. Updated both English and French translation files to match the new structure.
+
+The error you were seeing was because some translation keys were trying to access objects directly instead of strings. The changes I've made ensure that all translation keys are properly defined and return string values.
+
+Please try accessing the financial page again. The error about invalid React children should now be resolved. If you still see any issues, please let me know and I'll help you fix them.
+
+---
+
+_**User**_
+
+Encountered two children with the same key, ``. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.
+
+app/(dashboard)/financial/summary/page.tsx (146:19) @ eval
+
+
+  144 |               <div className="flex flex-wrap justify-center items-center">
+  145 |                 {expenseCategories.map(cat => (
+> 146 |                   <div key={cat.name} className="flex flex-col items-center m-2">
+      |                   ^
+  147 |                      <div
+  148 |                         style={{width: '60px', height: '60px', backgroundColor: cat.color, borderRadius: '50%'}}
+  149 |                         className="flex items-center justify-center shadow"
+
+---
+
+_**Assistant**_
+
+This error occurs when React encounters multiple elements with the same key in a list. Let me check the financial summary page to fix this issue:
+
+
+---
+
+Read file: app/(dashboard)/financial/summary/page.tsx
+
+---
+
+I see the issue. In the `expenseCategories` array, there are duplicate entries - some with direct names and some with translation keys. Let me fix this:
+
+
+---
+
 
 
 ---

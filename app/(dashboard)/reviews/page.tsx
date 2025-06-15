@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
-import '@/i18n/config.client';
+import '@/src/i18n/config.client';
 import EnterprisePageHeader from '@/src/components/core/layout/EnterprisePageHeader';
 import QualityMetricCard from '@/src/components/ui/quality-metric-card';
 import { Star, MessageSquareText, Send, SearchCheck, TrendingUp, BarChart3 } from 'lucide-react'; // Relevant icons

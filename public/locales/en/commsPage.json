@@ -273,5 +273,5 @@
   "bulkSender.content.title": "bulkSender.content.title",
   "newCampaignPage.addTypeDialog.description": "newCampaignPage.addTypeDialog.description",
   "history.title": "history.title",
-  "noResults": "noResults"
+  "noResults": "No results found. Try adjusting your search or filters."
 }

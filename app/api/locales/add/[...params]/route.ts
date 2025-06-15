@@ -16,7 +16,7 @@ export async function POST(
     'locales',
     lng,
     `${ns}.json`
-  );
+  );                      
 
   let release;
   try {

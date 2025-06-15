@@ -100,7 +100,7 @@ export class CacheManager {
             // First, count existing entries for this org
             const { count, error: countError } = await this.supabase
                 .from('api_cache')
-                .select('id', { count: 'exact' })
+                .select('*', { count: 'exact', head: true })
                 .eq('organization_id', this.orgId);
 
             if (countError) throw countError;
@@ -162,7 +162,7 @@ export class CacheManager {
             const config = this.getCacheConfig();
             const { count } = await this.supabase
                 .from('api_cache')
-                .select('id', { count: 'exact' })
+                .select('*', { count: 'exact', head: true })
                 .eq('organization_id', this.orgId);
 
             if (count && count >= config.maxEntries) {

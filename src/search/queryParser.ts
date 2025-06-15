@@ -1,85 +1,140 @@
-import OpenAI from "openai"
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from 'openai';
 
+// --- 1. INTERFACES & TYPES ---
+
+/**
+ * Defines the structure of a parsed query.
+ */
 export interface ParsedQuery {
-  industry?: string
-  location?: string
-  size?: string
-  keywords?: string[]
-  raw: string
+  keywords: string[];
+  exactPhrases: string[];
+  excludedKeywords: string[];
+  filters: Record<string, string>; // e.g., { industry: "tech", location: "Zurich" }
 }
 
 /**
- * Main entry point for parsing a natural language query.
- * Uses OpenAI if API key is available, otherwise falls back to local parser.
+ * Defines the contract for a query parser.
+ * Any parser (Google, OpenAI, local) must implement this interface.
  */
-export async function parseQuery(query: string): Promise<ParsedQuery> {
-  const openAiKey = process.env.OPENAI_API_KEY
-  if (openAiKey) {
-    try {
-      const result = await parseWithOpenAI(query, openAiKey)
-      if (result) return result
-    } catch (e) {
-      // Fallback to local parser on error
-    }
+interface QueryParser {
+  (query: string): Promise<ParsedQuery | null>;
+}
+
+// --- 2. CONCRETE PARSER IMPLEMENTATIONS (STRATEGIES) ---
+
+/**
+ * Parses a query using the Google Generative AI (Gemini) API.
+ */
+const parseWithGoogleAI: QueryParser = async (query) => {
+  const apiKey = process.env.GOOGLE_AI_API_KEY;
+  if (!apiKey) {
+    throw new Error("Google AI API key is not configured.");
   }
-  return parseLocally(query)
-}
+  try {
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const prompt = `Parse the following search query into a JSON object with keywords, exactPhrases, excludedKeywords, and filters (for fields like industry, location, size). Query: "${query}"`;
+    const result = await model.generateContent(prompt);
+    const text = result.response.text();
+    return JSON.parse(text.replace(/```json|```/g, '').trim()) as ParsedQuery;
+  } catch (error) {
+    console.error("Error with Google AI Parser:", error);
+    throw error; // Re-throw to allow fallback
+  }
+};
 
 /**
- * OpenAI-powered parser (modular, can be swapped for other providers)
+ * Parses a query using the OpenAI API.
  */
-async function parseWithOpenAI(query: string, apiKey: string): Promise<ParsedQuery | null> {
-  const openai = new OpenAI({
-    apiKey: apiKey,
-  })
-
+const parseWithOpenAI: QueryParser = async (query) => {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    throw new Error("OpenAI API key is not configured.");
+  }
   try {
+    const openai = new OpenAI({ apiKey });
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [
         {
           role: "system",
-          content: "You are a helpful assistant that parses search queries into structured data. Extract industry, location, company size, and keywords from the query.",
+          content: "You are an intelligent search query parser. Convert the user's query into a JSON object with four keys: 'keywords' (an array of strings), 'exactPhrases' (an array of strings), 'excludedKeywords' (an array of strings for terms to exclude), and 'filters' (an object for key-value pairs like 'industry:technology')."
         },
-        {
-          role: "user",
-          content: query,
-        },
+        { role: "user", content: query },
       ],
-      temperature: 0.3,
-      response_format: { type: "json_object" }
-    })
-
-    const content = response.choices[0]?.message?.content
-    if (!content) return null
-
-    // Parse the response (assuming it's in JSON format)
-    return { ...JSON.parse(content), raw: query } as ParsedQuery
+    });
+    const content = response.choices[0]?.message?.content;
+    if (!content) return null;
+    return JSON.parse(content) as ParsedQuery;
   } catch (error) {
-    console.error("OpenAI API error:", error)
-    return null
+    console.error("Error with OpenAI Parser:", error);
+    throw error; // Re-throw to allow fallback
   }
-}
+};
 
 /**
- * Simple fallback parser (regex/keyword-based)
+ * A simple, local fallback parser using regular expressions.
+ * This ensures basic functionality even if all AI providers fail.
  */
-function parseLocally(query: string): ParsedQuery {
-  // Basic examples, can be improved
-  const industryMatch = query.match(/(marketing|finance|tech|saas|fintech|ecommerce|legal|consulting)/i)
-  const locationMatch = query.match(/in ([A-Za-z ]+)/i)
-  const sizeMatch = query.match(/(less than|under|more than|over|between) ([0-9]+( and | to |-)?[0-9]*) ?(employees|people)?/i)
-  return {
-    industry: industryMatch?.[1],
-    location: locationMatch?.[1],
-    size: sizeMatch?.[0],
-    keywords: query.split(/\s+/).filter(Boolean),
-    raw: query
-  }
-}
+const parseLocally: QueryParser = async (query) => {
+  // Using Promise.resolve to conform to the async QueryParser interface
+  return Promise.resolve({
+    keywords: query.match(/\b\w+\b/g) || [],
+    exactPhrases: [],
+    excludedKeywords: [],
+    filters: {},
+  });
+};
+
+
+// --- 3. PARSER MANAGER ---
+
+// Define the order of preference for the parsers.
+// The system will try them sequentially until one succeeds.
+const parsers: { name: string, parser: QueryParser }[] = [
+  { name: 'GoogleAI', parser: parseWithGoogleAI },
+  { name: 'OpenAI', parser: parseWithOpenAI },
+  // To add a new provider like DeepSeek, simply create a 'parseWithDeepSeek'
+  // function and add it here: { name: 'DeepSeek', parser: parseWithDeepSeek },
+  { name: 'LocalFallback', parser: parseLocally },
+];
 
 /**
- * How to swap parsers:
- * - To use another provider, add a new function (e.g., parseWithAnthropic) and call it in parseQuery.
- * - To disable OpenAI, remove the OPENAI_API_KEY from your env config.
+ * The main entry point for parsing a search query.
+ * It iterates through the available parsers and uses the first one that
+ * returns a successful result.
+ * @param query The user's search string.
+ * @returns A ParsedQuery object or null if all parsers fail.
  */
+/**
+ * The main entry point for parsing a search query.
+ * It iterates through the available parsers and uses the first one that
+ * returns a successful result.
+ * @param query The user's search string.
+ * @returns A ParsedQuery object or null if all parsers fail.
+ */
+
+// Exported for testing purposes only, to allow monkey-patching in test environments.
+export const __test_only__ = {
+  parsers,
+};
+
+export async function parseQuery(query: string): Promise<ParsedQuery | null> {
+  if (!query) return null;
+
+  for (const { name, parser } of parsers) {
+    try {
+      const result = await parser(query);
+      if (result) {
+        console.log(`Query parsed successfully with: ${name}`);
+        return result;
+      }
+    } catch (error) {
+      console.warn(`${name} parser failed. Trying next parser...`);
+    }
+  }
+
+  console.error("All query parsers failed. No result could be generated.");
+  return null;
+}

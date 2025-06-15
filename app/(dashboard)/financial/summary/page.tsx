@@ -37,12 +37,7 @@ const FinancialSummaryPage = () => {
   ];
   const maxPerformanceValue = Math.max(...monthlyPerformance.flatMap(item => [item.revenue, item.expenses]));
 
-
   const expenseCategories = [
-    { name: 'Salaries', value: 40, color: '#3B82F6' }, // Blue
-    { name: 'Marketing', value: 25, color: '#10B981' }, // Green
-    { name: 'Operations', value: 20, color: '#F59E0B' }, // Amber
-    // Mapping static category definitions to translated names
     { nameKey: "summaryPage.charts.expenseCategories.categories.salaries", value: 40, color: '#3B82F6' },
     { nameKey: "summaryPage.charts.expenseCategories.categories.marketing", value: 25, color: '#10B981' },
     { nameKey: "summaryPage.charts.expenseCategories.categories.operations", value: 20, color: '#F59E0B' },
@@ -125,7 +120,7 @@ const FinancialSummaryPage = () => {
                             title={t('summaryPage.charts.monthlyPerformance.tooltipExpenses', {value: item.expenses.toLocaleString()})}
                         ></div>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">{item.month}</p> {/* Month initials are usually not translated or handled by date lib's locale */}
+                    <p className="text-xs text-gray-500 mt-1">{item.month}</p>
                   </div>
                 </div>
               ))}
@@ -143,7 +138,7 @@ const FinancialSummaryPage = () => {
             <div className="h-72 bg-gray-50 p-4 rounded flex items-center justify-center">
               <div className="flex flex-wrap justify-center items-center">
                 {expenseCategories.map(cat => (
-                  <div key={cat.name} className="flex flex-col items-center m-2">
+                  <div key={cat.nameKey} className="flex flex-col items-center m-2">
                      <div
                         style={{width: '60px', height: '60px', backgroundColor: cat.color, borderRadius: '50%'}}
                         className="flex items-center justify-center shadow"
