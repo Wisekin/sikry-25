@@ -11,17 +11,20 @@ import type { FinancialRecord, CampaignROI, FinancialFilters } from "@/src/types
 import { FinancialSummaryPanel } from "@/src/components/financial/FinancialSummaryPanel"
 import { DollarSign, Download, Filter, Plus, Search, TrendingUp, TrendingDown, Calendar } from "lucide-react"
 import { format } from "date-fns"
+import '@/src/i18n/config.client'
 
 export default function FinancialDashboard() {
-  const { t } = useTranslation()
+  const { t, ready } = useTranslation(['financialPage', 'common'])
   const [records, setRecords] = useState<FinancialRecord[]>([])
   const [campaignROI, setCampaignROI] = useState<CampaignROI[]>([])
   const [loading, setLoading] = useState(true)
   const [filters, setFilters] = useState<FinancialFilters>({ source_type: "", type: "", currency: "" })
 
   useEffect(() => {
-    fetchData()
-  }, [filters])
+    if (ready) {
+      fetchData()
+    }
+  }, [filters, ready])
 
   const fetchData = async () => {
     try {
@@ -106,17 +109,17 @@ export default function FinancialDashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">{t("financialPage:dashboard.title")}</h1>
-          <p className="text-muted-foreground">{t("financialPage:dashboard.description")}</p>
+          <h1 className="text-3xl font-bold">{t("dashboard.title")}</h1>
+          <p className="text-muted-foreground">{t("dashboard.description")}</p>
         </div>
         <div className="flex gap-2">
           <Button onClick={exportToCSV} variant="outline">
             <Download className="h-4 w-4 mr-2" />
-            {t("common:export")}
+            {t("buttons.export")}
           </Button>
           <Button>
             <Plus className="h-4 w-4 mr-2" />
-            {t("financialPage:buttons.addRecord")}
+            {t("buttons.addRecord")}
           </Button>
         </div>
       </div>
@@ -129,17 +132,17 @@ export default function FinancialDashboard() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Filter className="h-5 w-5" />
-            {t("common:filters")}
+            {t("filter.title")}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">{t("common:search")}</label>
+              <label className="text-sm font-medium">{t("filter.search")}</label>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder={t("financialPage:filter.searchPlaceholder")}
+                  placeholder={t("filter.searchPlaceholder")}
                   value={filters.search || ""}
                   onChange={(e) => handleFilterChange("search", e.target.value)}
                   className="pl-10"
@@ -148,52 +151,52 @@ export default function FinancialDashboard() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">{t("financialPage:filter.sourceTypeLabel")}</label>
+              <label className="text-sm font-medium">{t("filter.sourceTypeLabel")}</label>
               <Select
                 value={filters.source_type || "all"}
                 onValueChange={(value) => handleFilterChange("source_type", value)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder={t("common:all")} />
+                  <SelectValue placeholder={t("filter.all")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">{t("common:all")}</SelectItem>
-                  <SelectItem value="campaign">{t("financialPage:filter.sourceTypeOptions.campaign")}</SelectItem>
-                  <SelectItem value="contact">{t("financialPage:filter.sourceTypeOptions.contact")}</SelectItem>
-                  <SelectItem value="scraper">{t("financialPage:filter.sourceTypeOptions.scraper")}</SelectItem>
-                  <SelectItem value="subscription">{t("financialPage:filter.sourceTypeOptions.subscription")}</SelectItem>
-                  <SelectItem value="manual">{t("financialPage:filter.sourceTypeOptions.manual")}</SelectItem>
+                  <SelectItem value="all">{t("filter.all")}</SelectItem>
+                  <SelectItem value="campaign">{t("filter.sourceTypeOptions.campaign")}</SelectItem>
+                  <SelectItem value="contact">{t("filter.sourceTypeOptions.contact")}</SelectItem>
+                  <SelectItem value="scraper">{t("filter.sourceTypeOptions.scraper")}</SelectItem>
+                  <SelectItem value="subscription">{t("filter.sourceTypeOptions.subscription")}</SelectItem>
+                  <SelectItem value="manual">{t("filter.sourceTypeOptions.manual")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">{t("financialPage:filter.typeLabel")}</label>
+              <label className="text-sm font-medium">{t("filter.typeLabel")}</label>
               <Select value={filters.type || "all"} onValueChange={(value) => handleFilterChange("type", value)}>
                 <SelectTrigger>
-                  <SelectValue placeholder={t("common:all")} />
+                  <SelectValue placeholder={t("filter.all")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">{t("common:all")}</SelectItem>
-                  <SelectItem value="revenue">{t("financialPage:types.revenue")}</SelectItem>
-                  <SelectItem value="cost">{t("financialPage:types.cost")}</SelectItem>
-                  <SelectItem value="expense">{t("financialPage:types.expense")}</SelectItem>
-                  <SelectItem value="refund">{t("financialPage:types.refund")}</SelectItem>
+                  <SelectItem value="all">{t("filter.all")}</SelectItem>
+                  <SelectItem value="revenue">{t("types.revenue")}</SelectItem>
+                  <SelectItem value="cost">{t("types.cost")}</SelectItem>
+                  <SelectItem value="expense">{t("types.expense")}</SelectItem>
+                  <SelectItem value="refund">{t("types.refund")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">{t("financialPage:filter.currencyLabel")}</label>
+              <label className="text-sm font-medium">{t("filter.currencyLabel")}</label>
               <Select
                 value={filters.currency || "all"}
                 onValueChange={(value) => handleFilterChange("currency", value)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder={t("common:all")} />
+                  <SelectValue placeholder={t("filter.all")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">{t("common.all")}</SelectItem>
+                  <SelectItem value="all">{t("filter.all")}</SelectItem>
                   <SelectItem value="USD">USD</SelectItem>
                   <SelectItem value="EUR">EUR</SelectItem>
                   <SelectItem value="GBP">GBP</SelectItem>
@@ -209,7 +212,7 @@ export default function FinancialDashboard() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="h-5 w-5" />
-            {t("financialPage:campaignROITable.title")}
+            {t("campaignROITable.title")}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -217,11 +220,11 @@ export default function FinancialDashboard() {
             <table className="w-full">
               <thead>
                 <tr className="border-b">
-                  <th className="text-left p-2">{t("financialPage:campaignROITable.headers.campaign")}</th>
-                  <th className="text-right p-2">{t("financialPage:campaignROITable.headers.revenue")}</th>
-                  <th className="text-right p-2">{t("financialPage:campaignROITable.headers.costs")}</th>
-                  <th className="text-right p-2">{t("financialPage:campaignROITable.headers.netProfit")}</th>
-                  <th className="text-right p-2">{t("financialPage:campaignROITable.headers.roi")}</th>
+                  <th className="text-left p-2">{t("campaignROITable.headers.campaign")}</th>
+                  <th className="text-right p-2">{t("campaignROITable.headers.revenue")}</th>
+                  <th className="text-right p-2">{t("campaignROITable.headers.costs")}</th>
+                  <th className="text-right p-2">{t("campaignROITable.headers.netProfit")}</th>
+                  <th className="text-right p-2">{t("campaignROITable.headers.roi")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -260,7 +263,7 @@ export default function FinancialDashboard() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <DollarSign className="h-5 w-5" />
-            {t("financialPage:recordsTable.title")}
+            {t("recordsTable.title")}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -268,12 +271,9 @@ export default function FinancialDashboard() {
             <table className="w-full">
               <thead>
                 <tr className="border-b">
-                  <th className="text-left p-2">{t("common:date")}</th>
-                  <th className="text-left p-2">{t("common:type")}</th>
-                  <th className="text-left p-2">{t("financialPage:recordsTable.headers.source")}</th>
-                  <th className="text-right p-2">{t("financialPage:recordsTable.headers.amount")}</th>
-                  <th className="text-left p-2">{t("financialPage:recordsTable.headers.category")}</th>
-                  <th className="text-left p-2">{t("common:description")}</th>
+                  <th className="text-left p-2">{t("recordsTable.headers.source")}</th>
+                  <th className="text-right p-2">{t("recordsTable.headers.amount")}</th>
+                  <th className="text-left p-2">{t("recordsTable.headers.category")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -281,23 +281,14 @@ export default function FinancialDashboard() {
                   <tr key={record.id} className="border-b hover:bg-muted/50">
                     <td className="p-2">
                       <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4 text-muted-foreground" />
-                        {format(new Date(record.recorded_at), "MMM dd, yyyy")}
+                        <Badge variant="outline" className={getTypeColor(record.type)}>
+                          {t(`types.${record.type}`)}
+                        </Badge>
+                        <span>{record.source_type}</span>
                       </div>
                     </td>
-                    <td className="p-2">
-                      <Badge className={getTypeColor(record.type)}>{t(`financialPage:types.${record.type}`)}</Badge>
-                    </td>
-                    <td className="p-2 capitalize">{record.source_type}</td>
-                    <td
-                      className={`p-2 text-right font-semibold ${
-                        record.type === "revenue" ? "text-green-600" : "text-red-600"
-                      }`}
-                    >
-                      {formatCurrency(record.amount, record.currency)}
-                    </td>
+                    <td className="p-2 text-right font-medium">{formatCurrency(record.amount, record.currency)}</td>
                     <td className="p-2">{record.category || "-"}</td>
-                    <td className="p-2 text-muted-foreground max-w-xs truncate">{record.description || "-"}</td>
                   </tr>
                 ))}
               </tbody>

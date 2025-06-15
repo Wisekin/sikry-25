@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import '@/i18n/config.client'
+import '@/src/i18n/config.client'
 import EnterprisePageHeader from '@/src/components/core/layout/EnterprisePageHeader';
 import QualityMetricCard from '@/src/components/ui/quality-metric-card';
 import { DollarSign, TrendingUp, TrendingDown, PieChart, BarChart2, AlertTriangle } from 'lucide-react';

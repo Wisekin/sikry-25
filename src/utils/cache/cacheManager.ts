@@ -1,4 +1,4 @@
-import { createClient } from "@/src/utils/supabase/client"
+import { createClient } from "@/src/utils/supabase/server"
 import type { SupabaseClient } from '@supabase/supabase-js'
 const ORGANIZATION_TIERS: Record<string, { cache: { ttl: number; maxEntries: number; priority: number; } }> = {
     starter: {

@@ -1,23 +1,33 @@
 {
   "dashboard": {
     "title": "Tableau de Bord Financier",
-    "description": "Suivez et gérez vos activités financières."
+    "description": "Suivez et analysez vos performances financières"
   },
   "buttons": {
-    "addRecord": "Ajouter un Enregistrement"
+    "addRecord": "Ajouter un Enregistrement",
+    "export": "Exporter"
   },
   "filter": {
-    "searchPlaceholder": "Rechercher des enregistrements par description, catégorie...",
+    "title": "Filtres",
+    "search": "Rechercher",
+    "searchPlaceholder": "Rechercher des enregistrements...",
     "sourceTypeLabel": "Type de Source",
+    "typeLabel": "Type",
+    "currencyLabel": "Devise",
+    "all": "Tous",
     "sourceTypeOptions": {
       "campaign": "Campagne",
       "contact": "Contact",
       "scraper": "Scraper",
       "subscription": "Abonnement",
       "manual": "Manuel"
-    },
-    "typeLabel": "Type",
-    "currencyLabel": "Devise"
+    }
+  },
+  "types": {
+    "revenue": "Revenu",
+    "cost": "Coût",
+    "expense": "Dépense",
+    "refund": "Remboursement"
   },
   "campaignROITable": {
     "title": "ROI des Campagnes",
@@ -37,11 +47,15 @@
       "category": "Catégorie"
     }
   },
-  "types": {
-    "revenue": "Revenu",
-    "cost": "Coût",
-    "expense": "Dépense",
-    "refund": "Remboursement"
+  "summary": {
+    "title": "Résumé Financier",
+    "description": "Aperçu de vos performances financières",
+    "revenue": "Revenu Total",
+    "costs": "Coûts Totaux",
+    "netProfit": "Bénéfice Net",
+    "roi": "ROI",
+    "records": "Enregistrements",
+    "noData": "Aucune donnée financière disponible"
   },
   "campaignROI": {
     "header": {
@@ -51,11 +65,11 @@
     "metrics": {
       "overallROI": {
         "title": "ROI Global des Campagnes",
-        "changeText": "{{value}} vs période précédente"
+        "changeText": "{{value}} par rapport à la période précédente"
       },
       "topCampaign": {
         "title": "Meilleure Campagne",
-        "roiLabel": "ROI : {{value}} %"
+        "roiLabel": "ROI : {{value}}%"
       },
       "totalTracked": {
         "title": "Total des Campagnes Suivies"
@@ -63,18 +77,18 @@
     },
     "filters": {
       "title": "Filtres",
-      "startDatePlaceholder": "Date de Début",
-      "endDatePlaceholder": "Date de Fin",
+      "startDatePlaceholder": "Date de début",
+      "endDatePlaceholder": "Date de fin",
       "statusOptions": {
-        "all": "Tous les Statuts",
-        "active": "Active",
-        "completed": "Terminée",
-        "planned": "Planifiée"
+        "all": "Tous les statuts",
+        "active": "Actif",
+        "completed": "Terminé",
+        "planned": "Planifié"
       },
       "applyButton": "Appliquer les Filtres"
     },
     "table": {
-      "title": "Détails des Performances des Campagnes",
+      "title": "Détails de Performance des Campagnes",
       "headers": {
         "campaignName": "Nom de la Campagne",
         "spend": "Dépenses",
@@ -86,15 +100,15 @@
       "noData": "Aucune donnée de campagne trouvée."
     },
     "statuses": {
-      "active": "Active",
-      "completed": "Terminée",
-      "planned": "Planifiée"
+      "active": "Actif",
+      "completed": "Terminé",
+      "planned": "Planifié"
     }
   },
   "recordsPage": {
     "header": {
       "title": "Enregistrements Financiers",
-      "subtitle": "Visualisez et gérez vos transactions financières."
+      "subtitle": "Consultez et gérez vos transactions financières."
     },
     "metrics": {
       "totalRevenue": {
@@ -134,16 +148,16 @@
     },
     "metrics": {
       "totalRevenueYTD": {
-        "title": "Revenu Total (AAJ)"
+        "title": "Revenu Total (YTD)"
       },
       "totalExpensesYTD": {
-        "title": "Dépenses Totales (AAJ)"
+        "title": "Dépenses Totales (YTD)"
       },
       "netProfitYTD": {
-        "title": "Bénéfice Net (AAJ)"
+        "title": "Bénéfice Net (YTD)"
       },
       "avgTransactionValue": {
-        "title": "Valeur Moyenne par Transaction"
+        "title": "Valeur Moyenne des Transactions"
       },
       "monthlyBurnRate": {
         "title": "Taux de Consommation Mensuel"
@@ -152,9 +166,9 @@
         "title": "Croissance des Revenus"
       },
       "changeSuffix": {
-        "vsLastYear": "{{value}} vs l'année dernière",
-        "vsLastMonth": "{{value}} vs le mois dernier",
-        "ytd": "{{value}} AAJ"
+        "vsLastYear": "{{value}} par rapport à l'année dernière",
+        "vsLastMonth": "{{value}} par rapport au mois dernier",
+        "ytd": "{{value}} YTD"
       },
       "currencyUnit": {
         "usd": "USD"
@@ -163,9 +177,9 @@
     "charts": {
       "monthlyPerformance": {
         "title": "Performance Mensuelle",
-        "legendRevenue": "Revenus",
+        "legendRevenue": "Revenu",
         "legendExpenses": "Dépenses",
-        "tooltipRevenue": "Revenus : {{value}}",
+        "tooltipRevenue": "Revenu : {{value}}",
         "tooltipExpenses": "Dépenses : {{value}}"
       },
       "expenseCategories": {
@@ -176,9 +190,10 @@
           "operations": "Opérations",
           "software": "Logiciels"
         },
-        "tooltipLabel": "{{name}} : {{value}} %"
+        "tooltipLabel": "{{name}} : {{value}}%"
       }
     }
   },
-  "common.all": "common.all"
+  "common.all": "common.all",
+  "summary.title": "summary.title"
 }

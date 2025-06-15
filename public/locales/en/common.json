@@ -292,5 +292,9 @@
   "ai.quickSuggestions": "ai.quickSuggestions",
   "ai.close": "ai.close",
   "actions.cancel": "actions.cancel",
-  "nav.statistics.title": "nav.statistics.title"
+  "nav.statistics.title": "nav.statistics.title",
+  "common.all": "common.all",
+  "filters": "Filters",
+  "all": "All",
+  "export": "Export"
 }

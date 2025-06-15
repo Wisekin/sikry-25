@@ -339,5 +339,6 @@
   "ai.close": "ai.close",
   "ai.placeholder": "ai.placeholder",
   "ai.title": "ai.title",
-  "ai.quickSuggestions": "ai.quickSuggestions"
+  "ai.quickSuggestions": "ai.quickSuggestions",
+  "common.all": "common.all"
 }
