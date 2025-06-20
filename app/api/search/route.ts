@@ -60,6 +60,8 @@ export async function GET(request: NextRequest) {
     // Parse the query using the modular parser
     const parsedQuery = await parseQuery(query);
 
+    // DEBUG: Log the parsed query to inspect what the AI is returning
+
     // Call Supabase (internal DB)
     const supabaseResult = await performSearch(query, scope, organizationId);
     
