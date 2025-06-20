@@ -889,6 +889,26 @@ CREATE POLICY "Users can select their own profile"
   FOR SELECT
   USING (auth.uid() = id);
 
+--Policy added on the 20 of june
+CREATE POLICY "Org members can access their companies" ON discovered_companies
+  FOR ALL
+  TO authenticated
+  USING (
+    EXISTS (
+      SELECT 1 
+      FROM team_members tm 
+      WHERE tm.organization_id = discovered_companies.organization_id 
+      AND tm.user_id = auth.uid()
+    )
+  )
+  WITH CHECK (
+    EXISTS (
+      SELECT 1 
+      FROM team_members tm 
+      WHERE tm.organization_id = discovered_companies.organization_id 
+      AND tm.user_id = auth.uid()
+    )
+  );
 
 --WE FINALLY DECIDED TO USE THE USERS TABLE INSTEAD OF PROFILE
 -- Function to insert into public.users when a new auth.users is created

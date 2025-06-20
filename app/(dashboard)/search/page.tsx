@@ -136,6 +136,12 @@ interface ResultsGridProps {
   layout?: 'grid' | 'list';
 }
 
+// Utility to truncate long domains for display
+function truncateDomain(domain: string, maxLength = 24) {
+  if (!domain) return '';
+  return domain.length > maxLength ? domain.slice(0, maxLength - 3) + '...' : domain;
+}
+
 // New Company Card Component
 const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
   const getConfidenceColor = (score: number) => {
@@ -155,7 +161,8 @@ const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
               <div className="flex-grow grid grid-cols-4 gap-4 items-center">
                   <div>
                       <h3 className="font-bold text-base text-[#1B1F3B] group-hover:text-white">{company.name}</h3>
-                      <a href={`http://${company.domain}`} target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 group-hover:text-gray-300 hover:underline">{company.domain}</a>
+                      {/* Truncate domain and show tooltip for full domain */}
+                      <a href={`http://${company.domain}`} target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 group-hover:text-gray-300 hover:underline" title={company.domain}>{truncateDomain(company.domain)}</a>
                   </div>
                   <div className="text-sm text-gray-600 group-hover:text-gray-200 flex items-center gap-2"><Briefcase className="w-4 h-4 text-gray-400 group-hover:text-sky-300" /> {company.industry}</div>
                   <div className="text-sm text-gray-600 group-hover:text-gray-200 flex items-center gap-2"><MapPin className="w-4 h-4 text-gray-400 group-hover:text-sky-300" /> {company.location}</div>
@@ -176,8 +183,9 @@ const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
             <img src={company.logo || `https://ui-avatars.com/api/?name=${company.name.replace(/\s/g, '+')}&background=EBF4FF&color=1D4ED8`} alt={`${company.name} logo`} className="w-12 h-12 rounded-md object-contain" />
             <div>
               <h3 className="font-bold text-base text-[#1B1F3B] group-hover:text-white">{company.name}</h3>
-              <a href={`http://${company.domain}`} target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 group-hover:text-gray-300 hover:underline flex items-center gap-1">
-                {company.domain} <ExternalLink className="w-3 h-3" />
+              {/* Truncate domain and show tooltip for full domain */}
+              <a href={`http://${company.domain}`} target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 group-hover:text-gray-300 hover:underline flex items-center gap-1" title={company.domain}>
+                {truncateDomain(company.domain)} <ExternalLink className="w-3 h-3" />
               </a>
             </div>
           </div>
@@ -245,7 +253,7 @@ function SearchContent() {
     industry: t('filters.allIndustries'),
     location: "",
     employeeCount: "All Sizes",
-    confidenceScore: 70,
+    confidenceScore: 0,
     hasEmail: false,
     hasPhone: false,
   });
@@ -263,7 +271,7 @@ function SearchContent() {
       industry: t('filters.allIndustries'),
       location: "",
       employeeCount: "All Sizes",
-      confidenceScore: 70,
+      confidenceScore: 0,
       hasEmail: false,
       hasPhone: false,
     });
@@ -317,9 +325,10 @@ function SearchContent() {
           logo: item.logo || '',
           location: item.location || '',
           industry: item.industry || '',
-          employees: item.size || '',
+          // FIX: Prefer employee_count from DB, fallback to item.size
+          employees: item.employee_count || item.size || '',
           description: item.description || '',
-          confidenceScore: item.confidence || 75,
+          confidenceScore: item.confidence || 0,
           extractedData: {
             emails: item.emails || [],
             phones: item.phones || [],

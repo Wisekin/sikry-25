@@ -111,5 +111,6 @@
   "common.actions": "common.actions",
   "search.noResults.title": "search.noResults.title",
   "search.noResults.description": "search.noResults.description",
-  "common.loading": "common.loading"
+  "common.loading": "common.loading",
+  "status.pending": "status.pending"
 }

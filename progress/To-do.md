@@ -7,3 +7,8 @@ What it is: Imagine your cache is like a small, fast-access shelf. When it gets 
 How it works: The old 
 CacheManager
  was designed to track an access_count for each cached item. When the cache reached its size limit (e.g., 1000 entries for a "starter" plan), the pruning function would run and delete the 10% of entries that were accessed the least.)
+
+
+ * **Usage-Based Pruning:** This feature helps
+
+ * **The feature to redirect the user google if the AI and fallback  failled to find a match** is not supported in your current schema because it depends on a database structure that

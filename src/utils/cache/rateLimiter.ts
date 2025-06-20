@@ -1,6 +1,6 @@
-import { createClient } from "@/src/utils/supabase/server"
 import type { NextRequest } from "next/server"
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { createClient } from "@/src/utils/supabase/server"
 type RateLimitTier = {
   maxRequests: number;
   windowMs: number;

@@ -22,7 +22,18 @@ export async function mergeAndRankResults(results: SearchResult[], parsedQuery: 
 
   for (const result of results) {
     // Normalize domain to avoid www. subdomain issues
-    const domain = result.domain ? new URL(result.domain).hostname.replace(/^www\./, '') : null;
+    // FIX: Ensure result.domain is a valid URL by prepending 'https://' if needed
+    let domain = null;
+    if (result.domain) {
+      try {
+        // If domain does not start with http, prepend https://
+        const urlStr = result.domain.startsWith('http') ? result.domain : `https://${result.domain}`;
+        domain = new URL(urlStr).hostname.replace(/^www\./, '');
+      } catch (e) {
+        // If domain is invalid, fallback to null
+        domain = null;
+      }
+    }
     const key = domain || `${result.name?.toLowerCase() || ''}|${result.location_text?.toLowerCase() || ''}`;
 
     if (merged.has(key)) {
