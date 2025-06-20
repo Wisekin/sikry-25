@@ -1,13 +1,13 @@
 {
   "dashboard": {
     "title": "Financial Dashboard",
-    "description": "Track and manage your financial activities."
+    "description": "Track and analyze your financial performance"
   },
   "buttons": {
     "addRecord": "Add Record"
   },
   "filter": {
-    "searchPlaceholder": "Search records by description, category...",
+    "searchPlaceholder": "Search records...",
     "sourceTypeLabel": "Source Type",
     "sourceTypeOptions": {
       "campaign": "Campaign",
@@ -18,6 +18,12 @@
     },
     "typeLabel": "Type",
     "currencyLabel": "Currency"
+  },
+  "types": {
+    "revenue": "Revenue",
+    "cost": "Cost",
+    "expense": "Expense",
+    "refund": "Refund"
   },
   "campaignROITable": {
     "title": "Campaign ROI",
@@ -37,11 +43,15 @@
       "category": "Category"
     }
   },
-  "types": {
-    "revenue": "Revenue",
-    "cost": "Cost",
-    "expense": "Expense",
-    "refund": "Refund"
+  "summary": {
+    "title": "Financial Summary",
+    "description": "Overview of your financial performance",
+    "revenue": "Total Revenue",
+    "costs": "Total Costs",
+    "netProfit": "Net Profit",
+    "roi": "ROI",
+    "records": "Records",
+    "noData": "No financial data available"
   },
   "campaignROI": {
     "header": {
@@ -180,5 +190,6 @@
       }
     }
   },
-  "common.all": "common.all"
+  "common.all": "common.all",
+  "summary.title": "summary.title"
 }

@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/src/utils/supabase/server'
-import type { ApiResponse, SearchResult, SearchScope } from '@/src/types'
+import type { ApiResponse, SearchScope } from '@/src/types';
+import type { SearchResult } from '@/src/types/search';
 import { CacheManager } from '@/src/utils/cache/cacheManager'
 import { DbRateLimiter } from '@/src/utils/cache/rateLimiter'
 
@@ -20,47 +21,34 @@ export async function GET(request: NextRequest) {
     const url = new URL(request.url)
     const query = url.searchParams.get('q') || ''
     const scope = (url.searchParams.get('scope') || 'companies') as SearchScope
-    const user = url.searchParams.get('user')
-
-    // Get organization context
-    const { data: teamMember } = await supabase
-      .from('team_members')
-      .select('organization_id, organizations(plan)')
-      .eq('user_id', user)
-      .single()
-
-    if (!teamMember) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: 'Organization not found',
-          errors: [{ code: 'NOT_FOUND', message: 'Organization not found' }]
-        } as ApiResponse,
-        { status: 404 }
-      )
-    }
-
     // Initialize rate limiter and check limits
-    const rateLimiter = new DbRateLimiter()
-    const { allowed: canProceed } = await rateLimiter.isAllowed(request)
+    const rateLimiter = new DbRateLimiter();
+    const { 
+      allowed: canProceed, 
+      status, 
+      message, 
+      userId, 
+      organizationId, 
+      plan 
+    } = await rateLimiter.isAllowed(request);
 
-    if (!canProceed) {
+    if (!canProceed || !userId || !organizationId || !plan) {
       return NextResponse.json(
         {
           success: false,
-          message: 'Rate limit exceeded',
-          errors: [{ code: 'RATE_LIMIT', message: 'Too many requests. Please try again later.' }]
+          message: message || 'Rate limit exceeded or unauthorized.',
+          errors: [{ code: 'RATE_LIMIT_OR_AUTH_ERROR', message: message || 'Too many requests or user context not found.' }]
         } as ApiResponse,
-        { status: 429 }
-      )
+        { status: status || 429 }
+      );
     }
 
     // Initialize cache manager
-    const cacheManager = new CacheManager(teamMember.organization_id, teamMember.organizations?.[0]?.plan || 'starter')
+    const cacheManager = new CacheManager(organizationId, plan);
     const cacheKey = `search:${scope}:${query}`
 
     // Try to get from cache first
-    const cachedResult = await cacheManager.get(cacheKey, scope)
+    const cachedResult = await cacheManager.get(cacheKey)
     if (cachedResult) {
       return NextResponse.json(cachedResult)
     }
@@ -72,11 +60,38 @@ export async function GET(request: NextRequest) {
     // Parse the query using the modular parser
     const parsedQuery = await parseQuery(query);
 
-    // Call Supabase (internal DB)
-    const supabaseResult = await performSearch(query, scope, teamMember.organization_id);
+    // DEBUG: Log the parsed query to inspect what the AI is returning
 
-    // Call Companies House adapter (mock for now)
-    const companiesHouseResults = await companiesHouseAdapter.search(parsedQuery);
+    // Call Supabase (internal DB)
+    const supabaseResult = await performSearch(query, scope, organizationId);
+    
+    if (!supabaseResult.success) {
+        console.error("Search failed due to database error:", supabaseResult.error);
+        return NextResponse.json(
+            {
+                success: false,
+                message: 'An error occurred during the database search.',
+                errors: [supabaseResult.error]
+            } as ApiResponse,
+            { status: 500 }
+        );
+    }
+
+    // Call Companies House adapter and map results
+    let companiesHouseResults: SearchResult[] = [];
+    if (parsedQuery) {
+      const adapterResults = await companiesHouseAdapter.search(parsedQuery);
+      companiesHouseResults = adapterResults.map((item, index) => ({
+        id: `ch-${Date.now()}-${index}`,
+        name: item.name,
+        domain: item.url,
+        description: item.description,
+        industry: item.industry,
+        location_text: item.location,
+        source: 'companies_house',
+        confidence: item.confidence,
+      }));
+    }
 
     // Merge results (simple concat, dedupe by name+location)
     const allResults = [
@@ -91,13 +106,21 @@ export async function GET(request: NextRequest) {
       return true;
     });
 
+    const sources: string[] = [];
+    if (supabaseResult.data && supabaseResult.data.length > 0) {
+      sources.push('internal');
+    }
+    if (companiesHouseResults.length > 0) {
+      sources.push('companies_house');
+    }
+
     const response = {
       success: true,
       data: mergedResults,
       metadata: {
         query,
         parsedQuery,
-        sources: ['supabase', 'companies_house'],
+        sources,
         timestamp: new Date().toISOString(),
         originalSupabaseCount: supabaseResult.data?.length || 0,
         companiesHouseCount: companiesHouseResults.length,
@@ -107,9 +130,10 @@ export async function GET(request: NextRequest) {
 
     // Store search metrics
     await supabase.from('search_history').insert({
-      organization_id: teamMember.organization_id,
-      user_id: user,
+      organization_id: organizationId,
+      user_id: userId,
       search_query: query,
+      sources,
       search_filters: parsedQuery || {},
       search_scope: scope,
       search_type: 'modular',
@@ -120,10 +144,8 @@ export async function GET(request: NextRequest) {
     // Cache the successful response
     await cacheManager.set({
       cacheKey,
-      cacheValue: response,
-      cacheScope: scope,
+      data: response,
       ttlSeconds: CACHE_TTL[scope] || CACHE_TTL.default,
-      accessCount: 0,
       metadata: {
         query,
         parsedQuery,
@@ -140,7 +162,7 @@ export async function GET(request: NextRequest) {
       {
         success: false,
         message: 'Internal server error',
-        errors: [{ code: 'INTERNAL_ERROR', message: 'An unexpected error occurred' }]
+        errors: [{ code: 'INTERNAL_ERROR', message: (error as Error).message || 'An unexpected error occurred' }]
       } as ApiResponse,
       { status: 500 }
     )
@@ -148,34 +170,50 @@ export async function GET(request: NextRequest) {
 }
 
 async function performSearch(query: string, scope: string, organizationId: string) {
+  try {
+    // Base query
+    let searchQuery = supabase.from(scope === 'companies' ? 'discovered_companies' : scope)
+      .select('*')
+      .eq('organization_id', organizationId)
 
-  // Base query
-  let searchQuery = supabase.from(scope === 'companies' ? 'discovered_companies' : scope)
-    .select('*')
-    .eq('organization_id', organizationId)
-
-  // Add search conditions based on scope
-  if (scope === 'companies') {
-    searchQuery = searchQuery.or(`name.ilike.%${query}%, description.ilike.%${query}%`)
-  } else if (scope === 'contacts') {
-    searchQuery = searchQuery.or(`name.ilike.%${query}%, email.ilike.%${query}%`)
-  } else {
-    searchQuery = searchQuery.textSearch('searchable_tsvector', query)
-  }
-
-  const { data, error } = await searchQuery.limit(50)
-
-  if (error) {
-    throw error
-  }
-
-  return {
-    success: true,
-    data,
-    metadata: {
-      query,
-      scope,
-      timestamp: new Date().toISOString()
+    // Add search conditions based on scope
+    if (scope === 'companies') {
+      searchQuery = searchQuery.textSearch('searchable_tsvector_en', query, {
+        type: 'websearch',
+        config: 'english'
+      })
+    } else if (scope === 'contacts') {
+      searchQuery = searchQuery.or(`name.ilike.%${query}%,email.ilike.%${query}%`)
+    } else {
+      searchQuery = searchQuery.textSearch('searchable_tsvector', query)
     }
+
+    const { data, error } = await searchQuery.limit(50)
+
+    if (error) {
+      console.error('Supabase search error in performSearch:', error);
+      return {
+        success: false,
+        data: null,
+        error: { code: 'DB_SEARCH_FAILED', message: 'Failed to execute database search.' }
+      };
+    }
+
+    return {
+      success: true,
+      data,
+      metadata: {
+        query,
+        scope,
+        timestamp: new Date().toISOString()
+      }
+    }
+  } catch (e) {
+      console.error('Unexpected error in performSearch:', e);
+      return {
+        success: false,
+        data: null,
+        error: { code: 'UNEXPECTED_DB_ERROR', message: 'An unexpected error occurred in the database module.' }
+      };
   }
 }

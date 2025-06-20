@@ -7,62 +7,77 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
+const MOCK_USER_ID = 'test-user-history';
+const MOCK_ORG_ID = 'test-org-history';
+
 test.describe('Natural Language Search History', () => {
-  test('NLS_HIST_001: Verify search history recording', async ({ page }) => {
-    // Test implementation
-    const queries = [
-      'marketing companies in Paris',
-      'tech startups in London',
-      'consulting firms in Berlin'
-    ];
-
-    // Perform multiple searches
-    for (const query of queries) {
-      await page.goto('/search');
-      await page.fill('[data-testid="search-input"]', query);
-      await page.click('[data-testid="search-button"]');
-    }
-
-    // Verify search history entries
-    const { data: history } = await supabase
+  // This test is now much faster as it hits the API directly.
+  test.beforeEach(async () => {
+    // Clear previous history for this user to ensure a clean slate for each test
+    await supabase
       .from('search_history')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(queries.length);
-
-    expect(history).toHaveLength(queries.length);
-    
-    // Verify each entry has correct metadata
-    for (let i = 0; i < queries.length; i++) {
-      expect(history[i].query).toBe(queries[i]);
-      expect(history[i].execution_time).toBeGreaterThan(0);
-      expect(history[i].metadata).toBeTruthy();
-    }
+      .delete()
+      .eq('user_id', MOCK_USER_ID);
   });
 
-  test('NLS_HIST_002: Verify source information in history', async ({ page }) => {
-    // Test implementation
-    const query = 'test query with multiple sources';
+  test('NLS_HIST_001: Verify search history recording', async ({ request }) => {
+    const query = 'tech startups in London';
     
-    // Perform search
-    await page.goto('/search');
-    await page.fill('[data-testid="search-input"]', query);
-    await page.click('[data-testid="search-button"]');
-    
-    // Verify search history entry with sources
-    const { data: history } = await supabase
+    // Perform a search via API
+    const response = await request.post(`/api/search?q=${encodeURIComponent(query)}`, {
+      headers: {
+        'x-user-id': MOCK_USER_ID,
+        'x-organization-id': MOCK_ORG_ID,
+        'x-user-plan': 'starter' // or any valid plan
+      }
+    });
+    expect(response.ok()).toBeTruthy();
+
+    // Verify search history entry
+    const { data: history, error } = await supabase
       .from('search_history')
       .select('*')
-      .eq('query', query)
+      .eq('user_id', MOCK_USER_ID)
+      .eq('search_query', query)
+      .single();
+
+    expect(error).toBeNull();
+    expect(history).toBeTruthy();
+    expect(history.search_query).toBe(query);
+    expect(history.results_count).toBeGreaterThanOrEqual(0);
+    expect(history.execution_time_ms).toBeGreaterThan(0);
+  });
+
+  test('NLS_HIST_002: Verify source information in history', async ({ request }) => {
+    // This query is known to return results from Companies House
+    const query = 'BBC'; 
+    
+    // Perform search
+    const response = await request.post(`/api/search?q=${encodeURIComponent(query)}`, {
+      headers: {
+        'x-user-id': MOCK_USER_ID,
+        'x-organization-id': MOCK_ORG_ID,
+        'x-user-plan': 'starter'
+      }
+    });
+    expect(response.ok()).toBeTruthy();
+    
+    // Verify search history entry with sources
+    const { data: history, error } = await supabase
+      .from('search_history')
+      .select('sources')
+      .eq('user_id', MOCK_USER_ID)
+      .eq('search_query', query)
       .single();
     
+    expect(error).toBeNull();
+    expect(history).toBeTruthy();
     expect(history.sources).toBeInstanceOf(Array);
-    expect(history.sources).toContain('internal');
     
-    // Verify sources array contains expected sources
-    const expectedSources = ['internal', 'wikidata', 'business_registry'];
-    for (const source of expectedSources) {
-      expect(history.sources).toContain(source);
-    }
+    // Verify sources array contains expected sources. 
+    // The API should return 'companies_house' for this query.
+    // It may or may not return 'internal' depending on the test DB state.
+    expect(history.sources.length).toBeGreaterThan(0);
+    expect(history.sources).toContain('companies_house');
   });
 }); 

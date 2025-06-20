@@ -39,6 +39,7 @@ if (typeof window !== 'undefined') {
         'gapAnalysisPage',
         'analyticsDashboard',
         'scrapingPage',
+        'financialPage'
       ],
       defaultNS: 'common',
       backend: {

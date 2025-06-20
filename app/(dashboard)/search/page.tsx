@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, Suspense, forwardRef } from "react"
+import { createClient } from '@/src/utils/supabase/client'
 import { useSearchParams } from "next/navigation"
 import { useTranslation } from 'react-i18next'
 import { Button } from "@/src/components/ui/button"
@@ -13,6 +14,23 @@ import {
   Filter, Download, Grid, Map as MapIcon, List, Loader2, X, ChevronDown, Globe, Linkedin, Database,
   Building2, Users, MapPin, BarChart3, Mail, Phone, Clock, RefreshCw, Star, ExternalLink, Briefcase, Tag
 } from "lucide-react"
+
+// Custom hook to debounce input
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
 
 // --- MOCK DATA & TYPES ---
 interface Company {
@@ -107,8 +125,19 @@ const mockCompanies: Company[] = [
 
 // --- REUSABLE COMPONENTS ---
 
+// --- REUSABLE COMPONENTS: TYPES ---
+interface CompanyCardProps {
+  company: Company;
+  layout?: 'grid' | 'list';
+}
+
+interface ResultsGridProps {
+  companies: Company[];
+  layout?: 'grid' | 'list';
+}
+
 // New Company Card Component
-const CompanyCard = ({ company, layout = 'grid' }: { company: Company, layout?: 'grid' | 'list' }) => {
+const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
   const getConfidenceColor = (score: number) => {
     if (score > 90) return { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' };
     if (score > 80) return { bg: 'bg-sky-50', text: 'text-sky-700', border: 'border-sky-200' };
@@ -168,8 +197,8 @@ const CompanyCard = ({ company, layout = 'grid' }: { company: Company, layout?: 
         <div className="flex flex-wrap gap-2">
             {company.extractedData.emails.length > 0 && <div className="flex items-center gap-1.5 text-xs bg-gray-100 group-hover:bg-gray-700 text-gray-700 group-hover:text-gray-200 rounded-full px-2 py-1"><Mail className="w-3 h-3"/> {company.extractedData.emails.length} Email(s)</div>}
             {company.extractedData.phones.length > 0 && <div className="flex items-center gap-1.5 text-xs bg-gray-100 group-hover:bg-gray-700 text-gray-700 group-hover:text-gray-200 rounded-full px-2 py-1"><Phone className="w-3 h-3"/> {company.extractedData.phones.length} Phone(s)</div>}
-            {company.extractedData.technologies.slice(0, 2).map(tech => (
-                <div key={tech} className="flex items-center gap-1.5 text-xs bg-gray-100 group-hover:bg-gray-700 text-gray-700 group-hover:text-gray-200 rounded-full px-2 py-1"><Tag className="w-3 h-3"/> {tech}</div>
+            {company.extractedData.technologies.slice(0, 2).map((tech, index) => (
+                <div key={`${tech}-${index}`} className="flex items-center gap-1.5 text-xs bg-gray-100 group-hover:bg-gray-700 text-gray-700 group-hover:text-gray-200 rounded-full px-2 py-1"><Tag className="w-3 h-3"/> {tech}</div>
             ))}
         </div>
       </div>
@@ -178,7 +207,7 @@ const CompanyCard = ({ company, layout = 'grid' }: { company: Company, layout?: 
 };
 
 
-const ResultsGrid = ({ companies, layout = 'grid' }: { companies: Company[], layout?: 'grid' | 'list' }) => {
+const ResultsGrid = ({ companies, layout = 'grid' }: ResultsGridProps) => {
     if (layout === 'list') {
         return (
             <div className="space-y-3">
@@ -200,19 +229,23 @@ const ResultsGrid = ({ companies, layout = 'grid' }: { companies: Company[], lay
 
 // Main Search Page Content
 function SearchContent() {
-  const { t } = useTranslation(['searchPage', 'common']);
+  const { t } = useTranslation(['searchPage', 'commsPage']);
   const searchParams = useSearchParams();
   const [query, setQuery] = useState(searchParams.get("q") || "");
+  const debouncedQuery = useDebounce(query, 500);
+  const [user, setUser] = useState<any>(null);
+  const supabase = createClient();
   const [companies, setCompanies] = useState<Company[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [noResults, setNoResults] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list" | "map">("grid");
   const [selectedSources, setSelectedSources] = useState<string[]>(["google", "linkedin"]);
   const [filters, setFilters] = useState({
     industry: t('filters.allIndustries'),
     location: "",
     employeeCount: "All Sizes",
-    confidenceScore: 70, // Default to a reasonable minimum
+    confidenceScore: 70,
     hasEmail: false,
     hasPhone: false,
   });
@@ -237,20 +270,47 @@ function SearchContent() {
   };
 
   useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    getUser();
+  }, [supabase.auth]);
+
+  useEffect(() => {
     const fetchCompanies = async () => {
+      if (!debouncedQuery) {
+        setCompanies([]);
+        setNoResults(false);
+        setError(null);
+        setLoading(false);
+        return;
+      }
+
       setLoading(true);
       setError(null);
+      setNoResults(false);
+
       try {
         const params = new URLSearchParams();
-        params.set('q', query);
+        params.set('q', debouncedQuery);
         params.set('scope', 'companies');
-        // TODO: set 'user' param from auth/session context if available
-        // params.set('user', userId);
+        if (user) {
+          params.set('user', user.id);
+        }
         const res = await fetch(`/api/search?${params.toString()}`);
-        if (!res.ok) throw new Error('Failed to fetch results');
+        if (!res.ok) {
+            const errorData = await res.json().catch(() => ({ message: 'Failed to fetch results' }));
+            throw new Error(errorData.message || 'Failed to fetch results');
+        }
         const data = await res.json();
-        // Map backend results to Company interface for display
-        setCompanies((data.data || []).map((item: any, idx: number) => ({
+        
+        const results = data.data || [];
+        if (results.length === 0) {
+          setNoResults(true);
+        }
+
+        setCompanies(results.map((item: any, idx: number) => ({
           id: item.id || `api-${idx}`,
           name: item.name || '',
           domain: item.domain || item.url || '',
@@ -273,9 +333,11 @@ function SearchContent() {
         setLoading(false);
       }
     };
-    fetchCompanies();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, query]);
+
+    if (user) {
+      fetchCompanies();
+    }
+  }, [debouncedQuery, user]);
 
   const filteredCompanies = companies.filter(company => {
     if (filters.industry !== "All Industries" && company.industry !== filters.industry) return false;
@@ -297,11 +359,14 @@ function SearchContent() {
             {t('companySearch.title', { ns: 'searchPage' })}
           </h1>
           <p className="text-gray-500 mt-1">
-            {loading 
-              ? t('searching', { ns: 'searchPage' }) 
-              : `${filteredCompanies.length} ${t('results.found', { ns: 'searchPage' })}`
-            }
+            {loading && t('searching', { ns: 'searchPage' })}
+            {!loading && !error && !noResults && `${filteredCompanies.length} ${t('results.found', { ns: 'searchPage' })}`}
           </p>
+          {noResults && !loading && (
+            <div className="mt-2 text-sm text-gray-600 bg-gray-50 border border-gray-200 rounded px-3 py-2">
+              {t('noResults', { ns: 'commsPage' })}
+            </div>
+          )}
           {error && (
             <div className="mt-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-2">
               {t('error', { ns: 'searchPage' })} {error}
@@ -318,6 +383,8 @@ function SearchContent() {
         <div className="grid md:grid-cols-3 gap-4 items-center">
           <div className="md:col-span-2">
             <Input 
+              value={query} 
+              onChange={(e) => setQuery(e.target.value)} 
               placeholder={t('searchPlaceholder', { ns: 'searchPage' })} 
               className="p-6 text-base border-gray-300 focus:ring-2 focus:ring-[#2A3050]" 
             />
@@ -421,6 +488,7 @@ function SearchContent() {
             <div className="text-center py-24 bg-white rounded-xl shadow-sm">
               <h3 className="text-xl font-semibold text-[#1B1F3B] mb-2">{t('noResults.title', 'No Results Found')}</h3>
               <p className="text-muted-foreground mb-4">{t('noResults.suggestion', 'Try adjusting your filters or search terms for a better match.')}</p>
+              {error && <p className="text-red-500">{error}</p>}
               <Button variant="outline" onClick={handleClearFilters}>{t('clearFilters', 'Clear All Filters')}</Button>
             </div>
           )}

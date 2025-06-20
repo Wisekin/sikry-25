@@ -21,7 +21,7 @@ export function FinancialSummaryPanel({
   currency = "USD",
   className,
 }: FinancialSummaryPanelProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['financialPage', 'common'])
   const [summary, setSummary] = useState<FinancialSummary | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -73,7 +73,7 @@ export function FinancialSummaryPanel({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <DollarSign className="h-5 w-5" />
-            {t("financial.summary")}
+            {t('financialPage:summary.title')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -91,11 +91,11 @@ export function FinancialSummaryPanel({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <DollarSign className="h-5 w-5" />
-            {t("financial.summary")}
+            {t('financialPage:summary.title')}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground">{t("financial.noData")}</p>
+          <p className="text-muted-foreground">{t('financialPage:summary.noData')}</p>
         </CardContent>
       </Card>
     )
@@ -108,23 +108,23 @@ export function FinancialSummaryPanel({
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <DollarSign className="h-5 w-5" />
-          {t("financial.summary")}
+          {t('financialPage:summary.title')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1">
-            <p className="text-sm text-muted-foreground">{t("financial.revenue")}</p>
+            <p className="text-sm text-muted-foreground">{t('financialPage:summary.revenue')}</p>
             <p className="text-lg font-semibold text-green-600">{formatCurrency(summary.total_revenue)}</p>
           </div>
           <div className="space-y-1">
-            <p className="text-sm text-muted-foreground">{t("financial.costs")}</p>
+            <p className="text-sm text-muted-foreground">{t('financialPage:summary.costs')}</p>
             <p className="text-lg font-semibold text-red-600">{formatCurrency(summary.total_costs)}</p>
           </div>
         </div>
 
         <div className="space-y-1">
-          <p className="text-sm text-muted-foreground">{t("financial.netProfit")}</p>
+          <p className="text-sm text-muted-foreground">{t('financialPage:summary.netProfit')}</p>
           <p className={`text-xl font-bold ${summary.net_profit >= 0 ? "text-green-600" : "text-red-600"}`}>
             {formatCurrency(summary.net_profit)}
           </p>
@@ -132,7 +132,7 @@ export function FinancialSummaryPanel({
 
         <div className="flex items-center justify-between">
           <div className="space-y-1">
-            <p className="text-sm text-muted-foreground">{t("financial.roi")}</p>
+            <p className="text-sm text-muted-foreground">{t('financialPage:summary.roi')}</p>
             <div className="flex items-center gap-2">
               <ROIIcon className={`h-4 w-4 ${getROIColor(summary.roi_percentage)}`} />
               <span className={`font-semibold ${getROIColor(summary.roi_percentage)}`}>
@@ -142,7 +142,7 @@ export function FinancialSummaryPanel({
           </div>
           <Badge variant="outline" className="flex items-center gap-1">
             <Calculator className="h-3 w-3" />
-            {summary.records_count} {t("financial.records")}
+            {summary.records_count} {t('financialPage:summary.records')}
           </Badge>
         </div>
       </CardContent>

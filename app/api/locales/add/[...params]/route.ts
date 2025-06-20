@@ -7,16 +7,16 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(
   request: Request,
-  { params: { params } }: { params: { params: [string, string] } }
+  context: { params: { params: [string, string] } }
 ) {
-  const [lng, ns] = params;
+  const [lng, ns] = context.params.params;
   const filePath = path.join(
     process.cwd(),
     'public',
     'locales',
     lng,
     `${ns}.json`
-  );
+  );                      
 
   let release;
   try {
