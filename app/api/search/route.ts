@@ -1,4 +1,5 @@
-import { type NextRequest, NextResponse } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server';
+import { mergeAndRankResults } from '@/src/search/search-logic';
 import { createClient } from '@/src/utils/supabase/server'
 import type { ApiResponse, SearchScope } from '@/src/types';
 import type { SearchResult } from '@/src/types/search';
@@ -56,6 +57,7 @@ export async function GET(request: NextRequest) {
     // --- Modular Search Integration ---
     const { parseQuery } = await import('@/src/search/queryParser');
     const { companiesHouseAdapter } = await import('@/src/search/adapters/companiesHouse');
+    const { wikidataAdapter } = await import('@/src/search/adapters/wikidata');
 
     // Parse the query using the modular parser
     const parsedQuery = await parseQuery(query);
@@ -93,18 +95,31 @@ export async function GET(request: NextRequest) {
       }));
     }
 
-    // Merge results (simple concat, dedupe by name+location)
+    // Call Wikidata adapter and map results
+    let wikidataResults: SearchResult[] = [];
+    if (parsedQuery) {
+        const adapterResults = await wikidataAdapter.search(parsedQuery);
+        wikidataResults = adapterResults.map((item, index) => ({
+            id: `wd-${Date.now()}-${index}`,
+            name: item.name,
+            domain: item.url,
+            description: item.description,
+            industry: item.industry,
+            location_text: item.location,
+            source: 'wikidata',
+            confidence: item.confidence,
+        }));
+    }
+
+    // --- Advanced Merging and Ranking ---
     const allResults = [
       ...(supabaseResult.data || []),
-      ...companiesHouseResults
+      ...companiesHouseResults,
+      ...wikidataResults,
     ];
-    const seen = new Set();
-    const mergedResults = allResults.filter(item => {
-      const key = `${item.name?.toLowerCase() || ''}|${item.location?.toLowerCase() || ''}`;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
+
+    const { mergedResults, mergeMetadata } = await mergeAndRankResults(allResults, parsedQuery);
+
 
     const sources: string[] = [];
     if (supabaseResult.data && supabaseResult.data.length > 0) {
@@ -112,6 +127,9 @@ export async function GET(request: NextRequest) {
     }
     if (companiesHouseResults.length > 0) {
       sources.push('companies_house');
+    }
+    if (wikidataResults.length > 0) {
+      sources.push('wikidata');
     }
 
     const response = {
@@ -124,7 +142,10 @@ export async function GET(request: NextRequest) {
         timestamp: new Date().toISOString(),
         originalSupabaseCount: supabaseResult.data?.length || 0,
         companiesHouseCount: companiesHouseResults.length,
-        mergedCount: mergedResults.length
+        wikidataCount: wikidataResults.length,
+        preMergeCount: allResults.length,
+        mergedCount: mergedResults.length,
+        mergeDetails: mergeMetadata,
       }
     };
 
@@ -168,6 +189,7 @@ export async function GET(request: NextRequest) {
     )
   }
 }
+
 
 async function performSearch(query: string, scope: string, organizationId: string) {
   try {

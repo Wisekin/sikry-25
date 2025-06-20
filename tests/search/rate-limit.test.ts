@@ -8,14 +8,14 @@ const supabase = createClient(
 );
 
 // Mock IDs for testing purposes. In a real scenario, this would come from an auth context.
-const MOCK_USER_ID = 'test-user-rate-limit';
-const MOCK_ORG_ID = 'test-org-rate-limit';
+const MOCK_USER_ID = 'd4e5f6a7-b8c9-0123-4567-890abcdef123';
+const MOCK_ORG_ID = 'b2c3d4e5-f6a7-8901-2345-67890abcdef1';
 
 test.describe('Natural Language Search Rate Limiting', () => {
   // This test is now much faster as it hits the API directly.
   test('NLS_RATE_001: Verify rate limiting via API', async ({ request }) => {
     const plans = {
-      free: 10,
+      starter: 10,
       pro: 50,
       // enterprise: 200, // Skipping enterprise to keep the test fast
     };
@@ -24,8 +24,8 @@ test.describe('Natural Language Search Rate Limiting', () => {
       console.log(`Testing rate limit for plan: ${plan}`);
       // Perform searches up to the limit
       for (let i = 0; i < limit; i++) {
-        const response = await request.post('/api/search', {
-          data: { query: `test query ${i}` },
+        const query = `test query ${i}`;
+        const response = await request.get(`/api/search?q=${encodeURIComponent(query)}`, {
           headers: { 
             'x-user-id': MOCK_USER_ID, 
             'x-organization-id': MOCK_ORG_ID,
@@ -36,8 +36,8 @@ test.describe('Natural Language Search Rate Limiting', () => {
       }
 
       // Try one more search, which should be rate-limited
-      const overLimitResponse = await request.post('/api/search', {
-        data: { query: 'one more query' },
+      const overLimitQuery = 'one more query';
+      const overLimitResponse = await request.get(`/api/search?q=${encodeURIComponent(overLimitQuery)}`, {
         headers: { 
           'x-user-id': MOCK_USER_ID, 
           'x-organization-id': MOCK_ORG_ID,
