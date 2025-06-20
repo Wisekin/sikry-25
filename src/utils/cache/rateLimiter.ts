@@ -74,23 +74,36 @@ export class DbRateLimiter {
     organizationId: string;
     plan: string;
   } | null> {
-    const { data: { user } } = await this.supabase.auth.getUser()
-    
-    if (!user) return null
+    // Prioritize headers for test environments or API key usage
+    const testUserId = req.headers.get('x-user-id');
+    const testOrgId = req.headers.get('x-organization-id');
+    const testPlan = req.headers.get('x-user-plan');
+
+    if (testUserId && testOrgId && testPlan) {
+      return {
+        userId: testUserId,
+        organizationId: testOrgId,
+        plan: testPlan,
+      };
+    }
+
+    // Fallback to production logic for UI sessions
+    const { data: { user } } = await this.supabase.auth.getUser();
+    if (!user) return null;
 
     const { data: member } = await this.supabase
       .from('team_members')
       .select('organization_id, organizations(plan)')
       .eq('user_id', user.id)
-      .single()
+      .single();
 
-    if (!member || !member.organization_id) return null
+    if (!member || !member.organization_id) return null;
 
     return {
       userId: user.id,
       organizationId: member.organization_id,
-      plan: member.organizations?.[0]?.plan || 'starter'
-    }
+      plan: member.organizations?.[0]?.plan || 'starter',
+    };
   }
 
   async isAllowed(req: NextRequest): Promise<{
@@ -100,6 +113,9 @@ export class DbRateLimiter {
     status: number;
     message?: string;
     cacheConfig?: CacheConfig;
+    userId?: string;
+    organizationId?: string;
+    plan?: string;
   }> {
     try {
       const userOrg = await this.getUserAndOrganization(req)
@@ -141,7 +157,10 @@ export class DbRateLimiter {
           remaining: config.rateLimit.maxRequests - 1,
           resetTime: now + config.rateLimit.windowMs,
           status: 200,
-          cacheConfig: config.cache
+          cacheConfig: config.cache,
+          userId: userOrg.userId,
+          organizationId: userOrg.organizationId,
+          plan: userOrg.plan
         }
       }
 
@@ -162,7 +181,10 @@ export class DbRateLimiter {
           remaining: config.rateLimit.maxRequests - 1,
           resetTime: now + config.rateLimit.windowMs,
           status: 200,
-          cacheConfig: config.cache
+          cacheConfig: config.cache,
+          userId: userOrg.userId,
+          organizationId: userOrg.organizationId,
+          plan: userOrg.plan
         }
       }
 
@@ -181,7 +203,10 @@ export class DbRateLimiter {
             resetTime,
             status: 200,
             message: `Rate limit exceeded but allowed within burst limit. ${resetTime - now}ms until reset.`,
-            cacheConfig: config.cache
+            cacheConfig: config.cache,
+            userId: userOrg.userId,
+            organizationId: userOrg.organizationId,
+            plan: userOrg.plan
           }
         }
 

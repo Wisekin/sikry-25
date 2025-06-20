@@ -125,8 +125,19 @@ const mockCompanies: Company[] = [
 
 // --- REUSABLE COMPONENTS ---
 
+// --- REUSABLE COMPONENTS: TYPES ---
+interface CompanyCardProps {
+  company: Company;
+  layout?: 'grid' | 'list';
+}
+
+interface ResultsGridProps {
+  companies: Company[];
+  layout?: 'grid' | 'list';
+}
+
 // New Company Card Component
-const CompanyCard = ({ company, layout = 'grid' }: { company: Company, layout?: 'grid' | 'list' }) => {
+const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
   const getConfidenceColor = (score: number) => {
     if (score > 90) return { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' };
     if (score > 80) return { bg: 'bg-sky-50', text: 'text-sky-700', border: 'border-sky-200' };
@@ -186,8 +197,8 @@ const CompanyCard = ({ company, layout = 'grid' }: { company: Company, layout?: 
         <div className="flex flex-wrap gap-2">
             {company.extractedData.emails.length > 0 && <div className="flex items-center gap-1.5 text-xs bg-gray-100 group-hover:bg-gray-700 text-gray-700 group-hover:text-gray-200 rounded-full px-2 py-1"><Mail className="w-3 h-3"/> {company.extractedData.emails.length} Email(s)</div>}
             {company.extractedData.phones.length > 0 && <div className="flex items-center gap-1.5 text-xs bg-gray-100 group-hover:bg-gray-700 text-gray-700 group-hover:text-gray-200 rounded-full px-2 py-1"><Phone className="w-3 h-3"/> {company.extractedData.phones.length} Phone(s)</div>}
-            {company.extractedData.technologies.slice(0, 2).map(tech => (
-                <div key={tech} className="flex items-center gap-1.5 text-xs bg-gray-100 group-hover:bg-gray-700 text-gray-700 group-hover:text-gray-200 rounded-full px-2 py-1"><Tag className="w-3 h-3"/> {tech}</div>
+            {company.extractedData.technologies.slice(0, 2).map((tech, index) => (
+                <div key={`${tech}-${index}`} className="flex items-center gap-1.5 text-xs bg-gray-100 group-hover:bg-gray-700 text-gray-700 group-hover:text-gray-200 rounded-full px-2 py-1"><Tag className="w-3 h-3"/> {tech}</div>
             ))}
         </div>
       </div>
@@ -196,7 +207,7 @@ const CompanyCard = ({ company, layout = 'grid' }: { company: Company, layout?: 
 };
 
 
-const ResultsGrid = ({ companies, layout = 'grid' }: { companies: Company[], layout?: 'grid' | 'list' }) => {
+const ResultsGrid = ({ companies, layout = 'grid' }: ResultsGridProps) => {
     if (layout === 'list') {
         return (
             <div className="space-y-3">

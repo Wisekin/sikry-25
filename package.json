@@ -7,10 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "playwright test",
-    "test:ui": "playwright test --ui",
-    "test:debug": "playwright test --debug",
-    "test:search": "playwright test tests/search/"
+    "test": "npx playwright test",
+    "test:unit": "jest",
+    "test:ui": "npx playwright test --ui",
+    "test:debug": "npx playwright test --debug",
+    "test:search": "./node_modules/.bin/playwright test tests/search/"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
@@ -53,6 +54,7 @@
     "crypto": "latest",
     "crypto-js": "latest",
     "date-fns": "latest",
+    "dotenv": "^16.5.0",
     "embla-carousel-react": "8.5.1",
     "framer-motion": "^12.16.0",
     "i18next": "^25.2.1",
@@ -66,8 +68,7 @@
     "next": "^15.3.3",
     "next-themes": "latest",
     "openai": "^4.104.0",
-    "playright": "^0.0.22",
-    "playwright": "latest",
+    "playwright": "^1.45.3",
     "proper-lockfile": "^4.1.2",
     "react": "^19",
     "react-chartjs-2": "^5.3.0",
@@ -89,10 +90,16 @@
     "zustand": "latest"
   },
   "devDependencies": {
-    "@types/node": "22.15.30",
+    "@playwright/test": "^1.45.3",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^22.15.30",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "postcss": "^8.5.4",
+    "autoprefixer": "^10.4.17",
+    "jest": "^29.7.0",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1",
+    "ts-jest": "^29.4.0",
     "typescript": "5.8.3"
   }
 }

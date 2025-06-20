@@ -21,47 +21,34 @@ export async function GET(request: NextRequest) {
     const url = new URL(request.url)
     const query = url.searchParams.get('q') || ''
     const scope = (url.searchParams.get('scope') || 'companies') as SearchScope
-    const user = url.searchParams.get('user')
-
-    // Get organization context
-    const { data: teamMember } = await supabase
-      .from('team_members')
-      .select('organization_id, organizations(plan)')
-      .eq('user_id', user)
-      .single()
-
-    if (!teamMember) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: 'Organization not found',
-          errors: [{ code: 'NOT_FOUND', message: 'Organization not found' }]
-        } as ApiResponse,
-        { status: 404 }
-      )
-    }
-
     // Initialize rate limiter and check limits
-    const rateLimiter = new DbRateLimiter()
-    const { allowed: canProceed } = await rateLimiter.isAllowed(request)
+    const rateLimiter = new DbRateLimiter();
+    const { 
+      allowed: canProceed, 
+      status, 
+      message, 
+      userId, 
+      organizationId, 
+      plan 
+    } = await rateLimiter.isAllowed(request);
 
-    if (!canProceed) {
+    if (!canProceed || !userId || !organizationId || !plan) {
       return NextResponse.json(
         {
           success: false,
-          message: 'Rate limit exceeded',
-          errors: [{ code: 'RATE_LIMIT', message: 'Too many requests. Please try again later.' }]
+          message: message || 'Rate limit exceeded or unauthorized.',
+          errors: [{ code: 'RATE_LIMIT_OR_AUTH_ERROR', message: message || 'Too many requests or user context not found.' }]
         } as ApiResponse,
-        { status: 429 }
-      )
+        { status: status || 429 }
+      );
     }
 
     // Initialize cache manager
-    const cacheManager = new CacheManager(teamMember.organization_id, teamMember.organizations?.[0]?.plan || 'starter')
+    const cacheManager = new CacheManager(organizationId, plan);
     const cacheKey = `search:${scope}:${query}`
 
     // Try to get from cache first
-    const cachedResult = await cacheManager.get(cacheKey, scope)
+    const cachedResult = await cacheManager.get(cacheKey)
     if (cachedResult) {
       return NextResponse.json(cachedResult)
     }
@@ -74,7 +61,7 @@ export async function GET(request: NextRequest) {
     const parsedQuery = await parseQuery(query);
 
     // Call Supabase (internal DB)
-    const supabaseResult = await performSearch(query, scope, teamMember.organization_id);
+    const supabaseResult = await performSearch(query, scope, organizationId);
     
     if (!supabaseResult.success) {
         console.error("Search failed due to database error:", supabaseResult.error);
@@ -117,13 +104,21 @@ export async function GET(request: NextRequest) {
       return true;
     });
 
+    const sources: string[] = [];
+    if (supabaseResult.data && supabaseResult.data.length > 0) {
+      sources.push('internal');
+    }
+    if (companiesHouseResults.length > 0) {
+      sources.push('companies_house');
+    }
+
     const response = {
       success: true,
       data: mergedResults,
       metadata: {
         query,
         parsedQuery,
-        sources: ['supabase', 'companies_house'],
+        sources,
         timestamp: new Date().toISOString(),
         originalSupabaseCount: supabaseResult.data?.length || 0,
         companiesHouseCount: companiesHouseResults.length,
@@ -133,9 +128,10 @@ export async function GET(request: NextRequest) {
 
     // Store search metrics
     await supabase.from('search_history').insert({
-      organization_id: teamMember.organization_id,
-      user_id: user,
+      organization_id: organizationId,
+      user_id: userId,
       search_query: query,
+      sources,
       search_filters: parsedQuery || {},
       search_scope: scope,
       search_type: 'modular',
@@ -146,10 +142,8 @@ export async function GET(request: NextRequest) {
     // Cache the successful response
     await cacheManager.set({
       cacheKey,
-      cacheValue: response,
-      cacheScope: scope,
+      data: response,
       ttlSeconds: CACHE_TTL[scope] || CACHE_TTL.default,
-      accessCount: 0,
       metadata: {
         query,
         parsedQuery,
@@ -182,7 +176,10 @@ async function performSearch(query: string, scope: string, organizationId: strin
 
     // Add search conditions based on scope
     if (scope === 'companies') {
-      searchQuery = searchQuery.or(`name.ilike.%${query}%,description.ilike.%${query}%`)
+      searchQuery = searchQuery.textSearch('searchable_tsvector_en', query, {
+        type: 'websearch',
+        config: 'english'
+      })
     } else if (scope === 'contacts') {
       searchQuery = searchQuery.or(`name.ilike.%${query}%,email.ilike.%${query}%`)
     } else {

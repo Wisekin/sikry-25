@@ -9,6 +9,10 @@ A comprehensive business intelligence platform that helps you discover, analyze,
 - Multi-source data aggregation (Google, LinkedIn, Crunchbase)
 - Voice search capabilities
 - Real-time suggestions and filters
+- **Modular Query Parser**: The query parser is designed with a fallback mechanism to ensure high availability and accuracy. It attempts to parse queries in the following order:
+  1.  **Google AI**: For advanced, context-aware parsing.
+  2.  **OpenAI**: As a primary alternative for robust parsing.
+  3.  **Local Fallback**: A simple, regex-based parser that ensures basic functionality even if AI services are unavailable.
 
 ### 🏢 Company Management
 - Automated data extraction with confidence scoring
@@ -154,14 +158,24 @@ sikry-frontend/
 - Follow the established design system
 
 ### Testing
-\`\`\`bash
+The project includes both end-to-end (E2E) tests and unit tests.
+
+**E2E Tests (Playwright):**
+```bash
 npm run test
 # or
 yarn test
-\`\`\`
+```
+
+**Unit Tests (Jest):**
+```bash
+npm run test:unit
+# or
+yarn test:unit
+```
 
 ### Building for Production
-\`\`\`bash
+```bash
 npm run build
 # or
 yarn build
