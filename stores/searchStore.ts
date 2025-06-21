@@ -30,6 +30,8 @@ interface SearchState {
   }
   // View settings
   viewMode: "grid" | "list" | "map"
+  // Source selection
+  selectedSources: string[]
   // Caching
   cacheKey: string | null
   searchTimestamp: number | null
@@ -49,6 +51,7 @@ interface SearchActions {
   reset: () => void;
   clearFilters: () => void;
   fetchSearchResults: (options?: { forceRefresh?: boolean; type?: 'new-search' | 'pagination' }) => Promise<void>;
+  setSelectedSources: (sources: string[]) => void;
 }
 
 const initialState: SearchState = {
@@ -81,7 +84,8 @@ const initialState: SearchState = {
   
   // View settings
   viewMode: "grid",
-  
+  // Source selection
+  selectedSources: ["google", "linkedin", "crunchbase"],
   // Caching
   cacheKey: null,
   searchTimestamp: null
@@ -102,6 +106,7 @@ export const useSearchStore = create<SearchState & SearchActions>()(
       clearCache: () => set({ cacheKey: null }),
       clearFilters: () => set({ filters: initialState.filters }),
       reset: () => set(initialState),
+      setSelectedSources: (sources) => set({ selectedSources: sources }),
 
       // Pagination Actions
       setCurrentPage: async (page) => {
@@ -186,6 +191,7 @@ export const useSearchStore = create<SearchState & SearchActions>()(
         query: state.query,
         filters: state.filters,
         viewMode: state.viewMode,
+        selectedSources: state.selectedSources,
         pagination: { currentPage: 1, pageSize: state.pagination.pageSize, totalCount: 0 },
         cacheKey: state.cacheKey,
       }),

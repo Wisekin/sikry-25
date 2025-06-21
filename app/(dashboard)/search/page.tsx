@@ -60,6 +60,8 @@ function SearchPageContent() {
     pagination,
     fetchSearchResults,
     goToNextPage,
+    viewMode,
+    setViewMode,
   } = useSearchStore();
 
   const [isClient, setIsClient] = useState(false);
@@ -67,27 +69,16 @@ function SearchPageContent() {
     setIsClient(true);
   }, []);
 
-  const [localQuery, setLocalQuery] = useState(query);
-  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map'>('grid');
-  const [selectedSources, setSelectedSources] = useState<string[]>(["google", "linkedin"]);
-  const debouncedQuery = useDebounce(localQuery, 500);
+  const debouncedQuery = useDebounce(query, 500);
   
   const [filters, setFilters] = useState({
     industry: 'All Industries',
     location: "",
     employeeCount: "All Sizes",
-    confidenceScore: 70,
+    confidenceScore: 0,
     hasEmail: false,
     hasPhone: false,
   });
-
-  const toggleSource = (source: string) => {
-    setSelectedSources(prev => 
-      prev.includes(source) 
-        ? prev.filter(s => s !== source) 
-        : [...prev, source]
-    );
-  };
 
   const handleClearFilters = () => {
     setFilters({
@@ -98,19 +89,6 @@ function SearchPageContent() {
       hasEmail: false,
       hasPhone: false,
     });
-  };
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (localQuery.trim() || query) {
-      const newQuery = localQuery.trim();
-      setQuery(newQuery);
-      fetchSearchResults({ forceRefresh: true });
-    }
-  };
-
-  const handleClear = () => {
-    setLocalQuery('');
   };
 
   // Apply filters to results
@@ -162,54 +140,10 @@ function SearchPageContent() {
             </div>
           )}
         </div>
-        <Button size="lg" className="bg-[#1B1F3B] text-white hover:bg-[#2A3050] flex items-center gap-2">
-          <Download className="w-5 h-5" /> Export Results
-        </Button>
+        {/* Export button removed, now in SecondaryMenuBar */}
       </div>
       
-      {/* Search and Source Filters */}
-      <Card className="bg-white p-4 shadow-sm">
-        <div className="grid md:grid-cols-3 gap-4 items-center">
-          <div className="md:col-span-2">
-            <form onSubmit={handleSearch}>
-              <div className="relative">
-                <Input 
-                  value={localQuery} 
-                  onChange={(e) => setLocalQuery(e.target.value)} 
-                  placeholder="Search by company name, keywords, industry, location..."
-                  className="p-6 text-base border-gray-300 focus:ring-2 focus:ring-[#2A3050]" 
-                />
-                {localQuery && (
-                  <button 
-                    type="button"
-                    onClick={handleClear} 
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    <X className="h-5 w-5" />
-                  </button>
-                )}
-              </div>
-            </form>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-sm font-medium text-gray-600">
-              Search Sources:
-            </span>
-            {["google", "linkedin", "crunchbase"].map(source => (
-              <button 
-                key={source} 
-                onClick={() => toggleSource(source)} 
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold rounded-full transition-colors duration-200 ${selectedSources.includes(source) ? 'bg-[#1B1F3B] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
-              >
-                {source === "google" && <Globe className="w-4 h-4" />}
-                {source === "linkedin" && <Linkedin className="w-4 h-4" />}
-                {source === "crunchbase" && <Database className="w-4 h-4" />}
-                <span className="capitalize">{source}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </Card>
+      {/* Search and Source Filters are now in SecondaryMenuBar */}
       
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Advanced Filters Sidebar */}
@@ -311,25 +245,7 @@ function SearchPageContent() {
 
         {/* Main Content Area */}
         <main className="lg:col-span-9">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
-            <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as 'grid' | 'list' | 'map')} className="w-full">
-              <TabsList className="bg-white shadow-sm border">
-                <TabsTrigger value="grid"><Grid className="w-4 h-4 mr-1" /> Grid View</TabsTrigger>
-                <TabsTrigger value="list"><List className="w-4 h-4 mr-1" /> List View</TabsTrigger>
-                <TabsTrigger value="map"><MapPin className="w-4 h-4 mr-1" /> Map View</TabsTrigger>
-              </TabsList>
-            </Tabs>
-            <Select>
-              <SelectTrigger className="w-full md:w-[200px] bg-white shadow-sm border">
-                <SelectValue placeholder="Sort by" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="relevance">Relevance</SelectItem>
-                <SelectItem value="confidence">Confidence Score</SelectItem>
-                <SelectItem value="newest">Newest First</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          {/* View mode and sort controls are now in SecondaryMenuBar */}
 
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-24 text-center">
@@ -338,15 +254,10 @@ function SearchPageContent() {
               <p className="text-muted-foreground">Please wait while we gather and enrich the results.</p>
             </div>
           ) : (
-            <Tabs value={viewMode} className="w-full">
-              <TabsContent value="grid">
-                <ResultsGrid companies={filteredCompanies} />
-              </TabsContent>
-              <TabsContent value="list" className="mt-0">
-                <ResultsGrid companies={filteredCompanies} layout="list" />
-              </TabsContent>
-              
-              <TabsContent value="map" className="mt-0 bg-white rounded-lg overflow-hidden">
+            <>
+              {viewMode === 'grid' && <ResultsGrid companies={filteredCompanies} />}
+              {viewMode === 'list' && <ResultsGrid companies={filteredCompanies} layout="list" />}
+              {viewMode === 'map' && (
                 <div className="h-[600px] w-full rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
                   {isClient ? (
                     filteredCompanies.length > 0 ? (
@@ -359,7 +270,6 @@ function SearchPageContent() {
                           latitude: company.latitude,
                           longitude: company.longitude
                         }))}
-                        mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN || ''}
                       />
                     ) : (
                       <div className="h-full flex flex-col items-center justify-center p-8 text-center">
@@ -383,8 +293,8 @@ function SearchPageContent() {
                     </div>
                   )}
                 </div>
-              </TabsContent>
-            </Tabs>
+              )}
+            </>
           )}
 
           {!isLoading && filteredCompanies.length === 0 && status === 'success' && (
