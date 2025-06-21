@@ -43,397 +43,175 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const query = searchParams.get('q') || '';
   const scope = (searchParams.get('scope') || 'companies') as SearchScope;
-  const cacheKey = searchParams.get('cacheKey');
   const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
   const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '10', 10)));
   const forceRefresh = searchParams.get('refresh') === 'true';
 
-  // If a cacheKey is provided, try to fetch paginated results from the cache
-  if (cacheKey) {
-    try {
-      // Try to get the specific page from cache
-      const pageCacheKey = CACHE_KEYS.SEARCH_PAGE(cacheKey, page);
-      const cachedPage = await getCache<{
-        results: SearchResult[];
-        metadata: {
-          totalCount: number;
-          pageCount: number;
-          currentPage: number;
-          cacheKey: string;
-        };
-      }>(pageCacheKey);
+  // --- Start: Rate Limiting and Auth ---
+  const rateLimiter = new DbRateLimiter();
+  const { 
+    allowed: canProceed, 
+    status, 
+    message, 
+    userId, 
+    organizationId, 
+    plan 
+  } = await rateLimiter.isAllowed(req);
 
+  if (!canProceed || !userId || !organizationId || !plan) {
+    return NextResponse.json(
+      { success: false, message: message || 'Rate limit exceeded or unauthorized.' },
+      { status: status || 429 }
+    );
+  }
+  // --- End: Rate Limiting and Auth ---
+  
+  // Generate a consistent cache key for the overall query and the specific page
+  const searchCacheKey = createSearchCacheKey({ query, scope, organizationId });
+  const pageCacheKey = CACHE_KEYS.SEARCH_PAGE(searchCacheKey, page);
+
+  // --- Step 1: Check cache unless forced to refresh ---
+  if (!forceRefresh) {
+    try {
+      const cachedPage = await getCache<any>(pageCacheKey);
       if (cachedPage) {
-        console.log(`[API Search] Serving page ${page} from cache (key: ${cacheKey})`);
+        console.log(`[API Search] Cache HIT for page ${page} (key: ${searchCacheKey})`);
         return NextResponse.json({
           success: true,
           data: cachedPage.results,
-          metadata: {
-            ...cachedPage.metadata,
-            cached: true,
-            cacheKey,
-          },
+          metadata: { ...cachedPage.metadata, cached: true },
         });
       }
-
-      // If page not in cache, check if we have the full results
-      const fullResultsKey = CACHE_KEYS.SEARCH_RESULTS(cacheKey);
-      const fullResults = await getCache<SearchResult[]>(fullResultsKey);
-      
-      if (fullResults) {
-        const totalCount = fullResults.length;
-        const pageCount = Math.ceil(totalCount / limit);
-        const currentPage = Math.min(page, pageCount);
-        const paginatedResults = fullResults.slice(
-          (currentPage - 1) * limit,
-          currentPage * limit
-        );
-
-        // Cache this page for future requests
-        const pageMetadata = {
-          totalCount,
-          pageCount,
-          currentPage,
-          cacheKey,
-        };
-
-        await setCache(
-          CACHE_KEYS.SEARCH_PAGE(cacheKey, currentPage),
-          {
-            results: paginatedResults,
-            metadata: pageMetadata,
-          },
-          redisConfig.ttl.searchResults
-        );
-
-        console.log(`[API Search] Generated page ${currentPage} from full results cache`);
-        return NextResponse.json({
-          success: true,
-          data: paginatedResults,
-          metadata: {
-            ...pageMetadata,
-            cached: true,
-          },
-        });
-      }
-
-      // If we get here, the cache key is invalid or expired
-      console.log(`[API Search] Cache key ${cacheKey} not found. Performing a new search.`);
+      console.log(`[API Search] Cache MISS for page ${page} (key: ${searchCacheKey})`);
     } catch (error) {
       console.error('Error accessing cache:', error);
-      // Continue with a new search if there's a cache error
     }
   }
 
+  // --- Step 2: If no cache, perform a new search ---
   try {
-    // Initialize rate limiter and check limits
-    const rateLimiter = new DbRateLimiter();
-    const { 
-      allowed: canProceed, 
-      status, 
-      message, 
-      userId, 
-      organizationId, 
-      plan 
-    } = await rateLimiter.isAllowed(req);
-
-    if (!canProceed || !userId || !organizationId || !plan) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: message || 'Rate limit exceeded or unauthorized.',
-          errors: [{ code: 'RATE_LIMIT_OR_AUTH_ERROR', message: message || 'Too many requests or user context not found.' }]
-        } as ApiResponse,
-        { status: status || 429 }
-      );
-    }
-
-    // Generate a cache key for this search
-    const searchCacheKey = createSearchCacheKey({
-      query,
-      scope,
-      organizationId,
-      filters: searchParams.get('filters') ? JSON.parse(searchParams.get('filters')!) : {}
-    });
-    
-    // If this is a new search (no cacheKey provided), check if we have cached results
-    if (!cacheKey && !forceRefresh) {
-      const cachedResultsKey = CACHE_KEYS.SEARCH_RESULTS(searchCacheKey);
-      const cachedResults = await getCache<SearchResult[]>(cachedResultsKey);
-      
-      if (cachedResults) {
-        const totalCount = cachedResults.length;
-        const pageCount = Math.ceil(totalCount / limit);
-        const currentPage = 1;
-        const paginatedResults = cachedResults.slice(0, limit);
-        
-        // Prepare metadata for the response
-        const metadata = {
-          query,
-          scope,
-          page: currentPage,
-          limit,
-          totalCount,
-          pageCount,
-          cacheKey: searchCacheKey,
-          cached: true,
-        };
-        
-        // Cache the first page
-        await setCache(
-          CACHE_KEYS.SEARCH_PAGE(searchCacheKey, currentPage),
-          {
-            results: paginatedResults,
-            metadata: {
-              totalCount,
-              pageCount,
-              currentPage,
-              cacheKey: searchCacheKey,
-            },
-          },
-          redisConfig.ttl.searchResults
-        );
-        
-        console.log(`[API Search] Serving from cache (key: ${searchCacheKey})`);
-        return NextResponse.json({
-          success: true,
-          data: paginatedResults,
-          metadata,
-        });
-      }
-    }
-
-    // --- Modular Search Integration ---
     const { parseQuery } = await import('@/src/search/queryParser');
     const { companiesHouseAdapter } = await import('@/src/search/adapters/companiesHouse');
     const { wikidataAdapter } = await import('@/src/search/adapters/wikidata');
 
-    // Parse the query using the modular parser
     const parsedQuery = await parseQuery(query);
-
-    // DEBUG: Log the parsed query to inspect what the AI is returning
-
-    // Call Supabase (internal DB)
-    const supabaseResult = await performSearch(query, scope, organizationId);
+    if (!parsedQuery) {
+      return NextResponse.json({ success: false, message: 'Failed to parse search query.' }, { status: 400 });
+    }
     
+    // Perform searches on all sources for the CURRENT page
+    const [supabaseResult, companiesHouseResponse, wikidataResponse] = await Promise.all([
+      performSearch(query, scope, organizationId, { page, limit }),
+      companiesHouseAdapter.search(parsedQuery, { limit, page }),
+      wikidataAdapter.search(parsedQuery, { limit, page })
+    ]);
+
     if (!supabaseResult.success) {
         console.error("Search failed due to database error:", supabaseResult.error);
-        return NextResponse.json(
-            {
-                success: false,
-                message: 'An error occurred during the database search.',
-                errors: [supabaseResult.error]
-            } as ApiResponse,
-            { status: 500 }
-        );
+        return NextResponse.json({ success: false, message: 'An error occurred during the database search.' }, { status: 500 });
     }
 
-    // Call Companies House adapter and map results
-    let companiesHouseResults: SearchResult[] = [];
-    if (parsedQuery) {
-      const adapterResults = await companiesHouseAdapter.search(parsedQuery);
-      companiesHouseResults = adapterResults.map((item, index) => ({
-        id: `ch-${Date.now()}-${index}`,
-        name: item.name,
-        domain: item.url,
-        description: item.description,
-        industry: item.industry,
-        location_text: item.location,
-        source: 'companies_house',
-        confidence: item.confidence,
-      }));
-    }
+    // Map adapter results
+    const companiesHouseResults = companiesHouseResponse.results.map((item, index) => ({ id: `ch-${page}-${index}`, ...item, source: 'companies_house' }));
+    const wikidataResults = wikidataResponse.results.map((item, index) => ({ id: `wd-${page}-${index}`, ...item, source: 'wikidata' }));
+    
+    const allResults = [...(supabaseResult.data || []), ...companiesHouseResults, ...wikidataResults];
 
-    // Call Wikidata adapter and map results
-    let wikidataResults: SearchResult[] = [];
-    if (parsedQuery) {
-        const adapterResults = await wikidataAdapter.search(parsedQuery);
-        wikidataResults = adapterResults.map((item, index) => ({
-            id: `wd-${Date.now()}-${index}`,
-            name: item.name,
-            domain: item.url,
-            description: item.description,
-            industry: item.industry,
-            location_text: item.location,
-            source: 'wikidata',
-            confidence: item.confidence,
-        }));
-    }
+    // Merge and rank the results for the CURRENT page
+    const { mergedResults, mergeMetadata } = await mergeAndRankResults(allResults, parsedQuery);
 
-    // --- Advanced Merging and Ranking ---
-    const allResults = [
-      ...(supabaseResult.data || []),
-      ...companiesHouseResults,
-      ...wikidataResults,
-    ];
-
-    let mergedResults: SearchResult[];
-    let mergeMetadata: Record<string, any> = {};
-
-    if (parsedQuery) {
-      const ranked = await mergeAndRankResults(allResults, parsedQuery);
-      mergedResults = ranked.mergedResults;
-      mergeMetadata = ranked.mergeMetadata;
-    } else {
-      // If AI query parsing failed, fall back to unranked, raw results
-      mergedResults = allResults;
-      mergeMetadata = { note: 'AI parsing failed; returning unranked results.' };
-    }
-    const totalCount = mergedResults.length;
+    // Calculate total count from all sources
+    const supabaseTotal = supabaseResult.metadata?.totalCount || 0;
+    const companiesHouseTotal = companiesHouseResponse.totalCount || 0;
+    const wikidataTotal = (wikidataResponse.results.length === limit) ? (page * limit) + 1 : ((page - 1) * limit) + wikidataResponse.results.length;
+    const totalCount = supabaseTotal + companiesHouseTotal + wikidataTotal;
     const pageCount = Math.ceil(totalCount / limit);
-    const currentPage = 1; // Always return first page for new searches
-    const paginatedResults = mergedResults.slice(0, limit);
-    
-    // Prepare metadata for the response
-    const metadata = {
-      query,
-      scope,
-      page: currentPage,
-      limit,
-      totalCount,
-      pageCount,
-      cacheKey: searchCacheKey,
-      cached: false,
-      originalSupabaseCount: supabaseResult.data?.length || 0,
-      companiesHouseCount: companiesHouseResults.length,
-      wikidataCount: wikidataResults.length,
-      preMergeCount: allResults.length,
-      mergedCount: totalCount,
-      mergeDetails: mergeMetadata,
-    };
-    
-    // Cache the full results and first page if we have enough results
-    if (totalCount > 0) {
-      try {
-        // Cache full results
-        await setCache(
-          CACHE_KEYS.SEARCH_RESULTS(searchCacheKey),
-          mergedResults,
-          redisConfig.ttl.searchResults
-        );
-        
-        // Cache first page
-        await setCache(
-          CACHE_KEYS.SEARCH_PAGE(searchCacheKey, currentPage),
-          {
-            results: paginatedResults,
-            metadata: {
-              totalCount,
-              pageCount,
-              currentPage,
-              cacheKey: searchCacheKey,
-            },
-          },
-          redisConfig.ttl.searchResults
-        );
-        
-        console.log(`[API Search] Cached ${totalCount} results with key ${searchCacheKey}`);
-      } catch (cacheError) {
-        console.error('Error caching search results:', cacheError);
-        // Continue with the response even if caching fails
-      }
-    }
 
-    const sources: string[] = [];
-    if (supabaseResult.data && supabaseResult.data.length > 0) {
-      sources.push('internal');
-    }
-    if (companiesHouseResults.length > 0) {
-      sources.push('companies_house');
-    }
-    if (wikidataResults.length > 0) {
-      sources.push('wikidata');
-    }
-
-    const response = {
-      success: true,
-      data: paginatedResults,
-      metadata: {
-        ...metadata,
-        sources,
-        parsedQuery,
-        timestamp: new Date().toISOString(),
+    const responseMetadata = {
+      query, scope, page, limit, totalCount, pageCount, searchCacheKey, cached: false,
+      mergeDetails: {
+        ...mergeMetadata,
+        supabaseCount: supabaseResult.data?.length || 0,
+        companiesHouseCount: companiesHouseResults.length,
+        wikidataCount: wikidataResults.length,
       }
     };
-
-    // Store search metrics
+    
+    // --- Step 3: Cache the new page results ---
+    try {
+      await setCache(pageCacheKey, { results: mergedResults, metadata: responseMetadata }, redisConfig.ttl.searchResults);
+      console.log(`[API Search] Cached results for page ${page} (key: ${searchCacheKey})`);
+    } catch (cacheError) {
+      console.error('Error caching search results:', cacheError);
+    }
+    
     await supabase.from('search_history').insert({
-      organization_id: organizationId,
-      user_id: userId,
-      search_query: query,
-      sources,
-      search_filters: parsedQuery || {},
-      search_scope: scope,
-      search_type: 'modular',
-      results_count: totalCount,
-      execution_time_ms: Date.now() - searchStartTime
+      organization_id: organizationId, userId, search_query: query,
+      results_count: totalCount, execution_time_ms: Date.now() - searchStartTime,
     });
 
-    return NextResponse.json(response);
+    return NextResponse.json({ success: true, data: mergedResults, metadata: responseMetadata });
 
   } catch (error) {
-    console.error('Search API error:', error)
-    return NextResponse.json(
-      {
-        success: false,
-        message: 'Internal server error',
-        errors: [{ code: 'INTERNAL_ERROR', message: (error as Error).message || 'An unexpected error occurred' }]
-      } as ApiResponse,
-      { status: 500 }
-    )
+    console.error('Search API error:', error);
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 });
   }
 }
 
-async function performSearch(query: string, scope: string, organizationId: string): Promise<{
+async function performSearch(query: string, scope: string, organizationId: string, options: { page: number; limit: number }): Promise<{
   success: boolean;
   data: SearchResult[] | null;
   error?: { code: string; message: string };
   metadata?: Record<string, any>;
 }> {
   try {
-    // Base query
-    let searchQuery = supabase.from(scope === 'companies' ? 'discovered_companies' : scope)
-      .select('*')
-      .eq('organization_id', organizationId)
+    const { page, limit } = options;
+    const rangeFrom = (page - 1) * limit;
+    const rangeTo = rangeFrom + limit - 1;
+    const table = scope === 'companies' ? 'discovered_companies' : scope;
 
-    // Add search conditions based on scope
-    if (scope === 'companies') {
-      searchQuery = searchQuery.textSearch('searchable_tsvector_en', query, {
-        type: 'websearch',
-        config: 'english'
-      })
-    } else if (scope === 'contacts') {
-      searchQuery = searchQuery.or(`name.ilike.%${query}%,email.ilike.%${query}%`)
-    } else {
-      searchQuery = searchQuery.textSearch('searchable_tsvector', query)
+    let dataQuery = supabase.from(table).select('*').eq('organization_id', organizationId);
+    let countQuery = supabase.from(table).select('*', { count: 'exact', head: true }).eq('organization_id', organizationId);
+
+    if (query) {
+      if (scope === 'companies') {
+        const ftsQuery = query.split(' ').filter(Boolean).join(' & ');
+        dataQuery = dataQuery.textSearch('searchable_tsvector_en', ftsQuery, { type: 'websearch', config: 'english' });
+        countQuery = countQuery.textSearch('searchable_tsvector_en', ftsQuery, { type: 'websearch', config: 'english' });
+      } else if (scope === 'contacts') {
+        const orFilter = `name.ilike.%${query}%,email.ilike.%${query}%`;
+        dataQuery = dataQuery.or(orFilter);
+        countQuery = countQuery.or(orFilter);
+      } else {
+        const ftsQuery = query.split(' ').filter(Boolean).join(' | ');
+        dataQuery = dataQuery.textSearch('searchable_tsvector', ftsQuery);
+        countQuery = countQuery.textSearch('searchable_tsvector', ftsQuery);
+      }
+    }
+    
+    const { count, error: countError } = await countQuery;
+    if (countError) {
+        console.error('Error fetching Supabase count:', JSON.stringify(countError, null, 2));
+        throw countError;
     }
 
-    const { data, error } = await searchQuery.limit(50)
-
-    if (error) {
-      console.error('Supabase search error in performSearch:', error);
-      return {
-        success: false,
-        data: null,
-        error: { code: 'DB_SEARCH_FAILED', message: 'Failed to execute database search.' }
-      };
+    const { data, error: dataError } = await dataQuery.range(rangeFrom, rangeTo);
+    if (dataError) {
+        console.error('Error fetching Supabase data:', JSON.stringify(dataError, null, 2));
+        return { success: false, data: null, error: { code: 'DB_SEARCH_ERROR', message: dataError.message } };
     }
 
     return {
       success: true,
-      data: data || [],
-      metadata: {
-        query,
-        scope,
-        timestamp: new Date().toISOString()
-      }
-    }
-  } catch (e) {
-      console.error('Unexpected error in performSearch:', e);
-      return {
-        success: false,
-        data: null,
-        error: { code: 'UNEXPECTED_DB_ERROR', message: 'An unexpected error occurred in the database module.' }
-      };
+      data: data as SearchResult[],
+      metadata: { totalCount: count || 0 },
+    };
+  } catch (error: any) {
+    console.error('An error occurred during performSearch:', error);
+    return {
+      success: false,
+      data: null,
+      error: { code: 'DB_UNEXPECTED_ERROR', message: error.message || 'An unexpected database error occurred.' },
+    };
   }
 }

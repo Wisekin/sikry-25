@@ -88,6 +88,65 @@ For large-scale business search (millions of records), the following architectur
 
 
 
+## Diagnosing the Search Result Limitation
+
+### Problem
+- Despite configuring the frontend and external API adapters to fetch 50 results per page, the final search results returned to the user were consistently limited to only 2-3 items.
+- Initial investigation ruled out frontend filtering, caching issues, and adapter-level limits.
+
+### Diagnosis
+- Detailed logging was added to the `/api/search` endpoint to trace the number of results returned from each data source (Supabase, Companies House, Wikidata) before the final merge and rank step.
+- The logs revealed that while external sources (Companies House, Wikidata) were correctly returning 50 results each, the `mergeAndRankResults` function was aggressively filtering this list down to only a few items.
+
+### Root Cause
+- The core issue lies within the `mergeAndRankResults` logic, which is too strict in its de-duplication and relevance ranking, causing it to discard the vast majority of valid results.
+
+## 3. Search Results Investigation & Fix (June 2025)
+
+### Summary
+The primary goal was to diagnose why search queries for broad terms like "software" were only returning 2-3 results, which prevented pagination testing. The investigation revealed the issue was not with frontend filtering or API limits, but with an overly aggressive de-duplication algorithm in the backend's merging logic.
+
+### Problem Diagnosis Journey
+1.  **Initial Theory (Frontend Filtering)**: It was first suspected that client-side filters were hiding results. This was disproven.
+2.  **Second Theory (API Limits)**: Investigation showed the frontend requested 10 items per page by default. This was increased to 50 in `stores/searchStore.ts`.
+3.  **Third Theory (Adapter Limits)**: Further logging showed that the external data source adapters (`companiesHouse.ts`, `wikidata.ts`) had hardcoded limits of 10 results. These were also increased to 50.
+4.  **Final Diagnosis (Merging Logic)**: Even with 100+ results coming from the adapters, the final output was still ~2. Detailed logging pinpointed the `mergeAndRankResults` function in `src/search/search-logic.ts` as the culprit. Its de-duplication logic was incorrectly merging dozens of unique companies.
+
+### Solution (Temporary)
+The de-duplication logic in `mergeAndRankResults` was temporarily bypassed to allow all results from the adapters to be passed through for ranking. This unblocks frontend development but requires a more sophisticated de-duplication strategy in the future.
+
+---
+
+## 4. Key Components Updated
+The following files were modified during the investigation and fix:
+- `stores/searchStore.ts`: Increased default `pageSize` to 50.
+- `src/search/adapters/companiesHouse.ts`: Increased `items_per_page` to 50.
+- `src/search/adapters/wikidata.ts`: Increased `limit` to 50.
+- `src/search/search-logic.ts`: Temporarily bypassed the de-duplication logic.
+- `app/api/search/route.ts`: Added and removed temporary logging to diagnose the issue.
+
+---
+
+## 5. Next Steps: Implementing Pagination UI
+
+### Goal
+The backend and state management are now ready for pagination. The next developer's task is to build the UI components to allow users to navigate through pages of search results.
+
+### System State
+- **Backend**: The `GET /api/search` endpoint is fully functional. It accepts `page` and `limit` query parameters and returns paginated data, including `totalCount` in the metadata.
+- **Frontend State**: `stores/searchStore.ts` manages all necessary pagination state (`pagination.currentPage`, `pagination.totalCount`, `pagination.pageSize`) and provides actions (`goToNextPage`, `goToPrevPage`) to trigger API calls for different pages.
+
+### Tasks for Next Developer
+1.  **Build UI Controls**: In `app/(dashboard)/search/page.tsx` (or a sub-component like `SearchContent`), add UI elements for pagination. This could be "Previous" / "Next" buttons, a "Load More" button, or page numbers.
+2.  **Connect UI to State**:
+    - Wire the UI controls to call the `goToNextPage()` and `goToPrevPage()` actions from the `useSearchStore`.
+    - Display feedback to the user, such as "Page {currentPage} of {totalPages}" or "Showing results {start}-{end} of {totalCount}". All necessary data is available in the `pagination` object in the store.
+3.  **Handle UI State**:
+    - Use the `isFetchingPage` state from the store to show a loading indicator when a new page is being fetched.
+    - Conditionally disable the "Previous" button when `currentPage` is 1, and the "Next" button when on the last page. The last page can be calculated with `Math.ceil(totalCount / pageSize)`.
+
+---
+
 ## Fixing the Map Issue in MapView
 
 ### Problem
@@ -104,4 +163,33 @@ For large-scale business search (millions of records), the following architectur
 ### Result
 - The map now renders correctly using open-source tiles, without requiring a Mapbox token.
 - Only companies with valid coordinates are shown as markers, preventing errors and improving user experience.
+
+---
+
+## 6. Implementing and Debugging Backend Pagination & Caching (June 2025)
+
+### Summary
+After implementing the basic pagination UI, several critical backend issues were discovered that prevented it from working correctly. The root causes were related to incorrect `totalCount` calculation, flawed caching logic, and an inefficient database query strategy. This section details the debugging journey and the final implementation that resolved these issues.
+
+### Problem Diagnosis Journey
+1.  **Initial Bug (UI Not Appearing)**: The pagination controls would not appear, even when there were clearly more results available. This was because the backend was only reporting the number of results on the current page (e.g., 15) as the `totalCount`, leading the frontend to believe there was only one page.
+2.  **Second Bug (Disappearing Pagination)**: After a temporary fix, a caching bug emerged. The first search correctly showed the total number of pages. However, upon clicking "Next," the backend would read from a cache that only contained the first page's 15 results. It would then recalculate the `totalCount` to be 15, report this to the frontend, and the pagination controls would disappear.
+3.  **Third Bug (500 Internal Server Error)**: While attempting to fix the pagination, a change to the internal database query function introduced a 500 error, which prevented any results from being returned.
+
+### Solution Steps
+1.  **Correct `pageSize`**: The default `pageSize` in `stores/searchStore.ts` was set to `15` to match the intended design.
+2.  **Refactored Adapters for Pagination**:
+    - The `companiesHouseAdapter` and `wikidataAdapter` were modified to accept `limit` and `page` parameters, removing hardcoded limits.
+    - The `SearchAdapter` interface was updated to return a `SearchAdapterResponse` object, which includes both the `results` and the `totalCount` provided by the external API. This was key to getting an accurate total.
+3.  **Accurate `totalCount` Calculation**:
+    - The API route (`/api/search/route.ts`) was updated to sum the `totalCount` from all data sources (Supabase, Companies House) to generate a correct grand total for the frontend.
+    - For Wikidata, which doesn't provide a total, a simple heuristic was added to estimate if more pages are available.
+4.  **Database Pagination Fix**: The `performSearch` function was rewritten to use proper, efficient database-level pagination with `.range(from, to)`, ensuring it only ever fetches the requested page. The query error causing the 500 status was also fixed.
+5.  **Complete Caching Rework**: The core of the fix was rewriting the caching logic. The flawed strategy of caching the "full result set" was removed. The new strategy caches each page of results individually. If a requested page is not in the cache, a fresh query is made to all data sources for that specific page, guaranteeing data consistency.
+
+### Result
+- Pagination is now stable, robust, and efficient.
+- The `totalCount` remains accurate and consistent across all page requests.
+- The backend and database now only process the data needed for the current page, significantly improving performance.
+- The caching mechanism is simple, correct, and no longer causes state inconsistencies on the frontend.
 

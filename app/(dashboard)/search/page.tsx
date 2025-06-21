@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo, Suspense } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useSearchStore } from '@/stores/searchStore';
 import { Button } from '@/src/components/ui/button';
@@ -51,6 +52,7 @@ function useDebounce<T>(value: T, delay: number): T {
 }
 
 function SearchPageContent() {
+  const { t } = useTranslation('searchPage');
   const {
     query,
     setQuery,
@@ -60,6 +62,7 @@ function SearchPageContent() {
     pagination,
     fetchSearchResults,
     goToNextPage,
+    goToPrevPage,
     viewMode,
     setViewMode,
   } = useSearchStore();
@@ -130,21 +133,21 @@ function SearchPageContent() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl md:text-4xl font-bold text-[#1B1F3B]">
-            Company Search
+            {t('title')}
           </h1>
           <p className="text-gray-500 mt-1">
-            {isLoading && 'Searching...'}
+            {isLoading && t('searching', 'Searching...')}
             {!isLoading && !error && filteredCompanies.length > 0 && 
-              `${filteredCompanies.length} results found`}
+              t('resultsFound', { count: filteredCompanies.length })}
           </p>
           {status === 'success' && filteredCompanies.length === 0 && (
             <div className="mt-2 text-sm text-gray-600 bg-gray-50 border border-gray-200 rounded px-3 py-2">
-              No companies found matching your search criteria
+              {t('noResults.title', 'No companies found matching your search criteria')}
             </div>
           )}
           {error && (
             <div className="mt-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-2">
-              Error: {error}
+              {t('error', { error })}
             </div>
           )}
         </div>
@@ -160,19 +163,19 @@ function SearchPageContent() {
             <CardHeader className="border-b border-gray-100">
               <CardTitle className="text-lg font-semibold text-gray-800 flex items-center gap-2">
                 <Filter className="w-5 h-5 text-[#1B1F3B]" /> 
-                Advanced Filters
+                {t('filters.title')}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-4 space-y-6">
               {/* Industry */}
               <div>
-                <h3 className="text-sm font-semibold mb-2 flex items-center text-gray-700"><Briefcase className="w-4 h-4 mr-2" /> Industry</h3>
+                <h3 className="text-sm font-semibold mb-2 flex items-center text-gray-700"><Briefcase className="w-4 h-4 mr-2" /> {t('filters.industry')}</h3>
                 <Select value={filters.industry} onValueChange={value => setFilters(prev => ({ ...prev, industry: value }))}>
                   <SelectTrigger className="w-full bg-gray-50 border-gray-200">
-                    <SelectValue placeholder="Select an industry" />
+                    <SelectValue placeholder={t('filters.industry.select', 'Select an industry')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="All Industries">All Industries</SelectItem>
+                    <SelectItem value="All Industries">{t('filters.allIndustries')}</SelectItem>
                     {industries.map(industry => (
                       <SelectItem key={industry} value={industry}>{industry}</SelectItem>
                     ))}
@@ -182,9 +185,9 @@ function SearchPageContent() {
               
               {/* Location */}
               <div>
-                <h3 className="text-sm font-semibold mb-2 flex items-center text-gray-700"><MapPin className="w-4 h-4 mr-2" /> Location</h3>
+                <h3 className="text-sm font-semibold mb-2 flex items-center text-gray-700"><MapPin className="w-4 h-4 mr-2" /> {t('filters.location')}</h3>
                 <Input 
-                  placeholder="e.g., Geneva, Switzerland" 
+                  placeholder={t('filters.locationPlaceholder')} 
                   value={filters.location} 
                   onChange={e => setFilters(prev => ({ ...prev, location: e.target.value }))} 
                   className="bg-gray-50 border-gray-200" 
@@ -193,15 +196,15 @@ function SearchPageContent() {
               
               {/* Company Size */}
               <div>
-                <h3 className="text-sm font-semibold mb-2 flex items-center text-gray-700"><Users className="w-4 h-4 mr-2" /> Company Size</h3>
+                <h3 className="text-sm font-semibold mb-2 flex items-center text-gray-700"><Users className="w-4 h-4 mr-2" /> {t('filters.companySize')}</h3>
                 <Select value={filters.employeeCount} onValueChange={value => setFilters(prev => ({ ...prev, employeeCount: value }))}>
                   <SelectTrigger className="w-full bg-gray-50 border-gray-200">
-                    <SelectValue placeholder="Select company size" />
+                    <SelectValue placeholder={t('filters.companySize', 'Select company size')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="All Sizes">All Sizes</SelectItem>
+                    <SelectItem value="All Sizes">{t('filters.allSizes')}</SelectItem>
                     {companySizes.map(size => (
-                      <SelectItem key={size} value={size}>{size} employees</SelectItem>
+                      <SelectItem key={size} value={size}>{size} {t('company.employees', 'employees')}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -209,7 +212,7 @@ function SearchPageContent() {
               
               {/* Confidence Score */}
               <div className="pt-4 border-t border-gray-100">
-                <h3 className="text-sm font-semibold mb-3 flex items-center text-gray-700"><Star className="w-4 h-4 mr-2" /> Minimum Confidence</h3>
+                <h3 className="text-sm font-semibold mb-3 flex items-center text-gray-700"><Star className="w-4 h-4 mr-2" /> {t('filters.minConfidence')}</h3>
                 <div className="flex items-center gap-4">
                   <Slider
                     value={[filters.confidenceScore]}
@@ -219,7 +222,7 @@ function SearchPageContent() {
                     onValueChange={([val]) => setFilters(prev => ({ ...prev, confidenceScore: val }))}
                   />
                   <span className="px-3 py-1 text-sm font-semibold rounded-md bg-gray-100 text-[#1B1F3B] w-20 text-center">
-                    {filters.confidenceScore}%
+                    {t('filters.minConfidenceValue', { value: filters.confidenceScore })}
                   </span>
                 </div>
               </div>
@@ -231,19 +234,19 @@ function SearchPageContent() {
                   onClick={() => setFilters(prev => ({ ...prev, hasEmail: !prev.hasEmail }))}
                   className={`px-3 py-1.5 rounded-md text-sm font-medium border border-gray-200 transition-colors duration-150 ${filters.hasEmail ? 'bg-[var(--scrollbar-thumb)] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
                 >
-                  <Mail className="w-4 h-4 mr-1 inline" /> Has Email
+                  <Mail className="w-4 h-4 mr-1 inline" /> {t('filters.hasEmail')}
                 </button>
                 <button
                   type="button"
                   onClick={() => setFilters(prev => ({ ...prev, hasPhone: !prev.hasPhone }))}
                   className={`px-3 py-1.5 rounded-md text-sm font-medium border border-gray-200 transition-colors duration-150 ${filters.hasPhone ? 'bg-[var(--scrollbar-thumb)] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
                 >
-                  <Phone className="w-4 h-4 mr-1 inline" /> Has Phone
+                  <Phone className="w-4 h-4 mr-1 inline" /> {t('filters.hasPhone')}
                 </button>
               </div>
               
               <Button variant="outline" onClick={handleClearFilters} className="w-full border-gray-300 text-gray-700 hover:bg-gray-100 hover:text-[#1B1F3B]">
-                <RefreshCw className="w-4 h-4 mr-2" /> Clear All Filters
+                <RefreshCw className="w-4 h-4 mr-2" /> {t('clearAllFilters')}
               </Button>
             </CardContent>
           </Card>
@@ -256,8 +259,8 @@ function SearchPageContent() {
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-24 text-center">
               <Loader2 className="w-10 h-10 animate-spin text-[#1B1F3B] mb-4" />
-              <h2 className="text-xl font-semibold text-[#1B1F3B]">Searching The Web...</h2>
-              <p className="text-muted-foreground">Please wait while we gather and enrich the results.</p>
+              <h2 className="text-xl font-semibold text-[#1B1F3B]">{t('searching', 'Searching The Web...')}</h2>
+              <p className="text-muted-foreground">{t('loadingDescription', 'Please wait while we gather and enrich the results.')}</p>
             </div>
           ) : (
             <>
@@ -270,9 +273,9 @@ function SearchPageContent() {
                       <MapView 
                         companies={filteredCompanies.map(company => ({
                           ...company,
-                          location: company.location_text || company.location || 'Unknown location',
+                          location: company.location_text || company.location || t('company.location', 'Unknown location'),
                           id: company.id || '',
-                          name: company.name || 'Unnamed Company',
+                          name: company.name || t('company.name', 'Unnamed Company'),
                           latitude: company.latitude,
                           longitude: company.longitude
                         }))}
@@ -283,19 +286,19 @@ function SearchPageContent() {
                           <MapPin className="w-12 h-12 text-gray-400" />
                         </div>
                         <h3 className="text-xl font-semibold text-[#1B1F3B] mb-2">
-                          {query ? 'No results to show on map' : 'Enter a search to see map results'}
+                          {query ? t('noResults.map', 'No results to show on map') : t('mapPlaceholder', 'Enter a search to see map results')}
                         </h3>
                         <p className="text-gray-500 mb-6 max-w-md">
                           {query 
-                            ? 'Try adjusting your search or filters.'
-                            : 'Enter a search query to find companies.'}
+                            ? t('noResults.suggestion', 'Try adjusting your search or filters.')
+                            : t('searchPlaceholder', 'Enter a search query to find companies.')}
                         </p>
                       </div>
                     )
                   ) : (
                     <div className="h-full w-full bg-gray-100 animate-pulse flex items-center justify-center">
                       <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
-                      <p className="text-gray-500 ml-4">Loading Map...</p>
+                      <p className="text-gray-500 ml-4">{t('loading', 'Loading Map...')}</p>
                     </div>
                   )}
                 </div>
@@ -305,25 +308,53 @@ function SearchPageContent() {
 
           {!isLoading && filteredCompanies.length === 0 && status === 'success' && (
             <div className="text-center py-24 bg-white rounded-xl shadow-sm">
-              <h3 className="text-xl font-semibold text-[#1B1F3B] mb-2">No Results Found</h3>
-              <p className="text-muted-foreground mb-4">Try adjusting your filters or search terms for a better match.</p>
+              <h3 className="text-xl font-semibold text-[#1B1F3B] mb-2">{t('noResults.title', 'No Results Found')}</h3>
+              <p className="text-muted-foreground mb-4">{t('noResults.suggestion', 'Try adjusting your filters or search terms for a better match.')}</p>
               {error && <p className="text-red-500">{error}</p>}
-              <Button variant="outline" onClick={handleClearFilters}>Clear All Filters</Button>
+              <Button variant="outline" onClick={handleClearFilters}>{t('clearAllFilters')}</Button>
             </div>
           )}
 
           {/* Pagination */}
-          {filteredCompanies.length > 0 && pagination && pagination.currentPage < totalPages && (
-            <div className="mt-8 text-center">
-              <Button 
-                onClick={goToNextPage} 
-                disabled={isFetchingMore}
-                className="min-w-[200px]"
-              >
-                {isFetchingMore ? (
-                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Loading...</>
-                ) : 'Load More Results'}
-              </Button>
+          {filteredCompanies.length > 0 && pagination && totalPages > 1 && (
+            <div className="mt-8 flex flex-col items-center gap-2">
+              <div className="text-sm text-gray-600 mb-2">
+                {t('pagination.pageInfo', {
+                  currentPage: pagination.currentPage,
+                  totalPages,
+                  defaultValue: `Page ${pagination.currentPage} of ${totalPages}`
+                })}
+                {pagination.totalCount > 0 && (
+                  <span className="ml-2">
+                    {t('pagination.showingResults', {
+                      start: (pagination.currentPage - 1) * pagination.pageSize + 1,
+                      end: Math.min(pagination.currentPage * pagination.pageSize, pagination.totalCount),
+                      total: pagination.totalCount,
+                      defaultValue: `Showing results ${(pagination.currentPage - 1) * pagination.pageSize + 1}-${Math.min(pagination.currentPage * pagination.pageSize, pagination.totalCount)} of ${pagination.totalCount}`
+                    })}
+                  </span>
+                )}
+              </div>
+              <div className="flex gap-4">
+                <Button
+                  onClick={goToPrevPage}
+                  disabled={pagination.currentPage === 1 || isFetchingMore}
+                  variant="outline"
+                >
+                  {isFetchingMore && pagination.currentPage !== 1 ? (
+                    <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t('pagination.previous', 'Previous')}</>
+                  ) : t('pagination.previous', 'Previous')}
+                </Button>
+                <Button
+                  onClick={goToNextPage}
+                  disabled={pagination.currentPage === totalPages || isFetchingMore}
+                  variant="outline"
+                >
+                  {isFetchingMore && pagination.currentPage !== totalPages ? (
+                    <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t('pagination.next', 'Next')}</>
+                  ) : t('pagination.next', 'Next')}
+                </Button>
+              </div>
             </div>
           )}
         </main>

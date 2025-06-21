@@ -245,18 +245,6 @@ export function MapView({
     });
   };
 
-  // Convert companies to GeoJSON for heatmap
-  const companiesGeoJson = {
-    type: 'FeatureCollection' as const,
-    features: companies
-      .filter(c => typeof c.longitude === 'number' && typeof c.latitude === 'number' && !isNaN(c.longitude!) && !isNaN(c.latitude!))
-      .map(c => ({
-        type: 'Feature' as const,
-        geometry: { type: 'Point' as const, coordinates: [c.longitude!, c.latitude!] },
-        properties: c,
-      })),
-  };
-
   return (
     <div className={containerClassName} style={{ position: 'relative' }}>
       {/* Theme Selector */}
@@ -331,8 +319,8 @@ export function MapView({
         }}
         terrain={{ source: 'terrain-source', exaggeration: 1.5 }}
       >
-        {/* Built-in Controls (except NavigationControl) */}
-
+        {/* Built-in Controls */}
+      
         <FullscreenControl position="bottom-right" />
         <ScaleControl position="bottom-left" />
 
@@ -347,31 +335,6 @@ export function MapView({
               'circle-opacity': 0.8,
               'circle-stroke-width': 2,
               'circle-stroke-color': '#ffffff',
-            }}
-          />
-        </Source>
-
-        {/* Heatmap Layer Example (now uses companies data) */}
-        <Source id="heatmap-data" type="geojson" data={companiesGeoJson}>
-          <Layer
-            id="heatmap-layer"
-            type="heatmap"
-            paint={{
-              'heatmap-weight': 1,
-              'heatmap-intensity': 1,
-              'heatmap-color': [
-                'interpolate',
-                ['linear'],
-                ['heatmap-density'],
-                0, 'rgba(33,102,172,0)',
-                0.2, 'rgb(103,169,207)',
-                0.4, 'rgb(209,229,240)',
-                0.6, 'rgb(253,219,199)',
-                0.8, 'rgb(239,138,98)',
-                1, 'rgb(178,24,43)'
-              ],
-              'heatmap-radius': 40,
-              'heatmap-opacity': 0.7,
             }}
           />
         </Source>

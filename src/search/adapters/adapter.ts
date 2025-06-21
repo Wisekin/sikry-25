@@ -10,8 +10,13 @@ export interface SearchAdapterResult {
   [key: string]: any;
 }
 
+export interface SearchAdapterResponse {
+  results: SearchAdapterResult[];
+  totalCount?: number;
+}
+
 export interface SearchAdapter {
   id: string;
   label: string;
-  search(query: import('../queryParser').ParsedQuery): Promise<SearchAdapterResult[]>;
+  search(query: import('../queryParser').ParsedQuery, options?: { limit?: number; page?: number }): Promise<SearchAdapterResponse>;
 }

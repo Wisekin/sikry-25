@@ -10,6 +10,7 @@
   "searchButton": "Search",
   "loading": "Loading...",
   "found": "{{count}} found",
+  "resultsFound": "{{count}} results found",
   "filters": {
     "title": "Advanced Filters",
     "industry": "Industry",
@@ -22,7 +23,12 @@
     "applyFilters": "Apply Filters",
     "resetFilters": "Reset All Filters",
     "clearAll": "Clear All",
-    "selectAll": "Select All"
+    "selectAll": "Select All",
+    "companySize": "Company Size",
+    "allSizes": "All Sizes",
+    "hasEmail": "Has Email",
+    "hasPhone": "Has Phone",
+    "zeroPercent": "0%"
   },
   "results": {
     "viewAs": "View as:",
@@ -89,5 +95,15 @@
   "sortNewest": "Sort by Newest",
   "searching": "Searching for companies...",
   "loadingDescription": "Please wait while we gather and enrich the results.",
-  "noResults.message": "noResults.message"
+  "noResults.message": "noResults.message",
+  "filters.industry.select": "Select an industry",
+  "actions.loadMore": "Load More Results",
+  "pagination": {
+    "pageInfo": "Page {{currentPage}} of {{totalPages}}",
+    "showingResults": "Showing results {{start}}-{{end}} of {{total}}",
+    "previous": "Previous",
+    "next": "Next"
+  },
+  "noResults.map": "No results to show on map",
+  "company.na": "N/A"
 }
