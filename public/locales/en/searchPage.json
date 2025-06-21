@@ -104,5 +104,6 @@
     "previous": "Previous",
     "next": "Next"
   },
-  "noResults.map": "No results to show on map"
+  "noResults.map": "No results to show on map",
+  "company.na": "N/A"
 }

@@ -54,36 +54,66 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
   }
 
   return (
-    <div className={`${cardClasses} flex flex-col h-full`}>
-      <CardHeader className="p-4 border-b border-gray-100 group-hover:border-gray-600">
+    <div className={`${cardClasses} flex flex-col h-96`}>
+      <CardHeader className="p-4 border-b border-gray-100 group-hover:border-gray-600 flex-shrink-0">
         <div className="flex items-start justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <img src={company.logo || `https://ui-avatars.com/api/?name=${company.name.replace(/\s/g, '+')}&background=EBF4FF&color=1D4ED8`} alt={`${company.name} logo`} className="w-12 h-12 rounded-md object-contain" />
-            <div>
-              <h3 className="font-bold text-base text-[#1B1F3B] group-hover:text-white truncate">{company.name}</h3>
+          <div className="flex items-center gap-3 min-w-0">
+            <img src={company.logo || `https://ui-avatars.com/api/?name=${company.name.replace(/\s/g, '+')}&background=EBF4FF&color=1D4ED8`} alt={`${company.name} logo`} className="w-12 h-12 rounded-md object-contain flex-shrink-0" />
+            <div className="min-w-0">
+              <h3 className="font-bold text-base text-[#1B1F3B] group-hover:text-white truncate" title={company.name}>{company.name}</h3>
               <a href={`http://${company.domain}`} target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 group-hover:text-gray-300 hover:underline flex items-center gap-1 truncate" title={company.domain}>
                 {truncateDomain(company.domain)} <ExternalLink className="w-3 h-3" />
               </a>
             </div>
           </div>
-          <div className={`text-xs font-bold px-2 py-1 rounded-full border ${confidenceStyle.bg} ${confidenceStyle.text} ${confidenceStyle.border} group-hover:bg-opacity-20 group-hover:text-white group-hover:border-white/50`}>
+          <div className={`text-xs font-bold px-2 py-1 rounded-full border ${confidenceStyle.bg} ${confidenceStyle.text} ${confidenceStyle.border} group-hover:bg-opacity-20 group-hover:text-white group-hover:border-white/50 flex-shrink-0`}>
             {confidenceScore}%
           </div>
         </div>
       </CardHeader>
-      <CardContent className="p-4 space-y-3 flex-grow max-h-72 overflow-y-auto">
-        <p className="text-sm text-gray-600 group-hover:text-gray-200">{company.description || t('company.noDescription', 'No description available.')}</p>
-        <div className="text-sm text-gray-600 group-hover:text-gray-200 flex items-center gap-2"><Briefcase className="w-4 h-4 text-gray-400 group-hover:text-sky-300"/> {company.industry || t('company.industry', 'N/A')}</div>
-        <div className="text-sm text-gray-600 group-hover:text-gray-200 flex items-center gap-2"><MapPin className="w-4 h-4 text-gray-400 group-hover:text-sky-300"/> {company.location_text || t('company.location', 'N/A')}</div>
-        <div className="text-sm text-gray-600 group-hover:text-gray-200 flex items-center gap-2"><Users className="w-4 h-4 text-gray-400 group-hover:text-sky-300"/> {employeeDisplay} {t('company.employees', 'Employees')}</div>
+      <CardContent className="p-4 space-y-2 flex-grow min-h-0 overflow-y-auto">
+        <p className="text-sm text-gray-600 group-hover:text-gray-200 line-clamp-2" title={company.description}>{company.description || t('company.noDescription', 'No description available.')}</p>
+        
+        {/* Company Details */}
+        <div className="space-y-2 text-sm text-gray-600 group-hover:text-gray-200">
+            <div className="flex items-center gap-2 truncate"><Briefcase className="w-4 h-4 text-gray-400 group-hover:text-sky-300 flex-shrink-0"/> <span className="truncate">{company.industry || t('company.industry', 'N/A')}</span></div>
+            <div className="flex items-center gap-2 truncate"><MapPin className="w-4 h-4 text-gray-400 group-hover:text-sky-300 flex-shrink-0"/> <span className="truncate">{company.location_text || t('company.location', 'N/A')}</span></div>
+            <div className="flex items-center gap-2 truncate"><Users className="w-4 h-4 text-gray-400 group-hover:text-sky-300 flex-shrink-0"/> <span className="truncate">{employeeDisplay} {t('company.employees', 'Employees')}</span></div>
+        </div>
+        
+        {/* Contact Information */}
+        <div className="space-y-2 pt-2 border-t border-gray-100 group-hover:border-gray-600 text-sm">
+            <div className="flex items-center gap-2 truncate text-gray-600 group-hover:text-gray-200">
+                <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-sky-300 flex-shrink-0" />
+                {company.domain ? (
+                    <a href={`http://${company.domain}`} target="_blank" rel="noopener noreferrer" className="truncate hover:underline" title={company.domain}>{company.domain}</a>
+                ) : (
+                    <span className="truncate">{t('company.na', 'N/A')}</span>
+                )}
+            </div>
+            <div className="flex items-center gap-2 truncate text-gray-600 group-hover:text-gray-200">
+                <Mail className="w-4 h-4 text-gray-400 group-hover:text-sky-300 flex-shrink-0" />
+                {company.extractedData?.emails?.[0] ? (
+                    <a href={`mailto:${company.extractedData.emails[0]}`} className="truncate hover:underline" title={company.extractedData.emails[0]}>{company.extractedData.emails[0]}</a>
+                ) : (
+                    <span className="truncate">{t('company.na', 'N/A')}</span>
+                )}
+            </div>
+            <div className="flex items-center gap-2 truncate text-gray-600 group-hover:text-gray-200">
+                <Phone className="w-4 h-4 text-gray-400 group-hover:text-sky-300 flex-shrink-0" />
+                 {company.extractedData?.phones?.[0] ? (
+                    <span className="truncate" title={company.extractedData.phones[0]}>{company.extractedData.phones[0]}</span>
+                ) : (
+                    <span className="truncate">{t('company.na', 'N/A')}</span>
+                )}
+            </div>
+        </div>
       </CardContent>
-      {company.extractedData && (company.extractedData.emails?.length > 0 || company.extractedData.phones?.length > 0 || company.extractedData.technologies?.length > 0) && (
-        <div className="p-4 border-t border-gray-100 group-hover:border-gray-600">
-          <h4 className="text-xs font-semibold text-gray-500 group-hover:text-gray-300 mb-2">{t('company.contactInfo', 'EXTRACTED DATA')}</h4>
+      {company.extractedData?.technologies?.[0] && (
+        <div className="p-4 border-t border-gray-100 group-hover:border-gray-600 flex-shrink-0">
+          <h4 className="text-xs font-semibold text-gray-500 group-hover:text-gray-300 mb-2">{t('company.technologies', 'TECHNOLOGIES')}</h4>
           <div className="flex flex-wrap gap-2">
-              {company.extractedData.emails?.length > 0 && <div className="flex items-center gap-1.5 text-xs bg-gray-100 group-hover:bg-gray-700 text-gray-700 group-hover:text-gray-200 rounded-full px-2 py-1"><Mail className="w-3 h-3"/> {company.extractedData.emails.length} {t('company.email', 'Email(s)')}</div>}
-              {company.extractedData.phones?.length > 0 && <div className="flex items-center gap-1.5 text-xs bg-gray-100 group-hover:bg-gray-700 text-gray-700 group-hover:text-gray-200 rounded-full px-2 py-1"><Phone className="w-3 h-3"/> {company.extractedData.phones.length} {t('company.phone', 'Phone(s)')}</div>}
-              {company.extractedData.technologies?.slice(0, 2).map((tech: string, index: number) => (
+              {company.extractedData.technologies?.slice(0, 3).map((tech: string, index: number) => (
                   <div key={`${tech}-${index}`} className="flex items-center gap-1.5 text-xs bg-gray-100 group-hover:bg-gray-700 text-gray-700 group-hover:text-gray-200 rounded-full px-2 py-1"><Tag className="w-3 h-3"/> {tech}</div>
               ))}
           </div>
