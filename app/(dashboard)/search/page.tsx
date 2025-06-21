@@ -94,12 +94,20 @@ function SearchPageContent() {
   // Apply filters to results
   const filteredCompanies = useMemo(() => {
     return results.filter(company => {
+      // Industry
       if (filters.industry !== "All Industries" && company.industry !== filters.industry) return false;
-      if (filters.location && !company.location.toLowerCase().includes(filters.location.toLowerCase())) return false;
-      if (filters.employeeCount !== "All Sizes" && company.employees !== filters.employeeCount) return false;
-      if (filters.confidenceScore && company.confidenceScore < filters.confidenceScore) return false;
-      if (filters.hasEmail && company.extractedData?.emails?.length === 0) return false;
-      if (filters.hasPhone && company.extractedData?.phones?.length === 0) return false;
+      // Location (use location_text if present, fallback to location)
+      const locationValue = (company.location_text || company.location || '').toLowerCase();
+      if (filters.location && !locationValue.includes(filters.location.toLowerCase())) return false;
+      // Employee Count (use employee_count string)
+      if (filters.employeeCount !== "All Sizes" && company.employee_count !== filters.employeeCount) return false;
+      // Confidence Score (ensure number)
+      const score = typeof company.confidenceScore === 'number' ? company.confidenceScore : 0;
+      if (filters.confidenceScore && score < filters.confidenceScore) return false;
+      // Has Email
+      if (filters.hasEmail && (!company.extractedData || !Array.isArray(company.extractedData.emails) || company.extractedData.emails.length === 0)) return false;
+      // Has Phone
+      if (filters.hasPhone && (!company.extractedData || !Array.isArray(company.extractedData.phones) || company.extractedData.phones.length === 0)) return false;
       return true;
     });
   }, [results, filters]);
@@ -117,7 +125,7 @@ function SearchPageContent() {
   const isFetchingMore = status === 'fetching' && results.length > 0;
 
   return (
-    <div className="space-y-6 max-w-full bg-gray-50/50">
+    <div className="space-y-2 max-w-full bg-gray-50/50">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -203,37 +211,35 @@ function SearchPageContent() {
               <div className="pt-4 border-t border-gray-100">
                 <h3 className="text-sm font-semibold mb-3 flex items-center text-gray-700"><Star className="w-4 h-4 mr-2" /> Minimum Confidence</h3>
                 <div className="flex items-center gap-4">
-                  <Slider 
-                    value={[filters.confidenceScore]} 
-                    min={0} 
-                    max={100} 
-                    step={1} 
-                    onValueChange={value => setFilters(prev => ({ ...prev, confidenceScore: value[0] }))} 
+                  <Slider
+                    value={[filters.confidenceScore]}
+                    min={0}
+                    max={100}
+                    step={1}
+                    onValueChange={([val]) => setFilters(prev => ({ ...prev, confidenceScore: val }))}
                   />
                   <span className="px-3 py-1 text-sm font-semibold rounded-md bg-gray-100 text-[#1B1F3B] w-20 text-center">
                     {filters.confidenceScore}%
                   </span>
                 </div>
               </div>
-              
-              {/* Checkbox filters */}
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="hasEmail" 
-                    checked={filters.hasEmail} 
-                    onCheckedChange={checked => setFilters(prev => ({ ...prev, hasEmail: !!checked }))}
-                  />
-                  <Label htmlFor="hasEmail" className="font-normal">Has Email</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="hasPhone" 
-                    checked={filters.hasPhone} 
-                    onCheckedChange={checked => setFilters(prev => ({ ...prev, hasPhone: !!checked }))}
-                  />
-                  <Label htmlFor="hasPhone" className="font-normal">Has Phone</Label>
-                </div>
+
+              {/* Email/Phone Filters as Toggle Buttons */}
+              <div className="flex gap-2 mt-4">
+                <button
+                  type="button"
+                  onClick={() => setFilters(prev => ({ ...prev, hasEmail: !prev.hasEmail }))}
+                  className={`px-3 py-1.5 rounded-md text-sm font-medium border border-gray-200 transition-colors duration-150 ${filters.hasEmail ? 'bg-[var(--scrollbar-thumb)] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                >
+                  <Mail className="w-4 h-4 mr-1 inline" /> Has Email
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFilters(prev => ({ ...prev, hasPhone: !prev.hasPhone }))}
+                  className={`px-3 py-1.5 rounded-md text-sm font-medium border border-gray-200 transition-colors duration-150 ${filters.hasPhone ? 'bg-[var(--scrollbar-thumb)] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                >
+                  <Phone className="w-4 h-4 mr-1 inline" /> Has Phone
+                </button>
               </div>
               
               <Button variant="outline" onClick={handleClearFilters} className="w-full border-gray-300 text-gray-700 hover:bg-gray-100 hover:text-[#1B1F3B]">
@@ -341,20 +347,3 @@ export default function SearchPage() {
     </div>
   );
 }
-
-// Add missing components for completeness
-const Checkbox = ({ id, checked, onCheckedChange }: { id: string; checked: boolean; onCheckedChange: (checked: boolean) => void }) => (
-  <input 
-    type="checkbox" 
-    id={id} 
-    checked={checked} 
-    onChange={e => onCheckedChange(e.target.checked)} 
-    className="h-4 w-4 rounded border-gray-300 text-[#1B1F3B] focus:ring-[#1B1F3B]"
-  />
-);
-
-const Label = ({ htmlFor, className, children }: { htmlFor: string; className?: string; children: React.ReactNode }) => (
-  <label htmlFor={htmlFor} className={`text-sm text-gray-700 ${className}`}>
-    {children}
-  </label>
-);

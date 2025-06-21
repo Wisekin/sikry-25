@@ -310,6 +310,8 @@ export function SecondaryMenuBar() {
         // Placeholder: implement export logic as needed
         // e.g., exportResults(results)
       };
+      // Custom hover style for /search
+      const hoverClass = "hover:bg-[var(--scrollbar-thumb)] hover:text-white";
       return (
         <div className="flex items-center w-full px-2 gap-2">
           {/* Search Bar, Source Selectors, View Mode Buttons */}
@@ -335,7 +337,7 @@ export function SecondaryMenuBar() {
                   key={source}
                   size="sm"
                   variant={selectedSources.includes(source) ? "default" : "outline"}
-                  className="px-2 py-1 text-xs"
+                  className={`px-2 py-1 text-xs ${hoverClass}`}
                   onClick={() => toggleSource(source)}
                 >
                   {source === "google" && <Globe className="w-4 h-4 mr-1" />}
@@ -346,20 +348,20 @@ export function SecondaryMenuBar() {
               ))}
             </div>
             <div className="flex items-center gap-1 ml-2">
-              <Button size="icon" variant={viewMode === 'grid' ? "default" : "outline"} className="h-8 w-8" onClick={() => setViewMode('grid')}>
+              <Button size="icon" variant={viewMode === 'grid' ? "default" : "outline"} className={`h-8 w-8 ${hoverClass}`} onClick={() => setViewMode('grid')}>
                 <Grid className="w-4 h-4" />
               </Button>
-              <Button size="icon" variant={viewMode === 'list' ? "default" : "outline"} className="h-8 w-8" onClick={() => setViewMode('list')}>
+              <Button size="icon" variant={viewMode === 'list' ? "default" : "outline"} className={`h-8 w-8 ${hoverClass}`} onClick={() => setViewMode('list')}>
                 <List className="w-4 h-4" />
               </Button>
-              <Button size="icon" variant={viewMode === 'map' ? "default" : "outline"} className="h-8 w-8" onClick={() => setViewMode('map')}>
+              <Button size="icon" variant={viewMode === 'map' ? "default" : "outline"} className={`h-8 w-8 ${hoverClass}`} onClick={() => setViewMode('map')}>
                 <MapPin className="w-4 h-4" />
               </Button>
             </div>
           </div>
           {/* Export Button at the far right */}
           <div className="flex-shrink-0">
-            <Button size="sm" className="bg-[#1B1F3B] text-white hover:bg-[#2A3050] flex items-center gap-1 ml-2" onClick={handleExport}>
+            <Button size="sm" className={`bg-[#1B1F3B] text-white hover:bg-[#2A3050] flex items-center gap-1 ml-2 ${hoverClass}`} onClick={handleExport}>
               <Download className="w-4 h-4" />
               <span className="hidden md:inline">Export</span>
             </Button>
