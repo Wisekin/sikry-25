@@ -88,5 +88,6 @@
   "noResults.suggestion": "Try adjusting your filters or search terms for a better match.",
   "sortNewest": "Sort by Newest",
   "searching": "Searching for companies...",
-  "loadingDescription": "Please wait while we gather and enrich the results."
+  "loadingDescription": "Please wait while we gather and enrich the results.",
+  "noResults.message": "noResults.message"
 }

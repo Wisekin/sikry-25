@@ -114,3 +114,81 @@ Updated the CommunicationsTable component to use the translation key:
 Added the useTranslation hook import
 Initialized the translation hook with const { t } = useTranslation('commsPage')
 Replaced the hardcoded text with the translation key: {t('history.title')}
+
+
+
+
+----------
+const filteredCompanies = companies.filter(company => {
+    if (filters.industry !== "All Industries" && company.industry !== filters.industry) return false;
+    if (filters.location && !company.location.toLowerCase().includes(filters.location.toLowerCase())) return false;
+    if (filters.employeeCount !== "All Sizes" && company.employees !== filters.employeeCount) return false;
+    if (filters.confidenceScore && company.confidenceScore < filters.confidenceScore) return false;
+    if (filters.hasEmail && company.extractedData.emails.length === 0) return false;
+    if (filters.hasPhone && company.extractedData.phones.length === 0) return false;
+    return true;
+  });
+
+
+  return (
+    <div className="space-y-6 max-w-full">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-bold text-[#1B1F3B]">
+            {t('companySearch.title', { ns: 'searchPage' })}
+          </h1>
+          <p className="text-gray-500 mt-1">
+            {loading && t('searching', { ns: 'searchPage' })}
+            {!loading && !error && !noResults && `${filteredCompanies.length} ${t('results.found', { ns: 'searchPage' })}`}
+          </p>
+          {noResults && !loading && (
+            <div className="mt-2 text-sm text-gray-600 bg-gray-50 border border-gray-200 rounded px-3 py-2">
+              {t('noResults', { ns: 'commsPage' })}
+            </div>
+          )}
+          {error && (
+            <div className="mt-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-2">
+              {t('error', { ns: 'searchPage' })} {error}
+            </div>
+          )}
+        </div>
+        <Button size="lg" className="bg-[#1B1F3B] text-white hover:bg-[#2A3050] flex items-center gap-2">
+          <Download className="w-5 h-5" /> {t('exportButton', { ns: 'searchPage' })}
+        </Button>
+      </div>
+      
+      {/* Search and Source Filters */}
+      <Card className="bg-white p-4 shadow-sm">
+        <div className="grid md:grid-cols-3 gap-4 items-center">
+          <div className="md:col-span-2">
+            <Input 
+              value={query} 
+              onChange={(e) => setQuery(e.target.value)} 
+              placeholder={t('searchPlaceholder', { ns: 'searchPage' })} 
+              className="p-6 text-base border-gray-300 focus:ring-2 focus:ring-[#2A3050]" 
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium text-gray-600">
+              {t('sources.title', { ns: 'searchPage' })}
+            </span>
+            {["google", "linkedin", "crunchbase"].map(source => (
+              <button key={source} onClick={() => toggleSource(source)} className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold rounded-full transition-colors duration-200 ${selectedSources.includes(source) ? 'bg-[#1B1F3B] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>
+                {source === "google" && <Globe className="w-4 h-4" />}
+                {source === "linkedin" && <Linkedin className="w-4 h-4" />}
+                {source === "crunchbase" && <Database className="w-4 h-4" />}
+                <span className="capitalize">{source}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </Card>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Advanced Filters Sidebar */}
+        <aside className="lg:col-span-3 lg:sticky lg:top-8 h-fit">
+          <Card className="bg-white border-none shadow-sm">
+            <CardHeader className="border-b border-gray-100">
+              <CardTitle className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                <Filter className="w-5 h-5 text-[#1B1F3B]" /> 

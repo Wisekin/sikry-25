@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  transpilePackages: ['react-map-gl', 'mapbox-gl'],
   experimental: {
   //  appDir: true,
   },
