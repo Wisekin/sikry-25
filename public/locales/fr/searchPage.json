@@ -10,6 +10,7 @@
   "searchButton": "Rechercher",
   "loading": "Chargement...",
   "found": "{{count}} trouvé(s)",
+  "resultsFound": "{{count}} résultat(s) trouvé(s)",
   "filters": {
     "title": "Filtres avancés",
     "industry": "Secteur d'activité",
@@ -22,7 +23,12 @@
     "applyFilters": "Appliquer les filtres",
     "resetFilters": "Réinitialiser tous les filtres",
     "clearAll": "Tout effacer",
-    "selectAll": "Tout sélectionner"
+    "selectAll": "Tout sélectionner",
+    "companySize": "Taille de l'entreprise",
+    "allSizes": "Toutes tailles",
+    "hasEmail": "email",
+    "hasPhone": "phone",
+    "zeroPercent": "0%"
   },
   "results": {
     "viewAs": "Afficher en :",
@@ -87,5 +93,12 @@
   "noResults.title": "Aucun résultat trouvé",
   "noResults.suggestion": "Essayez d'ajuster vos filtres ou vos termes de recherche pour obtenir de meilleurs résultats.",
   "searching": "Recherche d'entreprises...",
-  "loadingDescription": "Veuillez patienter pendant que nous collectons et enrichissons les résultats."
+  "loadingDescription": "Veuillez patienter pendant que nous collectons et enrichissons les résultats.",
+  "filters.industry.select": "Select an industry",
+  "pagination": {
+    "pageInfo": "Page {{currentPage}} sur {{totalPages}}",
+    "showingResults": "Affichage des résultats {{start}}-{{end}} sur {{total}}",
+    "previous": "Précédent",
+    "next": "Suivant"
+  }
 }

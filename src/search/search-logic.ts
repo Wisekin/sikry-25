@@ -17,38 +17,16 @@ export async function mergeAndRankResults(results: SearchResult[], parsedQuery: 
   const merged = new Map<string, SearchResult>();
   let duplicatesFound = 0;
 
-  // Sort by source priority before merging to ensure higher-priority sources are processed first
-  results.sort((a, b) => (sourcePriority[b.source || 'default'] || 0) - (sourcePriority[a.source || 'default'] || 0));
-
-  for (const result of results) {
-    // Normalize domain to avoid www. subdomain issues
-    // FIX: Ensure result.domain is a valid URL by prepending 'https://' if needed
-    let domain = null;
-    if (result.domain) {
-      try {
-        // If domain does not start with http, prepend https://
-        const urlStr = result.domain.startsWith('http') ? result.domain : `https://${result.domain}`;
-        domain = new URL(urlStr).hostname.replace(/^www\./, '');
-      } catch (e) {
-        // If domain is invalid, fallback to null
-        domain = null;
-      }
-    }
-    const key = domain || `${result.name?.toLowerCase() || ''}|${result.location_text?.toLowerCase() || ''}`;
-
-    if (merged.has(key)) {
-      duplicatesFound++;
-      // Merge properties from lower-priority source if they don't exist in the higher-priority one
-      const existing = merged.get(key)!;
-      for (const prop in result) {
-        if (result[prop as keyof SearchResult] && !existing[prop as keyof SearchResult]) {
-          (existing[prop as keyof SearchResult] as any) = result[prop as keyof SearchResult];
-        }
-      }
-    } else {
-      merged.set(key, { ...result });
-    }
-  }
+  // --- TEMPORARY FIX: Bypassing deduplication ---
+  // The original deduplication logic was too strict, reducing ~100 results to 2.
+  // This is temporarily bypassed to allow for pagination testing.
+  // A more sophisticated merging strategy is needed long-term.
+  results.forEach((result, index) => {
+    // Use a unique key for each result to prevent merging
+    const uniqueKey = `${result.source}-${result.name}-${index}`;
+    merged.set(uniqueKey, result);
+  });
+  // --- END TEMPORARY FIX ---
 
   // --- Ranking Logic ---
   const rankedResults = Array.from(merged.values()).map(result => {

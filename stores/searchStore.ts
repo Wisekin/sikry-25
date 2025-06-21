@@ -78,7 +78,7 @@ const initialState: SearchState = {
   // Pagination
   pagination: {
     currentPage: 1,
-    pageSize: 10,
+    pageSize: 50,
     totalCount: 0,
   },
   
@@ -192,7 +192,7 @@ export const useSearchStore = create<SearchState & SearchActions>()(
         filters: state.filters,
         viewMode: state.viewMode,
         selectedSources: state.selectedSources,
-        pagination: { currentPage: 1, pageSize: state.pagination.pageSize, totalCount: 0 },
+        pagination: { currentPage: 1, pageSize: 50, totalCount: 0 },
         cacheKey: state.cacheKey,
       }),
     }

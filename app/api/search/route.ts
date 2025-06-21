@@ -261,6 +261,8 @@ export async function GET(req: NextRequest) {
     }
 
     // --- Advanced Merging and Ranking ---
+
+
     const allResults = [
       ...(supabaseResult.data || []),
       ...companiesHouseResults,

@@ -17,7 +17,7 @@ export const companiesHouseAdapter: SearchAdapter = {
       return [];
     }
 
-    const endpoint = `https://api.company-information.service.gov.uk/search/companies?q=${encodeURIComponent(searchQuery)}&items_per_page=10`;
+        const endpoint = `https://api.company-information.service.gov.uk/search/companies?q=${encodeURIComponent(searchQuery)}&items_per_page=50`;
 
     try {
       const response = await fetch(endpoint, {

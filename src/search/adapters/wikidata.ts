@@ -16,7 +16,7 @@ export const wikidataAdapter: SearchAdapter = {
     }
 
     // Wikidata API endpoint for searching entities
-    const endpoint = `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(searchQuery)}&language=en&format=json&limit=10`;
+        const endpoint = `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(searchQuery)}&language=en&format=json&limit=50`;
 
     try {
       const response = await fetch(endpoint, {
