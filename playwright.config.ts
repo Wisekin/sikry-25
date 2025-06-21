@@ -12,7 +12,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'list',
   use: {
-    baseURL: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+    baseURL: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001',
     trace: 'on-first-retry',
     // Collect screenshots, videos, and other artifacts on failure
     screenshot: 'only-on-failure',
@@ -35,7 +35,7 @@ export default defineConfig({
   // Run local dev server before starting the tests
   /* webServer: {
     command: 'npm run dev',
-    url: 'http://localhost:3000',
+    url: 'http://localhost:3001',
     reuseExistingServer: !process.env.CI,
   }, */
-}); 
+});

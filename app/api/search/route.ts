@@ -1,26 +1,131 @@
-import { type NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/src/utils/supabase/server'
+import { type NextRequest, NextResponse } from 'next/server';
+import { mergeAndRankResults } from '@/src/search/search-logic';
+import { createClient } from '@/src/utils/supabase/server';
 import type { ApiResponse, SearchScope } from '@/src/types';
 import type { SearchResult } from '@/src/types/search';
-import { CacheManager } from '@/src/utils/cache/cacheManager'
-import { DbRateLimiter } from '@/src/utils/cache/rateLimiter'
+import { CacheManager } from '@/src/utils/cache/cacheManager';
+import { DbRateLimiter } from '@/src/utils/cache/rateLimiter';
+import { randomUUID } from 'crypto';
+import { Company } from '@/src/types/company';
+import { getCache, setCache, generateCacheKey, clearSearchCache } from '@/lib/redis';
 
-const supabase = createClient()
+import redisConfig from '@/lib/config/redis';
 
-// Cache TTL per search scope
-const CACHE_TTL: Record<SearchScope, number> = {
-  companies: 3600,      // 1 hour for company searches
-  contacts: 1800,       // 30 minutes for contact searches
-  insights: 900,        // 15 minutes for insights
-  default: 600         // 10 minutes default
+const supabase = createClient();
+
+// Cache key generators
+const CACHE_KEYS = {
+  SEARCH_RESULTS: (key: string) => `search:results:${key}`,
+  SEARCH_METADATA: (key: string) => `search:metadata:${key}`,
+  SEARCH_PAGE: (key: string, page: number) => `search:page:${key}:${page}`,
+  SEARCH_QUERY: (key: string) => `search:query:${key}`,
+};
+
+// Helper function to create a consistent cache key for search parameters
+function createSearchCacheKey(params: {
+  query: string;
+  scope: string;
+  organizationId?: string;
+  filters?: Record<string, any>;
+}): string {
+  return generateCacheKey({
+    q: params.query,
+    s: params.scope,
+    org: params.organizationId || '',
+    ...(params.filters || {})
+  });
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(req: NextRequest) {
+  const supabase = createClient();
   const searchStartTime = Date.now();
+  
+  const { searchParams } = new URL(req.url);
+  const query = searchParams.get('q') || '';
+  const scope = (searchParams.get('scope') || 'companies') as SearchScope;
+  const cacheKey = searchParams.get('cacheKey');
+  const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
+  const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '10', 10)));
+  const forceRefresh = searchParams.get('refresh') === 'true';
+
+  // If a cacheKey is provided, try to fetch paginated results from the cache
+  if (cacheKey) {
+    try {
+      // Try to get the specific page from cache
+      const pageCacheKey = CACHE_KEYS.SEARCH_PAGE(cacheKey, page);
+      const cachedPage = await getCache<{
+        results: SearchResult[];
+        metadata: {
+          totalCount: number;
+          pageCount: number;
+          currentPage: number;
+          cacheKey: string;
+        };
+      }>(pageCacheKey);
+
+      if (cachedPage) {
+        console.log(`[API Search] Serving page ${page} from cache (key: ${cacheKey})`);
+        return NextResponse.json({
+          success: true,
+          data: cachedPage.results,
+          metadata: {
+            ...cachedPage.metadata,
+            cached: true,
+            cacheKey,
+          },
+        });
+      }
+
+      // If page not in cache, check if we have the full results
+      const fullResultsKey = CACHE_KEYS.SEARCH_RESULTS(cacheKey);
+      const fullResults = await getCache<SearchResult[]>(fullResultsKey);
+      
+      if (fullResults) {
+        const totalCount = fullResults.length;
+        const pageCount = Math.ceil(totalCount / limit);
+        const currentPage = Math.min(page, pageCount);
+        const paginatedResults = fullResults.slice(
+          (currentPage - 1) * limit,
+          currentPage * limit
+        );
+
+        // Cache this page for future requests
+        const pageMetadata = {
+          totalCount,
+          pageCount,
+          currentPage,
+          cacheKey,
+        };
+
+        await setCache(
+          CACHE_KEYS.SEARCH_PAGE(cacheKey, currentPage),
+          {
+            results: paginatedResults,
+            metadata: pageMetadata,
+          },
+          redisConfig.ttl.searchResults
+        );
+
+        console.log(`[API Search] Generated page ${currentPage} from full results cache`);
+        return NextResponse.json({
+          success: true,
+          data: paginatedResults,
+          metadata: {
+            ...pageMetadata,
+            cached: true,
+          },
+        });
+      }
+
+      // If we get here, the cache key is invalid or expired
+      console.log(`[API Search] Cache key ${cacheKey} not found. Performing a new search.`);
+    } catch (error) {
+      console.error('Error accessing cache:', error);
+      // Continue with a new search if there's a cache error
+    }
+  }
+
   try {
-    const url = new URL(request.url)
-    const query = url.searchParams.get('q') || ''
-    const scope = (url.searchParams.get('scope') || 'companies') as SearchScope
     // Initialize rate limiter and check limits
     const rateLimiter = new DbRateLimiter();
     const { 
@@ -30,7 +135,7 @@ export async function GET(request: NextRequest) {
       userId, 
       organizationId, 
       plan 
-    } = await rateLimiter.isAllowed(request);
+    } = await rateLimiter.isAllowed(req);
 
     if (!canProceed || !userId || !organizationId || !plan) {
       return NextResponse.json(
@@ -43,19 +148,65 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Initialize cache manager
-    const cacheManager = new CacheManager(organizationId, plan);
-    const cacheKey = `search:${scope}:${query}`
-
-    // Try to get from cache first
-    const cachedResult = await cacheManager.get(cacheKey)
-    if (cachedResult) {
-      return NextResponse.json(cachedResult)
+    // Generate a cache key for this search
+    const searchCacheKey = createSearchCacheKey({
+      query,
+      scope,
+      organizationId,
+      filters: searchParams.get('filters') ? JSON.parse(searchParams.get('filters')!) : {}
+    });
+    
+    // If this is a new search (no cacheKey provided), check if we have cached results
+    if (!cacheKey && !forceRefresh) {
+      const cachedResultsKey = CACHE_KEYS.SEARCH_RESULTS(searchCacheKey);
+      const cachedResults = await getCache<SearchResult[]>(cachedResultsKey);
+      
+      if (cachedResults) {
+        const totalCount = cachedResults.length;
+        const pageCount = Math.ceil(totalCount / limit);
+        const currentPage = 1;
+        const paginatedResults = cachedResults.slice(0, limit);
+        
+        // Prepare metadata for the response
+        const metadata = {
+          query,
+          scope,
+          page: currentPage,
+          limit,
+          totalCount,
+          pageCount,
+          cacheKey: searchCacheKey,
+          cached: true,
+        };
+        
+        // Cache the first page
+        await setCache(
+          CACHE_KEYS.SEARCH_PAGE(searchCacheKey, currentPage),
+          {
+            results: paginatedResults,
+            metadata: {
+              totalCount,
+              pageCount,
+              currentPage,
+              cacheKey: searchCacheKey,
+            },
+          },
+          redisConfig.ttl.searchResults
+        );
+        
+        console.log(`[API Search] Serving from cache (key: ${searchCacheKey})`);
+        return NextResponse.json({
+          success: true,
+          data: paginatedResults,
+          metadata,
+        });
+      }
     }
 
     // --- Modular Search Integration ---
     const { parseQuery } = await import('@/src/search/queryParser');
     const { companiesHouseAdapter } = await import('@/src/search/adapters/companiesHouse');
+    const { wikidataAdapter } = await import('@/src/search/adapters/wikidata');
 
     // Parse the query using the modular parser
     const parsedQuery = await parseQuery(query);
@@ -93,18 +244,95 @@ export async function GET(request: NextRequest) {
       }));
     }
 
-    // Merge results (simple concat, dedupe by name+location)
+    // Call Wikidata adapter and map results
+    let wikidataResults: SearchResult[] = [];
+    if (parsedQuery) {
+        const adapterResults = await wikidataAdapter.search(parsedQuery);
+        wikidataResults = adapterResults.map((item, index) => ({
+            id: `wd-${Date.now()}-${index}`,
+            name: item.name,
+            domain: item.url,
+            description: item.description,
+            industry: item.industry,
+            location_text: item.location,
+            source: 'wikidata',
+            confidence: item.confidence,
+        }));
+    }
+
+    // --- Advanced Merging and Ranking ---
     const allResults = [
       ...(supabaseResult.data || []),
-      ...companiesHouseResults
+      ...companiesHouseResults,
+      ...wikidataResults,
     ];
-    const seen = new Set();
-    const mergedResults = allResults.filter(item => {
-      const key = `${item.name?.toLowerCase() || ''}|${item.location?.toLowerCase() || ''}`;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
+
+    let mergedResults: SearchResult[];
+    let mergeMetadata: Record<string, any> = {};
+
+    if (parsedQuery) {
+      const ranked = await mergeAndRankResults(allResults, parsedQuery);
+      mergedResults = ranked.mergedResults;
+      mergeMetadata = ranked.mergeMetadata;
+    } else {
+      // If AI query parsing failed, fall back to unranked, raw results
+      mergedResults = allResults;
+      mergeMetadata = { note: 'AI parsing failed; returning unranked results.' };
+    }
+    const totalCount = mergedResults.length;
+    const pageCount = Math.ceil(totalCount / limit);
+    const currentPage = 1; // Always return first page for new searches
+    const paginatedResults = mergedResults.slice(0, limit);
+    
+    // Prepare metadata for the response
+    const metadata = {
+      query,
+      scope,
+      page: currentPage,
+      limit,
+      totalCount,
+      pageCount,
+      cacheKey: searchCacheKey,
+      cached: false,
+      originalSupabaseCount: supabaseResult.data?.length || 0,
+      companiesHouseCount: companiesHouseResults.length,
+      wikidataCount: wikidataResults.length,
+      preMergeCount: allResults.length,
+      mergedCount: totalCount,
+      mergeDetails: mergeMetadata,
+    };
+    
+    // Cache the full results and first page if we have enough results
+    if (totalCount > 0) {
+      try {
+        // Cache full results
+        await setCache(
+          CACHE_KEYS.SEARCH_RESULTS(searchCacheKey),
+          mergedResults,
+          redisConfig.ttl.searchResults
+        );
+        
+        // Cache first page
+        await setCache(
+          CACHE_KEYS.SEARCH_PAGE(searchCacheKey, currentPage),
+          {
+            results: paginatedResults,
+            metadata: {
+              totalCount,
+              pageCount,
+              currentPage,
+              cacheKey: searchCacheKey,
+            },
+          },
+          redisConfig.ttl.searchResults
+        );
+        
+        console.log(`[API Search] Cached ${totalCount} results with key ${searchCacheKey}`);
+      } catch (cacheError) {
+        console.error('Error caching search results:', cacheError);
+        // Continue with the response even if caching fails
+      }
+    }
 
     const sources: string[] = [];
     if (supabaseResult.data && supabaseResult.data.length > 0) {
@@ -113,18 +341,18 @@ export async function GET(request: NextRequest) {
     if (companiesHouseResults.length > 0) {
       sources.push('companies_house');
     }
+    if (wikidataResults.length > 0) {
+      sources.push('wikidata');
+    }
 
     const response = {
       success: true,
-      data: mergedResults,
+      data: paginatedResults,
       metadata: {
-        query,
-        parsedQuery,
+        ...metadata,
         sources,
+        parsedQuery,
         timestamp: new Date().toISOString(),
-        originalSupabaseCount: supabaseResult.data?.length || 0,
-        companiesHouseCount: companiesHouseResults.length,
-        mergedCount: mergedResults.length
       }
     };
 
@@ -137,21 +365,8 @@ export async function GET(request: NextRequest) {
       search_filters: parsedQuery || {},
       search_scope: scope,
       search_type: 'modular',
-      results_count: mergedResults.length,
+      results_count: totalCount,
       execution_time_ms: Date.now() - searchStartTime
-    });
-
-    // Cache the successful response
-    await cacheManager.set({
-      cacheKey,
-      data: response,
-      ttlSeconds: CACHE_TTL[scope] || CACHE_TTL.default,
-      metadata: {
-        query,
-        parsedQuery,
-        executionTime: Date.now() - searchStartTime,
-        resultsCount: mergedResults.length
-      }
     });
 
     return NextResponse.json(response);
@@ -169,7 +384,12 @@ export async function GET(request: NextRequest) {
   }
 }
 
-async function performSearch(query: string, scope: string, organizationId: string) {
+async function performSearch(query: string, scope: string, organizationId: string): Promise<{
+  success: boolean;
+  data: SearchResult[] | null;
+  error?: { code: string; message: string };
+  metadata?: Record<string, any>;
+}> {
   try {
     // Base query
     let searchQuery = supabase.from(scope === 'companies' ? 'discovered_companies' : scope)
@@ -201,7 +421,7 @@ async function performSearch(query: string, scope: string, organizationId: strin
 
     return {
       success: true,
-      data,
+      data: data || [],
       metadata: {
         query,
         scope,

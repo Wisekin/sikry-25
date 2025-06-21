@@ -4,28 +4,63 @@ import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select"
 import { Badge } from "@/src/components/ui/badge"
-import { Plus, Download, Upload, Filter, Search, Calendar, Play, Settings, UserPlus, ShieldCheck, LayoutGrid, List, Share2 } from "lucide-react"
+import { Plus, Download, Upload, Filter, Search, Calendar, Play, Settings, UserPlus, ShieldCheck, LayoutGrid, List, Share2, Globe, Linkedin, Database, MapPin, X, Grid } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useTranslation } from 'react-i18next';
 import { Tabs, TabsList, TabsTrigger } from "@/src/components/ui/tabs"
+import { useSearchStore } from '@/stores/searchStore';
 
 export function SecondaryMenuBar() {
-  const pathname = usePathname()
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const { t } = useTranslation()
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { t } = useTranslation();
+
+  // Zustand search store (always called)
+  const {
+    query,
+    setQuery,
+    selectedSources,
+    setSelectedSources,
+    viewMode,
+    setViewMode,
+    fetchSearchResults,
+    results
+  } = useSearchStore();
+
+  // Handlers for /search
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (query.trim()) {
+      setQuery(query.trim());
+      fetchSearchResults({ forceRefresh: true });
+    }
+  };
+  const handleClear = () => setQuery("");
+  const toggleSource = (source: string) => {
+    setSelectedSources(
+      selectedSources.includes(source)
+        ? selectedSources.filter((s: string) => s !== source)
+        : [...selectedSources, source]
+    );
+  };
+  const handleExport = () => {
+    // Placeholder: implement export logic as needed
+    // e.g., exportResults(results)
+  };
+  const hoverClass = "hover:bg-[var(--scrollbar-thumb)] hover:text-white";
 
   const handleTabChange = (value: string) => {
-    const params = new URLSearchParams(searchParams)
-    params.set('tab', value)
-    router.push(`${pathname}?${params.toString()}`)
-  }
+    const params = new URLSearchParams(searchParams);
+    params.set('tab', value);
+    router.push(`${pathname}?${params.toString()}`);
+  };
 
   const handleViewChange = (view: string) => {
-    const params = new URLSearchParams(searchParams)
-    params.set('view', view)
-    router.push(`${pathname}?${params.toString()}`)
-  }
+    const params = new URLSearchParams(searchParams);
+    params.set('view', view);
+    router.push(`${pathname}?${params.toString()}`);
+  };
 
   const getContextualContent = () => {
     if (pathname.includes("/admin/team")) {
@@ -275,32 +310,64 @@ export function SecondaryMenuBar() {
       )
     }
 
-    if (pathname.includes("/search")) {
+    // Add this block for /search page
+    if (pathname === "/search" || pathname.startsWith("/search?")) {
       return (
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <Input placeholder={t("search.refine")} className="w-64 h-8" />
-            <Button size="sm" variant="outline">
-              <Search className="h-4 w-4" />
+        <div className="flex items-center w-full px-2 gap-2">
+          {/* Search Bar, Source Selectors, View Mode Buttons */}
+          <div className="flex items-center gap-2 flex-1 min-w-0">
+            <form className="flex-grow min-w-[320px] max-w-lg" onSubmit={handleSearch}>
+              <div className="relative">
+                <Input
+                  value={query}
+                  onChange={e => setQuery(e.target.value)}
+                  placeholder="Search by company name, keywords, industry, location..."
+                  className="h-9 text-sm pr-8 min-w-[220px] md:min-w-[320px] lg:min-w-[400px]"
+                />
+                {query && (
+                  <button type="button" onClick={handleClear} className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+            </form>
+            <div className="flex items-center gap-1 ml-2">
+              {["google", "linkedin", "crunchbase"].map(source => (
+                <Button
+                  key={source}
+                  size="sm"
+                  variant={selectedSources.includes(source) ? "default" : "outline"}
+                  className={`px-2 py-1 text-xs ${hoverClass}`}
+                  onClick={() => toggleSource(source)}
+                >
+                  {source === "google" && <Globe className="w-4 h-4 mr-1" />}
+                  {source === "linkedin" && <Linkedin className="w-4 h-4 mr-1" />}
+                  {source === "crunchbase" && <Database className="w-4 h-4 mr-1" />}
+                  <span className="capitalize">{source}</span>
+                </Button>
+              ))}
+            </div>
+            <div className="flex items-center gap-1 ml-2">
+              <Button size="icon" variant={viewMode === 'grid' ? "default" : "outline"} className={`h-8 w-8 ${hoverClass}`} onClick={() => setViewMode('grid')}>
+                <Grid className="w-4 h-4" />
+              </Button>
+              <Button size="icon" variant={viewMode === 'list' ? "default" : "outline"} className={`h-8 w-8 ${hoverClass}`} onClick={() => setViewMode('list')}>
+                <List className="w-4 h-4" />
+              </Button>
+              <Button size="icon" variant={viewMode === 'map' ? "default" : "outline"} className={`h-8 w-8 ${hoverClass}`} onClick={() => setViewMode('map')}>
+                <MapPin className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+          {/* Export Button at the far right */}
+          <div className="flex-shrink-0">
+            <Button size="sm" className={`bg-[#1B1F3B] text-white hover:bg-[#2A3050] flex items-center gap-1 ml-2 ${hoverClass}`} onClick={handleExport}>
+              <Download className="w-4 h-4" />
+              <span className="hidden md:inline">Export</span>
             </Button>
           </div>
-          <Select defaultValue="all">
-            <SelectTrigger className="w-40 h-8">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t("search.filters.allIndustries")}</SelectItem>
-              <SelectItem value="tech">{t("search.filters.softwareDev")}</SelectItem>
-              <SelectItem value="marketing">{t("search.filters.marketing")}</SelectItem>
-              <SelectItem value="fintech">{t("search.filters.fintech")}</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button variant="outline" size="sm">
-            <Filter className="h-4 w-4 mr-2" />
-            {t("search.filters.label")}
-          </Button>
         </div>
-      )
+      );
     }
 
     if (pathname.includes("/admin/billing")) {
@@ -463,6 +530,9 @@ export function SecondaryMenuBar() {
   }
 
   const getActions = () => {
+    if (pathname === "/search" || pathname.startsWith("/search?")) {
+      return null;
+    }
     if (pathname.includes("/admin/team")) {
       return (
         <div className="flex items-center gap-3">

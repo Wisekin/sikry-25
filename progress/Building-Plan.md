@@ -125,19 +125,7 @@ Field-level encryption for PII
 
 CSP headers
 
-Permission-based component rendering UI/UX Guidelines Design System Primary Colors: Indigo (
-#6366f1), Emerald (
-#10b981)
 
-Error Palette: Rose (
-#f43f5e)
-
-Success Palette: Emerald (
-#10b981)
-
-Typography: Inter font family
-
-Spacing: 8px base unit
 
 Accessibility WCAG 2.1 AA compliance
 
