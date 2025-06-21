@@ -11,22 +11,56 @@ import { Tabs, TabsList, TabsTrigger } from "@/src/components/ui/tabs"
 import { useSearchStore } from '@/stores/searchStore';
 
 export function SecondaryMenuBar() {
-  const pathname = usePathname()
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const { t } = useTranslation()
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { t } = useTranslation();
+
+  // Zustand search store (always called)
+  const {
+    query,
+    setQuery,
+    selectedSources,
+    setSelectedSources,
+    viewMode,
+    setViewMode,
+    fetchSearchResults,
+    results
+  } = useSearchStore();
+
+  // Handlers for /search
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (query.trim()) {
+      setQuery(query.trim());
+      fetchSearchResults({ forceRefresh: true });
+    }
+  };
+  const handleClear = () => setQuery("");
+  const toggleSource = (source: string) => {
+    setSelectedSources(
+      selectedSources.includes(source)
+        ? selectedSources.filter((s: string) => s !== source)
+        : [...selectedSources, source]
+    );
+  };
+  const handleExport = () => {
+    // Placeholder: implement export logic as needed
+    // e.g., exportResults(results)
+  };
+  const hoverClass = "hover:bg-[var(--scrollbar-thumb)] hover:text-white";
 
   const handleTabChange = (value: string) => {
-    const params = new URLSearchParams(searchParams)
-    params.set('tab', value)
-    router.push(`${pathname}?${params.toString()}`)
-  }
+    const params = new URLSearchParams(searchParams);
+    params.set('tab', value);
+    router.push(`${pathname}?${params.toString()}`);
+  };
 
   const handleViewChange = (view: string) => {
-    const params = new URLSearchParams(searchParams)
-    params.set('view', view)
-    router.push(`${pathname}?${params.toString()}`)
-  }
+    const params = new URLSearchParams(searchParams);
+    params.set('view', view);
+    router.push(`${pathname}?${params.toString()}`);
+  };
 
   const getContextualContent = () => {
     if (pathname.includes("/admin/team")) {
@@ -278,40 +312,6 @@ export function SecondaryMenuBar() {
 
     // Add this block for /search page
     if (pathname === "/search" || pathname.startsWith("/search?")) {
-      // Zustand search store
-      const {
-        query,
-        setQuery,
-        selectedSources,
-        setSelectedSources,
-        viewMode,
-        setViewMode,
-        fetchSearchResults,
-        results
-      } = useSearchStore();
-
-      const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (query.trim()) {
-          setQuery(query.trim());
-          fetchSearchResults({ forceRefresh: true });
-        }
-      };
-
-      const handleClear = () => setQuery("");
-      const toggleSource = (source: string) => {
-        setSelectedSources(
-          selectedSources.includes(source)
-            ? selectedSources.filter((s: string) => s !== source)
-            : [...selectedSources, source]
-        );
-      };
-      const handleExport = () => {
-        // Placeholder: implement export logic as needed
-        // e.g., exportResults(results)
-      };
-      // Custom hover style for /search
-      const hoverClass = "hover:bg-[var(--scrollbar-thumb)] hover:text-white";
       return (
         <div className="flex items-center w-full px-2 gap-2">
           {/* Search Bar, Source Selectors, View Mode Buttons */}
