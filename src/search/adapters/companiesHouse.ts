@@ -1,23 +1,26 @@
-import type { SearchAdapter, SearchAdapterResult } from './adapter';
+import type { SearchAdapter, SearchAdapterResult, SearchAdapterResponse } from './adapter';
 import type { ParsedQuery } from '../queryParser';
 
 // LIVE implementation
 export const companiesHouseAdapter: SearchAdapter = {
   id: 'companies_house',
   label: 'Companies House',
-  async search(query: ParsedQuery): Promise<SearchAdapterResult[]> {
+  async search(query: ParsedQuery, options?: { limit?: number; page?: number }): Promise<SearchAdapterResponse> {
     const apiKey = process.env.COMPANIES_HOUSE_API_KEY;
     if (!apiKey) {
       console.warn('COMPANIES_HOUSE_API_KEY is not set. Skipping Companies House search.');
-      return [];
+      return { results: [] };
     }
 
     const searchQuery = [...query.keywords, ...query.exactPhrases].join(' ');
     if (!searchQuery) {
-      return [];
+      return { results: [] };
     }
 
-        const endpoint = `https://api.company-information.service.gov.uk/search/companies?q=${encodeURIComponent(searchQuery)}&items_per_page=50`;
+    const limit = options?.limit || 15;
+    const page = options?.page || 1;
+    const start_index = (page - 1) * limit;
+    const endpoint = `https://api.company-information.service.gov.uk/search/companies?q=${encodeURIComponent(searchQuery)}&items_per_page=${limit}&start_index=${start_index}`;
 
     try {
       const response = await fetch(endpoint, {
@@ -31,13 +34,13 @@ export const companiesHouseAdapter: SearchAdapter = {
         console.error(`Companies House API error: ${response.status} ${response.statusText}`);
         const errorBody = await response.text();
         console.error('Error Body:', errorBody);
-        return [];
+        return { results: [] };
       }
 
       const data = await response.json();
 
       // Map the API response to our internal SearchAdapterResult format
-      return (data.items || []).map((item: any) => ({
+      const results = (data.items || []).map((item: any) => ({
         name: item.title,
         description: item.snippet || 'No description available.',
         industry: (item.company_type || 'unknown').replace(/-/g, ' '),
@@ -47,9 +50,14 @@ export const companiesHouseAdapter: SearchAdapter = {
         confidence: 0.9, // Confidence is high as it's from an official source
       }));
 
+      return {
+        results,
+        totalCount: data.total_results || 0,
+      };
+
     } catch (error) {
       console.error('Failed to fetch from Companies House API:', error);
-      return [];
+      return { results: [] };
     }
   },
 };

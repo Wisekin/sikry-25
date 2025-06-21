@@ -1,4 +1,4 @@
-import type { SearchAdapter, SearchAdapterResult } from './adapter';
+import type { SearchAdapter, SearchAdapterResult, SearchAdapterResponse } from './adapter';
 import type { ParsedQuery } from '../queryParser';
 
 /**
@@ -9,14 +9,16 @@ import type { ParsedQuery } from '../queryParser';
 export const wikidataAdapter: SearchAdapter = {
   id: 'wikidata',
   label: 'Wikidata',
-  async search(query: ParsedQuery): Promise<SearchAdapterResult[]> {
+  async search(query: ParsedQuery, options?: { limit?: number; page?: number }): Promise<SearchAdapterResponse> {
     const searchQuery = [...query.keywords, ...query.exactPhrases].join(' ');
     if (!searchQuery) {
-      return [];
+      return { results: [] };
     }
 
-    // Wikidata API endpoint for searching entities
-        const endpoint = `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(searchQuery)}&language=en&format=json&limit=50`;
+    // Support pagination via limit and offset (Wikidata API supports limit, but not offset for wbsearchentities)
+    const limit = options?.limit || 15;
+    // Note: wbsearchentities does not support offset, so true pagination is limited
+    const endpoint = `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(searchQuery)}&language=en&format=json&limit=${limit}`;
 
     try {
       const response = await fetch(endpoint, {
@@ -29,17 +31,17 @@ export const wikidataAdapter: SearchAdapter = {
 
       if (!response.ok) {
         console.error(`Wikidata API error: ${response.status} ${response.statusText}`);
-        return [];
+        return { results: [] };
       }
 
       const data = await response.json();
 
       if (!data.search) {
-        return [];
+        return { results: [] };
       }
 
       // Map the API response to our internal SearchAdapterResult format
-      return (data.search || []).map((item: any) => ({
+      const results = (data.search || []).map((item: any) => ({
         name: item.label || 'No name',
         description: item.description || 'No description available.',
         industry: 'General Information',
@@ -50,9 +52,12 @@ export const wikidataAdapter: SearchAdapter = {
         source: 'wikidata',
       }));
 
+      // Wikidata does not provide a total count, so we don't return it.
+      return { results };
+
     } catch (error) {
       console.error('Failed to fetch from Wikidata API:', error);
-      return [];
+      return { results: [] };
     }
   },
 };

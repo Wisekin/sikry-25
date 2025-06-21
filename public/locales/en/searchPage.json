@@ -103,5 +103,6 @@
     "showingResults": "Showing results {{start}}-{{end}} of {{total}}",
     "previous": "Previous",
     "next": "Next"
-  }
+  },
+  "noResults.map": "No results to show on map"
 }

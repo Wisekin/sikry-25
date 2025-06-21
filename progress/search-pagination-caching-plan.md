@@ -164,3 +164,32 @@ The backend and state management are now ready for pagination. The next develope
 - The map now renders correctly using open-source tiles, without requiring a Mapbox token.
 - Only companies with valid coordinates are shown as markers, preventing errors and improving user experience.
 
+---
+
+## 6. Implementing and Debugging Backend Pagination & Caching (June 2025)
+
+### Summary
+After implementing the basic pagination UI, several critical backend issues were discovered that prevented it from working correctly. The root causes were related to incorrect `totalCount` calculation, flawed caching logic, and an inefficient database query strategy. This section details the debugging journey and the final implementation that resolved these issues.
+
+### Problem Diagnosis Journey
+1.  **Initial Bug (UI Not Appearing)**: The pagination controls would not appear, even when there were clearly more results available. This was because the backend was only reporting the number of results on the current page (e.g., 15) as the `totalCount`, leading the frontend to believe there was only one page.
+2.  **Second Bug (Disappearing Pagination)**: After a temporary fix, a caching bug emerged. The first search correctly showed the total number of pages. However, upon clicking "Next," the backend would read from a cache that only contained the first page's 15 results. It would then recalculate the `totalCount` to be 15, report this to the frontend, and the pagination controls would disappear.
+3.  **Third Bug (500 Internal Server Error)**: While attempting to fix the pagination, a change to the internal database query function introduced a 500 error, which prevented any results from being returned.
+
+### Solution Steps
+1.  **Correct `pageSize`**: The default `pageSize` in `stores/searchStore.ts` was set to `15` to match the intended design.
+2.  **Refactored Adapters for Pagination**:
+    - The `companiesHouseAdapter` and `wikidataAdapter` were modified to accept `limit` and `page` parameters, removing hardcoded limits.
+    - The `SearchAdapter` interface was updated to return a `SearchAdapterResponse` object, which includes both the `results` and the `totalCount` provided by the external API. This was key to getting an accurate total.
+3.  **Accurate `totalCount` Calculation**:
+    - The API route (`/api/search/route.ts`) was updated to sum the `totalCount` from all data sources (Supabase, Companies House) to generate a correct grand total for the frontend.
+    - For Wikidata, which doesn't provide a total, a simple heuristic was added to estimate if more pages are available.
+4.  **Database Pagination Fix**: The `performSearch` function was rewritten to use proper, efficient database-level pagination with `.range(from, to)`, ensuring it only ever fetches the requested page. The query error causing the 500 status was also fixed.
+5.  **Complete Caching Rework**: The core of the fix was rewriting the caching logic. The flawed strategy of caching the "full result set" was removed. The new strategy caches each page of results individually. If a requested page is not in the cache, a fresh query is made to all data sources for that specific page, guaranteeing data consistency.
+
+### Result
+- Pagination is now stable, robust, and efficient.
+- The `totalCount` remains accurate and consistent across all page requests.
+- The backend and database now only process the data needed for the current page, significantly improving performance.
+- The caching mechanism is simple, correct, and no longer causes state inconsistencies on the frontend.
+
