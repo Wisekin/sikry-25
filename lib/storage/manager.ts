@@ -1,8 +1,9 @@
-import { createClient } from "@/utils/supabase/server"
-import { logger } from "@/lib/monitoring/logger"
+import { createClient } from "@/src/utils/supabase/server"
+import { Logger } from "@/lib/monitoring/logger"
 
 export class StorageManager {
   private supabase = createClient()
+  private logger = new Logger('system')
 
   async uploadFile(
     file: File,
@@ -41,10 +42,11 @@ export class StorageManager {
         .select()
         .single()
 
-      logger.info("File uploaded successfully", "storage", {
+      await this.logger.logInfo("File uploaded successfully", {
         file: path,
         bucket,
         size: file.size,
+        category: "storage"
       })
 
       return {
@@ -53,7 +55,14 @@ export class StorageManager {
         record: fileRecord,
       }
     } catch (error) {
-      logger.error("File upload failed", "storage", { error, file: file.name })
+      await this.logger.logError(
+        "File upload failed",
+        error instanceof Error ? error : new Error(String(error)),
+        {
+          file: file.name,
+          category: "storage"
+        }
+      )
       throw error
     }
   }
@@ -67,9 +76,20 @@ export class StorageManager {
       // Remove from database
       await this.supabase.from("file_uploads").delete().eq("storage_path", path).eq("bucket", bucket)
 
-      logger.info("File deleted successfully", "storage", { bucket, path })
+      await this.logger.logInfo("File deleted successfully", {
+        bucket,
+        path,
+        category: "storage"
+      })
     } catch (error) {
-      logger.error("File deletion failed", "storage", { error, path })
+      await this.logger.logError(
+        "File deletion failed",
+        error instanceof Error ? error : new Error(String(error)),
+        {
+          path,
+          category: "storage"
+        }
+      )
       throw error
     }
   }

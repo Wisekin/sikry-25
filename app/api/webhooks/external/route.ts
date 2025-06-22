@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { webhookManager } from "@/lib/webhooks/manager"
-import { logger } from "@/lib/monitoring/logger"
+import { Logger } from "@/lib/monitoring/logger"
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,9 +16,10 @@ export async function POST(request: NextRequest) {
     const data = JSON.parse(body)
 
     // Log the external webhook
-    logger.info("External webhook received", "webhook", {
+    Logger.logInfo("External webhook received", {
       source: request.headers.get("user-agent"),
       data,
+      category: "webhook"
     })
 
     // Process the webhook
@@ -26,7 +27,10 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    logger.error("External webhook failed", "webhook", { error })
+    Logger.logError("External webhook failed", {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      category: "webhook"
+    })
     return NextResponse.json({ error: "Webhook processing failed" }, { status: 500 })
   }
 }

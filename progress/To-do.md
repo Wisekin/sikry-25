@@ -43,3 +43,13 @@ Gracefully handle cases where geocoding fails (e.g., show a warning, skip marker
 4. Documentation
 [ ] Document the Geocoding Flow:
 Add a section to your README or developer docs explaining how/where geocoding is performed, and any rate limits or caveats. ```
+
+
+
+FOR DEVELOPER A:
+
+1. Implement the missing piece in stores/searchStore.ts.
+2. Add the necessary logic to handle geocoding in the frontend and map integration
+. Missing Piece
+The core state management logic for discovery/scraping (actions, state, and wiring in the store) is missing from the codebase. The frontend and tests assume it exists, but it is not implemented in stores/searchStore.ts or any other file found so far.
+Path: stores/searchStore.ts
