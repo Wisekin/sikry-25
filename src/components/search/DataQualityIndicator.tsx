@@ -69,7 +69,7 @@ export function DataQualityIndicator({
       <Tooltip>
         <TooltipTrigger asChild>
           <div className={cn('flex items-center p-1 rounded-full border', overallScoreColor, className, size === 'sm' ? 'text-xs px-1.5 py-0.5' : 'text-sm px-2 py-1')}>
-            <overallIcon className={cn('mr-1 flex-shrink-0', size === 'sm' ? 'w-3 h-3' : 'w-4 h-4')} />
+            {React.createElement(overallIcon, { className: cn('mr-1 flex-shrink-0', size === 'sm' ? 'w-3 h-3' : 'w-4 h-4') })}
             <span className="font-medium">Quality: {overall}%</span>
           </div>
         </TooltipTrigger>
@@ -88,7 +88,7 @@ export function DataQualityIndicator({
      <Card className={cn("p-3", className)}>
         <CardHeader className="p-0 mb-2">
             <CardTitle className={cn("text-base flex items-center", overallScoreColor.split(' ')[0])}> {/* Use only text color for title */}
-                <overallIcon className={cn('mr-2', size === 'sm' ? 'w-4 h-4' : 'w-5 h-5')} />
+                {React.createElement(overallIcon, { className: cn('mr-2', size === 'sm' ? 'w-4 h-4' : 'w-5 h-5') })}
                 Data Quality: {overall}%
             </CardTitle>
         </CardHeader>

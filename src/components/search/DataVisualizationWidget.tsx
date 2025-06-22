@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card';
 import { BarChart2, PieChart, LineChart, HelpCircle } from 'lucide-react'; // Example icons
-
+import { cn } from '@/lib/utils';
 // Define generic types for chart data - this would be more specific based on charting library
 type ChartType = 'bar' | 'pie' | 'line' | 'number'; // 'number' for displaying a single stat
 

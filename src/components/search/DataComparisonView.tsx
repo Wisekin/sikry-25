@@ -162,7 +162,7 @@ export function DataComparisonView({
                     <TableCell className="py-2 relative">
                       {renderValue(field.enrichedValue)}
                       {field.isDifferent && field.enrichedValue !== undefined && (
-                        <SparklesIcon className="w-4 h-4 text-green-500 absolute top-2 right-2" title="Enriched or Changed"/>
+                        <SparklesIcon className="w-4 h-4 text-green-500 absolute top-2 right-2" aria-label="Enriched or Changed"/>
                       )}
                     </TableCell>
                   </TableRow>

@@ -11,6 +11,7 @@ import { CalendarIcon, FilterIcon, XIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { useSearchStore } from '@/stores/searchStore';
 import { cn } from '@/lib/utils';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../ui/card';
 
 // Mock industry list - in a real app, this would come from an API or constants
 const MOCK_INDUSTRIES = ["Technology", "Healthcare", "Finance", "Manufacturing", "Retail", "Education", "Real Estate", "Entertainment"];

@@ -5,7 +5,7 @@ import { Input } from '@/src/components/ui/input';
 import { Label } from '@/src/components/ui/label';
 import { Textarea } from '@/src/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/components/ui/select';
-import { Trash2Icon, PlusCircleIcon, EyeIcon, CodeIcon, SaveIcon, FolderOpenIcon, HelpCircleIcon } from 'lucide-react';
+import { Trash2Icon, PlusCircleIcon, EyeIcon, CodeIcon, SaveIcon, FolderOpenIcon, HelpCircleIcon, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/src/components/ui/tooltip';
 

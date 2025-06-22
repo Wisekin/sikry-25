@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, ButtonProps } from '@/src/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Download, FileText, FileCsv, Loader2 } from 'lucide-react'; // Example icons
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/src/components/ui/dropdown-menu';
+import { Download, FileText, Files, Loader2 } from 'lucide-react'; // Example icons
 import { useToast } from '@/hooks/use-toast';
 
 type ExportFormat = 'csv' | 'json' | 'xlsx'; // Example formats
@@ -74,7 +74,7 @@ export function ExportButton({
           onClick={() => handleExportClick('csv')}
           disabled={!!isExporting}
         >
-          <FileCsv className="mr-2 h-4 w-4" />
+          <Files className="mr-2 h-4 w-4" />
           Export as CSV
         </DropdownMenuItem>
         <DropdownMenuItem

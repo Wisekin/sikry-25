@@ -5,6 +5,7 @@ import { Textarea } from '@/src/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useSearchStore } from '@/stores/searchStore'; // To trigger discovery actions
 import { Loader2, UploadCloud } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface CompanyInput {
   id: string; // A unique ID for this input item, e.g., line number or generated hash

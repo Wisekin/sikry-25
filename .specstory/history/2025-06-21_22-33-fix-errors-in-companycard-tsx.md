@@ -139,3 +139,165 @@ The file now compiles without any TypeScript errors and all the functionality sh
 
 ---
 
+_**User**_
+
+For the code present, we get this error:
+```
+Type '{ className: string; title: string; }' is not assignable to type 'IntrinsicAttributes & Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>'.
+  Property 'title' does not exist on type 'IntrinsicAttributes & Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>'.
+```
+How can I resolve this? If you propose a fix, please make it concise.
+
+---
+
+_**Assistant**_
+
+The error occurs because Lucide icons (like `SparklesIcon`) do not support the `title` prop directly.  
+**Fix:**  
+Replace the `title` prop with `aria-label` for accessibility.
+
+**Change this:**
+```tsx
+<SparklesIcon className="w-4 h-4 text-green-500 absolute top-2 right-2" title="Enriched or Changed"/>
+```
+**To this:**
+```tsx
+<SparklesIcon className="w-4 h-4 text-green-500 absolute top-2 right-2" aria-label="Enriched or Changed"/>
+```
+
+Would you like me to apply this fix?
+
+---
+
+_**User**_
+
+For the code present, we get this error:
+```
+Property 'overallIcon' does not exist on type 'JSX.IntrinsicElements'.
+```
+How can I resolve this? If you propose a fix, please make it concise.
+
+---
+
+_**Assistant**_
+
+The error occurs because you cannot use a variable (like `overallIcon`) as a JSX tag directly.  
+**Fix:** Use curly braces and capitalize the variable to render it as a component:
+
+**Change this:**
+```tsx
+<overallIcon className={cn('mr-1 flex-shrink-0', size === 'sm' ? 'w-3 h-3' : 'w-4 h-4')} />
+```
+**To this:**
+```tsx
+{React.createElement(overallIcon, { className: cn('mr-1 flex-shrink-0', size === 'sm' ? 'w-3 h-3' : 'w-4 h-4') })}
+```
+
+Do the same wherever you use `<overallIcon ... />`.
+
+Would you like me to apply this fix?
+
+---
+
+_**User**_
+
+yes
+
+---
+
+_**Assistant**_
+
+```diff
+          <TooltipTrigger asChild>
+            <div className={cn('flex items-center p-1 rounded-full border', overallScoreColor, className, size === 'sm' ? 'text-xs px-1.5 py-0.5' : 'text-sm px-2 py-1')}>
+-             <overallIcon className={cn('mr-1 flex-shrink-0', size === 'sm' ? 'w-3 h-3' : 'w-4 h-4')} />
++             {React.createElement(overallIcon, { className: cn('mr-1 flex-shrink-0', size === 'sm' ? 'w-3 h-3' : 'w-4 h-4') })}
+              <span className="font-medium">Quality: {overall}%</span>
+            </div>
+```
+
+```diff
+          <CardHeader className="p-0 mb-2">
+              <CardTitle className={cn("text-base flex items-center", overallScoreColor.split(' ')[0])}> {/* Use only text color for title */}
+-                 <overallIcon className={cn('mr-2', size === 'sm' ? 'w-4 h-4' : 'w-5 h-5')} />
++                 {React.createElement(overallIcon, { className: cn('mr-2', size === 'sm' ? 'w-4 h-4' : 'w-5 h-5') })}
+                  Data Quality: {overall}%
+              </CardTitle>
+```
+
+---
+
+The fix has been applied: all usages of `<overallIcon ... />` are now replaced with `{React.createElement(overallIcon, { ... })}`. This resolves the error and allows you to use a variable as a component in JSX.
+
+If you have any more errors or need further help, let me know!
+
+---
+
+_**User**_
+
+For the code present, we get this error:
+```
+'"lucide-react"' has no exported member named 'FileCsv'. Did you mean 'Files'?
+```
+How can I resolve this? If you propose a fix, please make it concise.
+
+
+[{
+	"resource": "/Users/salomonks/Documents/sikry-25/src/components/search/DataVisualizationWidget.tsx",
+	"owner": "typescript",
+	"code": "2304",
+	"severity": 8,
+	"message": "Cannot find name 'cn'.",
+	"source": "ts",
+	"startLineNumber": 99,
+	"startColumn": 22,
+	"endLineNumber": 99,
+	"endColumn": 24,
+	"modelVersionId": 5
+}]
+
+---
+
+_**Assistant**_
+
+Here are concise fixes for both errors:
+
+---
+
+### 1. **FileCsv not exported from lucide-react**
+
+**Fix:**  
+Replace `FileCsv` with a valid Lucide icon (e.g., `Files`), and update the icon usage accordingly.
+
+**Change this:**
+```tsx
+import { Download, FileText, FileCsv, Loader2 } from 'lucide-react';
+...
+<FileCsv className="mr-2 h-4 w-4" />
+```
+**To this:**
+```tsx
+import { Download, FileText, Files, Loader2 } from 'lucide-react';
+...
+<Files className="mr-2 h-4 w-4" />
+```
+
+---
+
+### 2. **Cannot find name 'cn'**
+
+**Fix:**  
+Import the `cn` utility at the top of your file:
+
+**Add this import:**
+```tsx
+import { cn } from '@/lib/utils';
+```
+at the top of `DataVisualizationWidget.tsx` (and any other file using `cn`).
+
+---
+
+Would you like me to apply both fixes?
+
+---
+
