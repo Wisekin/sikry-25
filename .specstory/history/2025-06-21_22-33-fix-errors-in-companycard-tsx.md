@@ -301,3 +301,231 @@ Would you like me to apply both fixes?
 
 ---
 
+_**User**_
+
+please fix all logError here: lib/storage/manager.ts
+
+---
+
+_**Assistant**_
+
+<details>
+            <summary>Grep search for "logError" • **18** files</summary>
+        
+| File | Line | Match |
+|------|------|-------|
+| `file:///Users/salomonks/Documents/sikry-25/lib/monitoring/logger.ts` | L77 | `async logError(message: string, error: Error, meta?: Record<string, any>): Promise<void> {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/googleSearchIntegration.ts` | L163 | `Logger.logError('Google search failed', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/googleSearchIntegration.ts` | L288 | `Logger.logError('Get cached search failed', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/googleSearchIntegration.ts` | L318 | `Logger.logError('Cache search results failed', error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/googleSearchIntegration.ts` | L325 | `Logger.logError('Cache search results failed', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/googleSearchIntegration.ts` | L349 | `Logger.logError('Record search analytics failed', error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/googleSearchIntegration.ts` | L356 | `Logger.logError('Record search analytics failed', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/googleSearchIntegration.ts` | L399 | `Logger.logError('Get search history failed', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/googleSearchIntegration.ts` | L442 | `Logger.logError('Clear cache failed', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/googleSearchIntegration.ts` | L512 | `Logger.logError('Get search stats failed', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/websiteDiscovery.ts` | L88 | `Logger.logError('Website discovery failed', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/websiteDiscovery.ts` | L132 | `Logger.logError('Failed to get website details', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/websiteDiscovery.ts` | L274 | `Logger.logError('Failed to get cached website', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/websiteDiscovery.ts` | L297 | `Logger.logError('Failed to cache website', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/relevanceScorer.ts` | L160 | `Logger.logError('Relevance scoring failed', {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/relevanceScorer.ts` | L203 | `Logger.logError('Batch relevance scoring failed', {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/relevanceScorer.ts` | L267 | `Logger.logError('Semantic scoring failed', {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/relevanceScorer.ts` | L711 | `Logger.logError('Store scoring result failed', {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/relevanceScorer.ts` | L719 | `Logger.logError('Store scoring result failed', {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/relevanceScorer.ts` | L757 | `Logger.logError('Get scoring history failed', {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/webhooks/manager.ts` | L85 | `Logger.logError("Webhook delivery failed", {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/scraperGenerator.ts` | L11 | `logError: (message: string, error: unknown, meta?: Record<string, unknown>) => void;` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/scraperGenerator.ts` | L22 | `logError(message: string, error: unknown, meta?: Record<string, unknown>) {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/scraperGenerator.ts` | L176 | `this.logger.logError('Failed to take screenshot', error as Error, { url });` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/scraperGenerator.ts` | L266 | `this.logger.logError(`Error analyzing website: ${errorMessage}`, error, { url });` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/scraperGenerator.ts` | L416 | `this.logger.logError('Failed to generate scraper', error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/scraperGenerator.ts` | L453 | `this.logger.logError('Failed to get scraper', error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/scraperGenerator.ts` | L490 | `this.logger.logError('Error fetching scrapers', error);` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/scraperGenerator.ts` | L520 | `this.logger.logError('Error in getScrapers', error);` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/dataEnrichment.ts` | L218 | `Logger.logError('Website enrichment failed', {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/dataEnrichment.ts` | L476 | `Logger.logError('Failed to get cached enrichment', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/dataEnrichment.ts` | L499 | `Logger.logError('Failed to cache enrichment', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/dataEnrichment.ts` | L537 | `Logger.logError(message, error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/rateLimiter.ts` | L86 | `Logger.logError('Rate limit check failed', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/rateLimiter.ts` | L126 | `Logger.logError('Get rate limit status failed', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/rateLimiter.ts` | L165 | `Logger.logError('Failed to record usage in database', error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/rateLimiter.ts` | L173 | `Logger.logError('Record usage failed', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/rateLimiter.ts` | L234 | `Logger.logError('Get usage stats failed', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/rateLimiter.ts` | L271 | `Logger.logError('Reset user limits failed', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/rateLimiter.ts` | L336 | `Logger.logError('Get global stats failed', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/rateLimiter.ts` | L353 | `Logger.logError('Redis cleanup failed', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/dataQualityAnalyzer.ts` | L145 | `Logger.logError('Data quality analysis failed', {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/dataQualityAnalyzer.ts` | L177 | `Logger.logError('Batch data quality analysis failed', {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/dataQualityAnalyzer.ts` | L244 | `Logger.logError('Dataset comparison failed', {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/dataQualityAnalyzer.ts` | L856 | `Logger.logError('AI issue identification failed', {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/dataQualityAnalyzer.ts` | L1073 | `Logger.logError('Store quality report failed', {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/dataQualityAnalyzer.ts` | L1081 | `Logger.logError('Store quality report failed', {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/dataQualityAnalyzer.ts` | L1119 | `Logger.logError('Get quality history failed', {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/dataQualityAnalyzer.ts` | L1179 | `Logger.logError('Get quality trends failed', {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/storage/manager.ts` | L56 | `Logger.logError("File upload failed", {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/storage/manager.ts` | L80 | `Logger.logError("File deletion failed", {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/templateMatcher.ts` | L148 | `Logger.logError('Template matching failed', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/templateMatcher.ts` | L221 | `Logger.logError('Template creation failed', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/templateMatcher.ts` | L280 | `Logger.logError('Template optimization failed', {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/templateMatcher.ts` | L294 | `Logger.logError('Get best template failed', {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/templateMatcher.ts` | L394 | `Logger.logError('Template match calculation failed', {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/templateMatcher.ts` | L579 | `Logger.logError('Selector suggestion failed', {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/templateMatcher.ts` | L602 | `Logger.logError('Extraction preview failed', {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/templateMatcher.ts` | L722 | `Logger.logError('Page structure analysis failed', {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/templateMatcher.ts` | L956 | `Logger.logError('Selector generation failed', {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/templateMatcher.ts` | L1080 | `Logger.logError('Get template stats failed', {` |
+| `file:///Users/salomonks/Documents/sikry-25/app/api/webhooks/external/route.ts` | L29 | `Logger.logError("External webhook failed", {` |
+| `file:///Users/salomonks/Documents/sikry-25/app/api/webhooks/internal/route.ts` | L20 | `Logger.logError("Internal webhook failed", {` |
+| `file:///Users/salomonks/Documents/sikry-25/app/api/scrapers/scraper/route.ts` | L103 | `Logger.logError('Scraper generation error', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/app/api/scrapers/scraper/route.ts` | L178 | `Logger.logError('Get scrapers error', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/app/api/scrapers/scraper/route.ts` | L224 | `Logger.logError('Update scraper error', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/app/api/scrapers/scraper/route.ts` | L269 | `Logger.logError('Delete scraper error', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/app/api/search/enrich/route.ts` | L79 | `Logger.logError('Data enrichment error', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/app/api/search/enrich/route.ts` | L131 | `Logger.logError('Get enrichment history error', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/app/api/search/enrich/route.ts` | L178 | `Logger.logError('Update enrichment status error', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/app/api/search/discover/route.ts` | L69 | `Logger.logError('Website discovery error', {` |
+| `file:///Users/salomonks/Documents/sikry-25/app/api/search/discover/route.ts` | L119 | `Logger.logError('Get discovery history error', {` |
+| `file:///Users/salomonks/Documents/sikry-25/app/api/search/scraper/route.ts` | L173 | `Logger.logError('Scraper execution failed', {` |
+| `file:///Users/salomonks/Documents/sikry-25/app/api/search/scraper/route.ts` | L191 | `Logger.logError('Scraper API error', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/app/api/search/scraper/route.ts` | L254 | `Logger.logError('Failed to fetch scrapers', error as Error, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/storage/manager.ts` | L56 | `Logger.logError("File upload failed", {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/storage/manager.ts` | L80 | `Logger.logError("File deletion failed", {` |
+
+</details>
+
+---
+
+Read file: lib/storage/manager.ts
+
+---
+
+Read file: lib/monitoring/logger.ts
+
+---
+
+```diff
+        }
+      } catch (error) {
+-       Logger.logError("File upload failed", {
+-         error: error instanceof Error ? error.message : 'Unknown error',
+-         file: file.name,
+-         category: "storage"
+-       })
++       Logger.logError(
++         "File upload failed",
++         error instanceof Error ? error : new Error(String(error)),
++         {
++           file: file.name,
++           category: "storage"
++         }
++       )
+        throw error
+      }
+```
+
+```diff
+        })
+      } catch (error) {
+-       Logger.logError("File deletion failed", {
+-         error: error instanceof Error ? error.message : 'Unknown error',
+-         path,
+-         category: "storage"
+-       })
++       Logger.logError(
++         "File deletion failed",
++         error instanceof Error ? error : new Error(String(error)),
++         {
++           path,
++           category: "storage"
++         }
++       )
+        throw error
+      }
+```
+
+---
+
+Read file: lib/monitoring/logger.ts
+
+---
+
+```diff
+  export class StorageManager {
+    private supabase = createClient()
++   private logger = new Logger('storage')
+  
+    async uploadFile(
+```
+
+```diff
+          .single()
+  
+-       Logger.logInfo("File uploaded successfully", {
++       await this.logger.logInfo("File uploaded successfully", {
+          file: path,
+          bucket,
+```
+
+```diff
+        }
+      } catch (error) {
+-       Logger.logError(
++       await this.logger.logError(
+          "File upload failed",
+          error instanceof Error ? error : new Error(String(error)),
+```
+
+```diff
+        await this.supabase.from("file_uploads").delete().eq("storage_path", path).eq("bucket", bucket)
+  
+-       Logger.logInfo("File deleted successfully", {
++       await this.logger.logInfo("File deleted successfully", {
+          bucket,
+          path,
+          category: "storage"
+        })
+      } catch (error) {
+-       Logger.logError(
++       await this.logger.logError(
+          "File deletion failed",
+          error instanceof Error ? error : new Error(String(error)),
+```
+
+---
+
+Read file: lib/monitoring/logger.ts
+
+---
+
+```diff
+  export class StorageManager {
+    private supabase = createClient()
+-   private logger = new Logger('storage')
++   private logger = new Logger('system')
+  
+    async uploadFile(
+```
+
+---
+
+All `logError` usages in `lib/storage/manager.ts` have been fixed to use the correct instance method and signature, and the logger is now instantiated with a valid category (`'system'`). This resolves the linter and type errors.
+
+If you need further adjustments or want to use a more specific category, you can update the allowed `LogCategory` types in your logger definition.
+
+Let me know if you need help with anything else!
+
+---
+
+_**User**_
+
+please fix all Logger.logInfo error here too at  lib/services/googleSearchIntegration.ts
+
+---
+
+_**Assistant**_
+
+
+
+---
+

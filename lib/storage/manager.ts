@@ -1,8 +1,9 @@
-import { createClient } from "@/utils/supabase/server"
+import { createClient } from "@/src/utils/supabase/server"
 import { Logger } from "@/lib/monitoring/logger"
 
 export class StorageManager {
   private supabase = createClient()
+  private logger = new Logger('system')
 
   async uploadFile(
     file: File,
@@ -41,7 +42,7 @@ export class StorageManager {
         .select()
         .single()
 
-      Logger.logInfo("File uploaded successfully", {
+      await this.logger.logInfo("File uploaded successfully", {
         file: path,
         bucket,
         size: file.size,
@@ -54,11 +55,14 @@ export class StorageManager {
         record: fileRecord,
       }
     } catch (error) {
-      Logger.logError("File upload failed", {
-        error: error instanceof Error ? error.message : 'Unknown error',
-        file: file.name,
-        category: "storage"
-      })
+      await this.logger.logError(
+        "File upload failed",
+        error instanceof Error ? error : new Error(String(error)),
+        {
+          file: file.name,
+          category: "storage"
+        }
+      )
       throw error
     }
   }
@@ -72,17 +76,20 @@ export class StorageManager {
       // Remove from database
       await this.supabase.from("file_uploads").delete().eq("storage_path", path).eq("bucket", bucket)
 
-      Logger.logInfo("File deleted successfully", {
+      await this.logger.logInfo("File deleted successfully", {
         bucket,
         path,
         category: "storage"
       })
     } catch (error) {
-      Logger.logError("File deletion failed", {
-        error: error instanceof Error ? error.message : 'Unknown error',
-        path,
-        category: "storage"
-      })
+      await this.logger.logError(
+        "File deletion failed",
+        error instanceof Error ? error : new Error(String(error)),
+        {
+          path,
+          category: "storage"
+        }
+      )
       throw error
     }
   }
