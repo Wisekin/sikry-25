@@ -132,21 +132,21 @@ export async function delCache(key: string): Promise<boolean> {
   }
 }
 
-// Generate a cache key from search parameters
-export function generateCacheKey(params: Record<string, any>): string {
+// Generate a cache key from a prefix and parameters
+export function generateCacheKey(prefix: string, params: Record<string, any>): string {
   // Sort keys to ensure consistent key generation
   const sortedParams = Object.keys(params)
     .sort()
     .reduce((acc, key) => {
-      if (params[key] !== undefined && params[key] !== '') {
+      if (params[key] !== undefined && params[key] !== null && params[key] !== '') {
         acc[key] = params[key];
       }
       return acc;
     }, {} as Record<string, any>);
-  
+
   // Create a stable string representation
   const paramString = JSON.stringify(sortedParams);
-  
+
   // Create a hash of the string for a shorter key
   let hash = 0;
   for (let i = 0; i < paramString.length; i++) {
@@ -154,8 +154,8 @@ export function generateCacheKey(params: Record<string, any>): string {
     hash = ((hash << 5) - hash) + char;
     hash = hash & hash; // Convert to 32bit integer
   }
-  
-  return `search:${Math.abs(hash).toString(16)}`;
+
+  return `${prefix}:${Math.abs(hash).toString(16)}`;
 }
 
 // Close Redis connection (for cleanup)
@@ -171,17 +171,17 @@ export async function closeRedis(): Promise<void> {
   }
 }
 
-// Helper function to clear all search-related cache
-export async function clearSearchCache(): Promise<boolean> {
+// Helper function to clear cache by prefix
+export async function clearCacheByPrefix(prefix: string): Promise<boolean> {
   if (!redisConfig.enabled) return false;
-  
+
   const client = getRedisClient();
   if (!client) return false;
 
   try {
-    // Use SCAN to find and delete all keys matching the search prefix
+    // Use SCAN to find and delete all keys matching the prefix
     const stream = client.scanStream({
-      match: `${redisConfig.prefix}search:*`,
+      match: `${redisConfig.prefix}${prefix}:*`,
       count: 100
     });
 
@@ -218,8 +218,9 @@ export default {
   get: getCache,
   del: delCache,
   generateKey: generateCacheKey,
+  clearByPrefix: clearCacheByPrefix, // Added this
   close: closeRedis,
-  clearSearchCache,
+  clearSearchCache, // Kept for specific search cache clearing if needed elsewhere
   isConnected: () => isConnected,
   isEnabled: () => redisConfig.enabled,
 };
