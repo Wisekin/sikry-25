@@ -1,5 +1,5 @@
 import { createClient } from "@/utils/supabase/server"
-import { logger } from "@/lib/monitoring/logger"
+import { Logger } from "@/lib/monitoring/logger"
 
 export class StorageManager {
   private supabase = createClient()
@@ -41,10 +41,11 @@ export class StorageManager {
         .select()
         .single()
 
-      logger.info("File uploaded successfully", "storage", {
+      Logger.logInfo("File uploaded successfully", {
         file: path,
         bucket,
         size: file.size,
+        category: "storage"
       })
 
       return {
@@ -53,7 +54,11 @@ export class StorageManager {
         record: fileRecord,
       }
     } catch (error) {
-      logger.error("File upload failed", "storage", { error, file: file.name })
+      Logger.logError("File upload failed", {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        file: file.name,
+        category: "storage"
+      })
       throw error
     }
   }
@@ -67,9 +72,17 @@ export class StorageManager {
       // Remove from database
       await this.supabase.from("file_uploads").delete().eq("storage_path", path).eq("bucket", bucket)
 
-      logger.info("File deleted successfully", "storage", { bucket, path })
+      Logger.logInfo("File deleted successfully", {
+        bucket,
+        path,
+        category: "storage"
+      })
     } catch (error) {
-      logger.error("File deletion failed", "storage", { error, path })
+      Logger.logError("File deletion failed", {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        path,
+        category: "storage"
+      })
       throw error
     }
   }

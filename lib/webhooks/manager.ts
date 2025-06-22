@@ -1,5 +1,5 @@
 import { createClient } from "@/utils/supabase/server"
-import { logger } from "@/lib/monitoring/logger"
+import { Logger } from "@/lib/monitoring/logger"
 import crypto from "crypto"
 
 class WebhookManager {
@@ -33,7 +33,10 @@ class WebhookManager {
         await this.handleHunterWebhook(event, payload)
         break
       default:
-        logger.warn("Unknown webhook source", "webhook", { source })
+        Logger.logWarn("Unknown webhook source", {
+          source,
+          category: "webhook"
+        })
     }
   }
 
@@ -80,9 +83,10 @@ class WebhookManager {
         attempt_number: 1,
       })
 
-      logger.error("Webhook delivery failed", "webhook", {
+      Logger.logError("Webhook delivery failed", {
         webhook_id: webhook.id,
-        error,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        category: "webhook"
       })
     }
   }
@@ -103,12 +107,20 @@ class WebhookManager {
 
   private async handleClearbitWebhook(event: string, payload: any) {
     // Handle Clearbit enrichment webhooks
-    logger.info("Clearbit webhook processed", "webhook", { event, payload })
+    Logger.logInfo("Clearbit webhook processed", {
+      event,
+      payload,
+      category: "webhook"
+    })
   }
 
   private async handleHunterWebhook(event: string, payload: any) {
     // Handle Hunter.io email verification webhooks
-    logger.info("Hunter webhook processed", "webhook", { event, payload })
+    Logger.logInfo("Hunter webhook processed", {
+      event,
+      payload,
+      category: "webhook"
+    })
   }
 }
 
