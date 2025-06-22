@@ -159,7 +159,7 @@ export class TemplateMatcher {
       Logger.logInfo('Creating new template', {
         name: params.name,
         url: params.url,
-        category: 'template'
+        category: 'template',
         userId: params.userId
       });
 

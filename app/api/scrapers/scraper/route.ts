@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/src/utils/supabase/server';
 import { ScraperGeneratorService } from '@/lib/services/scraperGenerator';
 import { RateLimiterService } from '@/lib/services/rateLimiter';

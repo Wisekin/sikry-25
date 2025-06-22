@@ -1,34 +1,106 @@
 import { createClient } from "@/utils/supabase/server"
 
+export type LogLevel = "info" | "warn" | "error" | "debug"
+export type LogCategory = "api" | "scraper" | "user" | "system" | "security"
+
 export interface LogEntry {
-  level: "info" | "warn" | "error" | "debug"
+  level: LogLevel
   message: string
-  category: "api" | "scraper" | "user" | "system" | "security"
+  category: LogCategory
   metadata?: Record<string, any>
   userId?: string
   sessionId?: string
   ipAddress?: string
   userAgent?: string
+  error?: Error
 }
 
 export class Logger {
-  private static async writeLog(entry: LogEntry) {
+  private category: LogCategory;
+  private context: Record<string, any> = {};
+
+  constructor(category: LogCategory = 'system') {
+    this.category = category;
+  }
+
+  private async writeLog(entry: Omit<LogEntry, 'category'>) {
     try {
       const supabase = createClient()
+      const metadata = {
+        ...this.context,
+        ...entry.metadata,
+        ...(entry.error ? { 
+          error: {
+            name: entry.error.name,
+            message: entry.error.message,
+            stack: process.env.NODE_ENV === 'development' ? entry.error.stack : undefined
+          } 
+        } : {})
+      };
 
       await supabase.from("system_logs").insert({
         level: entry.level,
         message: entry.message,
-        category: entry.category,
-        metadata: entry.metadata || {},
+        category: this.category,
+        metadata,
         user_id: entry.userId,
         session_id: entry.sessionId,
         ip_address: entry.ipAddress,
         user_agent: entry.userAgent,
         created_at: new Date().toISOString(),
-      })
+      });
+
+      // Also log to console in development
+      if (process.env.NODE_ENV === 'development') {
+        const logMethod = console[entry.level] || console.log;
+        logMethod(`[${entry.level.toUpperCase()}] [${this.category}] ${entry.message}`, metadata);
+      }
     } catch (error) {
-      console.error("Failed to write log:", error)
+      console.error("Failed to write log:", error);
+    }
+  }
+
+  // Set context that will be included in all subsequent logs
+  setContext(context: Record<string, any>): void {
+    this.context = { ...this.context, ...context };
+  }
+
+  // Log an info message
+  async logInfo(message: string, meta?: Record<string, any>): Promise<void> {
+    await this.writeLog({
+      level: 'info',
+      message,
+      metadata: meta
+    });
+  }
+
+  // Log an error
+  async logError(message: string, error: Error, meta?: Record<string, any>): Promise<void> {
+    await this.writeLog({
+      level: 'error',
+      message: `${message}: ${error.message}`,
+      error,
+      metadata: meta
+    });
+  }
+
+  // Log a warning
+  async logWarn(message: string, meta?: Record<string, any>): Promise<void> {
+    await this.writeLog({
+      level: 'warn',
+      message,
+      metadata: meta
+    });
+  }
+
+  // Log debug information
+  async logDebug(message: string, meta?: Record<string, any>): Promise<void> {
+    if (process.env.NODE_ENV === 'development') {
+      await this.writeLog({
+        level: 'debug',
+        message,
+        metadata: meta
+      });
     }
   }
 

@@ -4167,7 +4167,1398 @@ Perfect! Now I have a complete understanding of the existing database schema. Le
 
 ---
 
+Read file: progress/Plan/search-scraper-integration-plan.md
 
+---
+
+Let me add the database schema section in the right place:
+
+
+---
+
+
+
+---
+
+Let me check the exact structure and add the database section in the right place:
+
+
+---
+
+<details>
+            <summary>Grep search for "## 🛠️ Technical Implementation Details" • **3** files</summary>
+        
+| File | Line | Match |
+|------|------|-------|
+| `file:///Users/salomonks/Documents/sikry-25/.specstory/history/2025-06-21_18-17-next-steps-for-pagination-ui.md` | L3189 | `+ ## 🛠️ Technical Implementation Details` |
+| `file:///Users/salomonks/Documents/sikry-25/.specstory/history/2025-06-21_18-17-next-steps-for-pagination-ui.md` | L3652 | `+ ## 🛠️ Technical Implementation Details` |
+| `file:///Users/salomonks/Documents/sikry-25/progress/Plan/search-scraper-integration-plan.md` | L464 | `## 🛠️ Technical Implementation Details` |
+| `file:///Users/salomonks/Documents/sikry-25/progress/Plan/search-scraper-integration-plan.md` | L464 | `## 🛠️ Technical Implementation Details` |
+
+</details>
+
+---
+
+Read file: progress/Plan/search-scraper-integration-plan.md
+
+---
+
+Now I'll add the database section right before the Technical Implementation Details:
+
+
+---
+
+
+
+---
+
+Let me try a different approach and add the database section at the end of the file:
+
+
+---
+
+Read file: progress/Plan/search-scraper-integration-plan.md
+
+---
+
+
+
+---
+
+Let me try a simpler approach and just add the database section as a new file:
+
+
+---
+
+```diff
+- 
++ # Database Schema Changes for Search-Scraper Integration
++ 
++ **Created:** 2025-01-27  
++ **Last Updated:** 2025-01-27  
++ **Status:** Planning Phase  
++ **Priority:** High  
++ 
++ ---
++ 
++ ## 📋 Summary
++ 
++ This document outlines the required database schema changes to support the search-scraper integration. The existing schema already has excellent foundations with `scrapers`, `scraper_configs`, `scraper_runs`, and `scraped_data` tables. We need to add new tables for discovery tracking and enhance existing tables for better integration.
++ 
++ ---
++ 
++ ## ✅ Existing Tables We Can Leverage
++ 
++ ### **Core Scraping Infrastructure**
++ 1. **`scrapers`** - Already has V2 scraper support with `scraper_type`, `target_url_template`, `scraper_stats`
++ 2. **`scraper_configs`** - Has JSONB config field perfect for V2 configurations
++ 3. **`scraper_runs`** - Tracks execution with status, target_url, error handling
++ 4. **`scraped_data`** - Stores extracted data with `data_type`, `extracted_fields`, `quality_score`
++ 
++ ### **Company & Search Infrastructure**
++ 5. **`discovered_companies`** - Main companies table with rich fields including `last_scraped_at`
++ 6. **`search_history`** - Tracks search queries and results
++ 7. **`background_jobs`** - Perfect for queuing scraping jobs
++ 8. **`system_logs`** - For monitoring and debugging
++ 
++ ---
++ 
++ ## 🔧 Required Schema Changes
++ 
++ ### **New Tables to Add**
++ 
++ #### **1. Discovery Requests Table**
++ ```sql
++ -- Track website discovery requests
++ CREATE TABLE discovery_requests (
++   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
++   organization_id UUID REFERENCES organizations(id) ON DELETE CASCADE,
++   company_id UUID REFERENCES discovered_companies(id) ON DELETE CASCADE,
++   user_id UUID REFERENCES users(id) ON DELETE SET NULL,
++   company_name TEXT NOT NULL,
++   search_query TEXT NOT NULL,
++   status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'discovering', 'found', 'not_found', 'error')),
++   discovered_websites JSONB DEFAULT '[]', -- Array of website suggestions
++   selected_website TEXT,
++   confidence_score NUMERIC(3,2) CHECK (confidence_score BETWEEN 0 AND 1),
++   error_message TEXT,
++   created_at TIMESTAMPTZ DEFAULT NOW(),
++   updated_at TIMESTAMPTZ DEFAULT NOW()
++ );
++ ```
++ 
++ #### **2. Website Discovery Cache Table**
++ ```sql
++ -- Cache discovered websites to avoid repeated API calls
++ CREATE TABLE website_discovery_cache (
++   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
++   organization_id UUID REFERENCES organizations(id) ON DELETE CASCADE,
++   company_name TEXT NOT NULL,
++   search_query TEXT NOT NULL,
++   discovered_websites JSONB NOT NULL,
++   confidence_score NUMERIC(3,2) CHECK (confidence_score BETWEEN 0 AND 1),
++   expires_at TIMESTAMPTZ NOT NULL,
++   created_at TIMESTAMPTZ DEFAULT NOW(),
++   UNIQUE(organization_id, company_name, search_query)
++ );
++ ```
++ 
++ #### **3. Enriched Company Data Table**
++ ```sql
++ -- Store enriched data from scraping
++ CREATE TABLE enriched_company_data (
++   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
++   organization_id UUID REFERENCES organizations(id) ON DELETE CASCADE,
++   company_id UUID REFERENCES discovered_companies(id) ON DELETE CASCADE,
++   scraper_run_id UUID REFERENCES scraper_runs(id) ON DELETE SET NULL,
++   data_type TEXT NOT NULL CHECK (data_type IN ('contact_info', 'company_profile', 'social_media', 'products_services', 'financial_data', 'other')),
++   enriched_fields JSONB NOT NULL, -- Structured enriched data
++   source_url TEXT NOT NULL,
++   confidence_score NUMERIC(3,2) CHECK (confidence_score BETWEEN 0 AND 1),
++   enrichment_method TEXT NOT NULL DEFAULT 'scraping' CHECK (enrichment_method IN ('scraping', 'api', 'manual', 'ai_generated')),
++   is_verified BOOLEAN DEFAULT FALSE,
++   created_at TIMESTAMPTZ DEFAULT NOW(),
++   updated_at TIMESTAMPTZ DEFAULT NOW()
++ );
++ ```
++ 
++ #### **4. Scraping Templates Table**
++ ```sql
++ -- Store reusable scraping templates
++ CREATE TABLE scraping_templates (
++   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
++   organization_id UUID REFERENCES organizations(id) ON DELETE CASCADE,
++   name TEXT NOT NULL,
++   description TEXT,
++   template_type TEXT NOT NULL CHECK (template_type IN ('company_profile', 'contact_info', 'social_media', 'products', 'custom')),
++   config JSONB NOT NULL, -- V2 scraper configuration
++   is_public BOOLEAN DEFAULT FALSE,
++   usage_count INTEGER DEFAULT 0,
++   success_rate NUMERIC(3,2) DEFAULT 0,
++   created_by UUID REFERENCES users(id) ON DELETE SET NULL,
++   created_at TIMESTAMPTZ DEFAULT NOW(),
++   updated_at TIMESTAMPTZ DEFAULT NOW()
++ );
++ ```
++ 
++ ### **Modifications to Existing Tables**
++ 
++ #### **1. Enhance `discovered_companies` Table**
++ ```sql
++ -- Add new columns for discovery integration
++ ALTER TABLE discovered_companies 
++ ADD COLUMN IF NOT EXISTS discovery_status TEXT DEFAULT 'not_discovered' CHECK (discovery_status IN ('not_discovered', 'discovering', 'discovered', 'failed')),
++ ADD COLUMN IF NOT EXISTS discovered_website TEXT,
++ ADD COLUMN IF NOT EXISTS discovery_confidence NUMERIC(3,2) CHECK (discovery_confidence BETWEEN 0 AND 1),
++ ADD COLUMN IF NOT EXISTS last_discovery_attempt TIMESTAMPTZ,
++ ADD COLUMN IF NOT EXISTS enrichment_count INTEGER DEFAULT 0,
++ ADD COLUMN IF NOT EXISTS data_freshness_score NUMERIC(3,2) DEFAULT 0 CHECK (data_freshness_score BETWEEN 0 AND 1);
++ ```
++ 
++ #### **2. Enhance `scraper_runs` Table**
++ ```sql
++ -- Add discovery-related fields
++ ALTER TABLE scraper_runs 
++ ADD COLUMN IF NOT EXISTS discovery_request_id UUID REFERENCES discovery_requests(id) ON DELETE SET NULL,
++ ADD COLUMN IF NOT EXISTS enrichment_target_id UUID REFERENCES discovered_companies(id) ON DELETE SET NULL,
++ ADD COLUMN IF NOT EXISTS auto_generated BOOLEAN DEFAULT FALSE;
++ ```
++ 
++ #### **3. Enhance `scraped_data` Table**
++ ```sql
++ -- Add enrichment tracking
++ ALTER TABLE scraped_data 
++ ADD COLUMN IF NOT EXISTS enrichment_id UUID REFERENCES enriched_company_data(id) ON DELETE SET NULL,
++ ADD COLUMN IF NOT EXISTS discovery_source BOOLEAN DEFAULT FALSE;
++ ```
++ 
++ ---
++ 
++ ## 📊 Performance Indexes
++ 
++ ### **Discovery Performance Indexes**
++ ```sql
++ CREATE INDEX IF NOT EXISTS idx_discovery_requests_company_id ON discovery_requests(company_id);
++ CREATE INDEX IF NOT EXISTS idx_discovery_requests_status ON discovery_requests(status);
++ CREATE INDEX IF NOT EXISTS idx_discovery_requests_created_at ON discovery_requests(created_at);
++ CREATE INDEX IF NOT EXISTS idx_discovery_requests_user_id ON discovery_requests(user_id);
++ ```
++ 
++ ### **Website Discovery Cache Indexes**
++ ```sql
++ CREATE INDEX IF NOT EXISTS idx_website_discovery_cache_company_name ON website_discovery_cache(company_name);
++ CREATE INDEX IF NOT EXISTS idx_website_discovery_cache_expires_at ON website_discovery_cache(expires_at);
++ CREATE INDEX IF NOT EXISTS idx_website_discovery_cache_org_query ON website_discovery_cache(organization_id, search_query);
++ ```
++ 
++ ### **Enriched Data Indexes**
++ ```sql
++ CREATE INDEX IF NOT EXISTS idx_enriched_company_data_company_id ON enriched_company_data(company_id);
++ CREATE INDEX IF NOT EXISTS idx_enriched_company_data_type ON enriched_company_data(data_type);
++ CREATE INDEX IF NOT EXISTS idx_enriched_company_data_confidence ON enriched_company_data(confidence_score);
++ CREATE INDEX IF NOT EXISTS idx_enriched_company_data_created_at ON enriched_company_data(created_at);
++ ```
++ 
++ ### **Scraping Templates Indexes**
++ ```sql
++ CREATE INDEX IF NOT EXISTS idx_scraping_templates_type ON scraping_templates(template_type);
++ CREATE INDEX IF NOT EXISTS idx_scraping_templates_public ON scraping_templates(is_public);
++ CREATE INDEX IF NOT EXISTS idx_scraping_templates_usage ON scraping_templates(usage_count DESC);
++ ```
++ 
++ ### **Enhanced Existing Table Indexes**
++ ```sql
++ -- Enhanced discovered_companies indexes
++ CREATE INDEX IF NOT EXISTS idx_discovered_companies_discovery_status ON discovered_companies(discovery_status);
++ CREATE INDEX IF NOT EXISTS idx_discovered_companies_enrichment_count ON discovered_companies(enrichment_count);
++ CREATE INDEX IF NOT EXISTS idx_discovered_companies_data_freshness ON discovered_companies(data_freshness_score);
++ 
++ -- Enhanced scraper_runs indexes
++ CREATE INDEX IF NOT EXISTS idx_scraper_runs_discovery_request ON scraper_runs(discovery_request_id);
++ CREATE INDEX IF NOT EXISTS idx_scraper_runs_auto_generated ON scraper_runs(auto_generated);
++ CREATE INDEX IF NOT EXISTS idx_scraper_runs_enrichment_target ON scraper_runs(enrichment_target_id);
++ ```
++ 
++ ---
++ 
++ ## 🔐 RLS Policies for New Tables
++ 
++ ### **Discovery Requests Policies**
++ ```sql
++ CREATE POLICY "Users can view their org's discovery requests" ON discovery_requests
++   FOR ALL TO authenticated
++   USING (organization_id = ANY (public.get_user_organization_ids_array(auth.uid())));
++ ```
++ 
++ ### **Website Discovery Cache Policies**
++ ```sql
++ CREATE POLICY "Users can view their org's discovery cache" ON website_discovery_cache
++   FOR ALL TO authenticated
++   USING (organization_id = ANY (public.get_user_organization_ids_array(auth.uid())));
++ ```
++ 
++ ### **Enriched Company Data Policies**
++ ```sql
++ CREATE POLICY "Users can view their org's enriched data" ON enriched_company_data
++   FOR ALL TO authenticated
++   USING (organization_id = ANY (public.get_user_organization_ids_array(auth.uid())));
++ ```
++ 
++ ### **Scraping Templates Policies**
++ ```sql
++ CREATE POLICY "Users can view public templates and their org's templates" ON scraping_templates
++   FOR ALL TO authenticated
++   USING (is_public = TRUE OR organization_id = ANY (public.get_user_organization_ids_array(auth.uid())));
++ ```
++ 
++ ---
++ 
++ ## 🔗 Data Integrity Constraints
++ 
++ ### **Foreign Key Constraints**
++ ```sql
++ -- Ensure discovery requests have valid company references
++ ALTER TABLE discovery_requests 
++ ADD CONSTRAINT fk_discovery_requests_company 
++ FOREIGN KEY (company_id) REFERENCES discovered_companies(id) ON DELETE CASCADE;
++ 
++ -- Ensure enriched data has valid company references
++ ALTER TABLE enriched_company_data 
++ ADD CONSTRAINT fk_enriched_data_company 
++ FOREIGN KEY (company_id) REFERENCES discovered_companies(id) ON DELETE CASCADE;
++ 
++ -- Ensure scraping templates have valid creators
++ ALTER TABLE scraping_templates 
++ ADD CONSTRAINT fk_scraping_templates_creator 
++ FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL;
++ ```
++ 
++ ### **Unique Constraints**
++ ```sql
++ -- Ensure unique discovery requests per company per user per day
++ ALTER TABLE discovery_requests 
++ ADD CONSTRAINT unique_discovery_request 
++ UNIQUE (company_id, user_id, created_at::date);
++ 
++ -- Ensure unique website discovery cache entries
++ ALTER TABLE website_discovery_cache 
++ ADD CONSTRAINT unique_discovery_cache 
++ UNIQUE (organization_id, company_name, search_query);
++ ```
++ 
++ ---
++ 
++ ## 🛠️ Database Functions for Integration
++ 
++ ### **Company Discovery Status Management**
++ ```sql
++ -- Function to update company discovery status
++ CREATE OR REPLACE FUNCTION update_company_discovery_status(
++   p_company_id UUID,
++   p_status TEXT,
++   p_website TEXT DEFAULT NULL,
++   p_confidence NUMERIC DEFAULT NULL
++ )
++ RETURNS VOID AS $$
++ BEGIN
++   UPDATE discovered_companies 
++   SET 
++     discovery_status = p_status,
++     discovered_website = p_website,
++     discovery_confidence = p_confidence,
++     last_discovery_attempt = NOW(),
++     updated_at = NOW()
++   WHERE id = p_company_id;
++ END;
++ $$ LANGUAGE plpgsql SECURITY DEFINER;
++ ```
++ 
++ ### **Enrichment Count Management**
++ ```sql
++ -- Function to increment enrichment count
++ CREATE OR REPLACE FUNCTION increment_company_enrichment_count(p_company_id UUID)
++ RETURNS VOID AS $$
++ BEGIN
++   UPDATE discovered_companies 
++   SET 
++     enrichment_count = enrichment_count + 1,
++     updated_at = NOW()
++   WHERE id = p_company_id;
++ END;
++ $$ LANGUAGE plpgsql SECURITY DEFINER;
++ ```
++ 
++ ### **Data Freshness Calculation**
++ ```sql
++ -- Function to calculate data freshness score
++ CREATE OR REPLACE FUNCTION calculate_data_freshness_score(p_company_id UUID)
++ RETURNS NUMERIC AS $$
++ DECLARE
++   last_update TIMESTAMPTZ;
++   days_since_update INTEGER;
++   freshness_score NUMERIC;
++ BEGIN
++   SELECT MAX(updated_at) INTO last_update
++   FROM enriched_company_data
++   WHERE company_id = p_company_id;
++   
++   IF last_update IS NULL THEN
++     RETURN 0;
++   END IF;
++   
++   days_since_update := EXTRACT(DAY FROM NOW() - last_update);
++   
++   -- Calculate freshness score (1.0 = fresh, 0.0 = stale)
++   freshness_score := GREATEST(0, 1 - (days_since_update::NUMERIC / 30));
++   
++   -- Update the company's freshness score
++   UPDATE discovered_companies 
++   SET data_freshness_score = freshness_score
++   WHERE id = p_company_id;
++   
++   RETURN freshness_score;
++ END;
++ $$ LANGUAGE plpgsql SECURITY DEFINER;
++ ```
++ 
++ ### **Template Usage Tracking**
++ ```sql
++ -- Function to increment template usage count
++ CREATE OR REPLACE FUNCTION increment_template_usage(p_template_id UUID)
++ RETURNS VOID AS $$
++ BEGIN
++   UPDATE scraping_templates 
++   SET 
++     usage_count = usage_count + 1,
++     updated_at = NOW()
++   WHERE id = p_template_id;
++ END;
++ $$ LANGUAGE plpgsql SECURITY DEFINER;
++ ```
++ 
++ ---
++ 
++ ## 📋 Migration Strategy
++ 
++ ### **Phase 1: Foundation (Week 1-2)**
++ ```sql
++ -- Migration 001: Add discovery_requests table
++ -- Migration 002: Add website_discovery_cache table
++ -- Migration 003: Enhance discovered_companies table (discovery fields)
++ -- Migration 004: Add initial indexes
++ ```
++ 
++ ### **Phase 2: Enrichment (Week 3-4)**
++ ```sql
++ -- Migration 005: Add enriched_company_data table
++ -- Migration 006: Add scraping_templates table
++ -- Migration 007: Enhance scraper_runs table
++ -- Migration 008: Add enrichment indexes
++ ```
++ 
++ ### **Phase 3: Optimization (Week 5-6)**
++ ```sql
++ -- Migration 009: Add performance indexes
++ -- Migration 010: Add data partitioning (if needed)
++ -- Migration 011: Add data archival strategy
++ ```
++ 
++ ---
++ 
++ ## 🧪 Testing Queries
++ 
++ ### **Discovery Status Check**
++ ```sql
++ -- Check discovery status for a company
++ SELECT 
++   dc.name,
++   dc.discovery_status,
++   dc.discovered_website,
++   dc.discovery_confidence,
++   dc.last_discovery_attempt
++ FROM discovered_companies dc
++ WHERE dc.id = 'company-uuid-here';
++ ```
++ 
++ ### **Enrichment Data Summary**
++ ```sql
++ -- Get enrichment summary for a company
++ SELECT 
++   dc.name,
++   dc.enrichment_count,
++   dc.data_freshness_score,
++   COUNT(ecd.id) as total_enrichments,
++   AVG(ecd.confidence_score) as avg_confidence
++ FROM discovered_companies dc
++ LEFT JOIN enriched_company_data ecd ON dc.id = ecd.company_id
++ WHERE dc.id = 'company-uuid-here'
++ GROUP BY dc.id, dc.name, dc.enrichment_count, dc.data_freshness_score;
++ ```
++ 
++ ### **Template Usage Analytics**
++ ```sql
++ -- Get template usage statistics
++ SELECT 
++   template_type,
++   COUNT(*) as total_templates,
++   AVG(usage_count) as avg_usage,
++   AVG(success_rate) as avg_success_rate
++ FROM scraping_templates
++ GROUP BY template_type
++ ORDER BY avg_usage DESC;
++ ```
++ 
++ ---
++ 
++ ## 📊 Monitoring Queries
++ 
++ ### **Discovery Success Rate**
++ ```sql
++ -- Calculate discovery success rate
++ SELECT 
++   COUNT(CASE WHEN status = 'found' THEN 1 END) * 100.0 / COUNT(*) as success_rate,
++   COUNT(*) as total_requests
++ FROM discovery_requests
++ WHERE created_at >= NOW() - INTERVAL '7 days';
++ ```
++ 
++ ### **Enrichment Performance**
++ ```sql
++ -- Monitor enrichment performance
++ SELECT 
++   data_type,
++   COUNT(*) as total_enrichments,
++   AVG(confidence_score) as avg_confidence,
++   COUNT(CASE WHEN is_verified = TRUE THEN 1 END) as verified_count
++ FROM enriched_company_data
++ WHERE created_at >= NOW() - INTERVAL '7 days'
++ GROUP BY data_type
++ ORDER BY total_enrichments DESC;
++ ```
++ 
++ ### **Cache Hit Rate**
++ ```sql
++ -- Monitor cache effectiveness
++ SELECT 
++   COUNT(*) as cache_hits,
++   COUNT(CASE WHEN expires_at < NOW() THEN 1 END) as expired_entries
++ FROM website_discovery_cache
++ WHERE created_at >= NOW() - INTERVAL '7 days';
++ ```
++ 
++ ---
++ 
++ ## 🚨 Important Notes
++ 
++ 1. **Backup Strategy**: Always backup the database before running migrations
++ 2. **Rollback Plan**: Each migration should have a corresponding rollback script
++ 3. **Testing**: Test all migrations in staging environment first
++ 4. **Performance**: Monitor query performance after adding new indexes
++ 5. **Security**: Ensure RLS policies are properly tested with different user roles
++ 
++ ---
++ 
++ *This document should be updated as the schema evolves during implementation.* 
+```
+
+---
+
+Perfect! Now let me update the main integration plan to reference this database document:
+
+
+---
+
+```diff
+  - API endpoint documentation
+  - Service architecture diagrams
+- - Database schema updates
++ - **Database schema updates** - See `progress/Plan/database-schema-changes.md` for detailed schema changes
+  - Integration guides
+  
+```
+
+---
+
+Excellent! Now I have created a comprehensive plan that addresses all your concerns:
+
+## **�� Summary of What We've Accomplished**
+
+### **1. ✅ Comprehensive Parallel Development Strategy**
+- **3 developers working simultaneously** with zero conflicts
+- **Clear file ownership** and coordination points
+- **Weekly sync meetings** and progress tracking
+- **Feature branches** and pull request workflow
+
+### **2. ✅ Complete Database Schema Analysis**
+- **Analyzed existing schema.sql** thoroughly
+- **Identified 8 existing tables** we can leverage
+- **Created 4 new tables** for discovery and enrichment
+- **Enhanced 3 existing tables** with new fields
+- **Added performance indexes** and RLS policies
+- **Created database functions** for integration
+
+### **3. ✅ Detailed Implementation Plan**
+- **8-week phased approach** with clear milestones
+- **Production-ready architecture** with SaaS best practices
+- **Comprehensive testing strategy** (unit, integration, E2E)
+- **Security and compliance** considerations
+- **Monitoring and analytics** requirements
+
+### **4. ✅ Database Schema Changes Document**
+- **Separate detailed document** at `progress/Plan/database-schema-changes.md`
+- **Complete SQL scripts** for all new tables and modifications
+- **Migration strategy** with rollback plans
+- **Performance optimization** with proper indexes
+- **Testing and monitoring queries**
+
+## **🔧 Key Database Changes Required**
+
+### **New Tables:**
+1. **`discovery_requests`** - Track website discovery requests
+2. **`website_discovery_cache`** - Cache discovered websites
+3. **`enriched_company_data`** - Store enriched data from scraping
+4. **`scraping_templates`** - Reusable scraping templates
+
+### **Enhanced Existing Tables:**
+1. **`discovered_companies`** - Add discovery status, website, confidence
+2. **`scraper_runs`** - Add discovery request tracking
+3. **`scraped_data`** - Add enrichment tracking
+
+## **👥 Developer Assignment**
+
+| Developer | Focus | Files | Database Tasks |
+|-----------|-------|-------|----------------|
+| **Developer A** | Frontend UI/UX | `src/components/search/`, `stores/` | None |
+| **Developer B** | Backend Services | `lib/services/`, `app/api/search/` | API integration |
+| **Developer C** | Integration Logic | `lib/integration/`, `tests/` | **All database work** |
+
+## **�� Ready to Start**
+
+The plan is now complete and ready for implementation. Each developer can:
+
+1. **Pick their assigned tasks** from their section
+2. **Follow the coordination points** for shared interfaces
+3. **Use the conflict prevention checklist** before each action
+4. **Reference the database document** for schema changes
+5. **Update the plan** as they progress
+
+**Developer C** will handle all the database work, including:
+- Creating migration scripts
+- Adding new tables and indexes
+- Implementing RLS policies
+- Creating database functions
+- Setting up monitoring queries
+
+Would you like me to start implementing any specific part, or would you prefer to assign the developers and begin the parallel development?
+
+---
+
+_**User**_
+
+Here is what my developer A is saying: 
+"I've completed the UI components and store modifications for Phases 1, 2, 3, and the first week of Phase 4 (Week 7) as per the 'Developer A' tasks in the 'search-scraper-integration-plan.md'.
+
+Summary of progress:
+
+Phase 1 (Foundation): Created WebsiteDiscovery, DiscoveryButton, ScrapingProgress, DiscoveryModal, EnrichedDataDisplay. Extended searchStore for discovery states. Enhanced CompanyCard for discovery actions.
+Phase 2 (Intelligent Discovery): Created DiscoveryResults, ScraperConfigEditor (placeholder), DataPreview, ConfidenceIndicator. Enhanced DiscoveryModal with iframe preview. Addressed accessibility and responsiveness for new components.
+Phase 3 (Data Enrichment): Created EnrichmentDashboard (placeholder), DataQualityIndicator, ExportButton (placeholder UI), DataVisualizationWidget (placeholder UI). Enhanced CompanyCard with 'Enriched' badges and more scraped fields. Added basic user preference for hiding descriptions via searchStore and a DisplayPreferences placeholder UI.
+Phase 4 (Advanced Features - Week 7): Created BulkDiscovery component UI. Updated searchStore for advanced filter structures. Created AdvancedFilterPanel UI. Created a placeholder CustomScraperBuilderUI.
+The next planned tasks for Developer A are Week 8 of Phase 4:
+
+Create: src/components/search/AnalyticsDashboard.tsx (focused on user search/discovery behavior).
+Add: User onboarding flows (e.g., tooltips, guides for new features).
+Implement: Advanced search features (UI aspects, e.g., improved NLP query input, complex filter combinations UI - this is vague in the plan).
+Add: Mobile app considerations (documentation/notes).
+Given the substantial number of placeholder components and the mock nature of many interactions (especially with the backend), I'd like advice on the next steps. Should I proceed with Week 8 tasks, which will likely involve more placeholder UI, or would it be more beneficial to:
+
+a) Focus on fleshing out one of the existing placeholder features with more detailed UI and mocked interactions (e.g., make the ScraperConfigEditor or CustomScraperBuilderUI more interactive, even if still mock)? b) Work on writing unit/integration tests for the components already built? c) Prioritize integrating one of the simpler backend-dependent features if Developer B (Backend) has made progress on relevant API endpoints (e.g., making the DiscoveryButton call a real, albeit mockable, API endpoint via the store)? d) Continue with the planned Week 8 tasks as outlined?
+
+Please provide guidance on the most valuable direction from here."
+
+NB: I wanted to reduced mock data usage since we are now working on production.  So what do we do? wwe ask him to wait or continue? 
+
+---
+
+_**Assistant**_
+
+Excellent question! Developer A has made significant progress, but you're absolutely right about reducing mock data usage for production. Let me analyze the situation and provide a strategic recommendation.
+
+## **📊 Current Situation Analysis**
+
+### **✅ Developer A's Progress**
+- **Completed:** Phases 1-3 + Week 7 of Phase 4
+- **Created:** 15+ UI components with proper structure
+- **Enhanced:** Search store with discovery states
+- **Added:** Accessibility and responsive design
+
+### **⚠️ Current Challenge**
+- **Mock-heavy components** that need real API integration
+- **Placeholder UIs** that need actual functionality
+- **Production requirements** demand real data flows
+
+## **🎯 Strategic Recommendation: Pause & Integrate**
+
+I recommend **pausing Developer A's Week 8 tasks** and instead **focusing on integration with real APIs**. Here's why:
+
+### **1. Production Priority**
+- Mock data doesn't provide real user value
+- Integration testing is more valuable than more UI
+- Real API calls will reveal actual UX issues
+
+### **2. Better Resource Utilization**
+- Developer A can help with integration testing
+- Real data will improve component quality
+- Backend integration will validate the architecture
+
+## **📋 Recommended Next Steps for Developer A**
+
+### **Option A: Integration-Focused Work (Recommended)**
+
+#### **Week 8: Real API Integration**
+1. **Replace mock data with real API calls** in existing components
+2. **Create integration tests** for the components already built
+3. **Work with Developer B** to integrate real endpoints
+4. **Add proper error handling** and loading states
+
+#### **Specific Tasks:**
+```typescript
+// Instead of Week 8 tasks, focus on:
+- [ ] Replace mock data in DiscoveryButton with real API calls
+- [ ] Integrate WebsiteDiscovery with actual discovery endpoints
+- [ ] Add real error handling and retry logic
+- [ ] Create integration tests for existing components
+- [ ] Work with Developer B to test real API responses
+```
+
+### **Option B: Enhanced Existing Components**
+
+#### **Week 8: Component Enhancement**
+1. **Make ScraperConfigEditor fully functional** (even with mock backend)
+2. **Enhance CustomScraperBuilderUI** with real form validation
+3. **Add comprehensive error states** to all components
+4. **Implement real-time updates** and optimistic UI
+
+### **Option C: Testing & Quality**
+
+#### **Week 8: Testing Focus**
+1. **Write unit tests** for all created components
+2. **Create integration tests** with real API mocks
+3. **Add E2E tests** for complete user flows
+4. **Performance testing** for large datasets
+
+## **🤝 Coordination with Other Developers**
+
+### **Check Developer B's Progress**
+Before deciding, we should check:
+- **Has Developer B completed the API endpoints?**
+- **Are the discovery and enrichment APIs ready?**
+- **Can we start real integration testing?**
+
+### **Check Developer C's Progress**
+- **Are the database migrations complete?**
+- **Are the new tables available for testing?**
+
+## **📝 My Recommendation**
+
+### **Immediate Action:**
+1. **Pause Week 8 tasks** for Developer A
+2. **Assess Developer B's progress** on API endpoints
+3. **If APIs are ready:** Switch to integration work
+4. **If APIs aren't ready:** Focus on testing existing components
+
+### **Specific Guidance for Developer A:**
+
+```markdown
+## �� Developer A - Week 8 Revised Plan
+
+### Priority 1: Integration Testing
+- [ ] Test DiscoveryButton with real API (if available)
+- [ ] Add comprehensive error handling to all components
+- [ ] Create integration tests for existing components
+- [ ] Work with Developer B to validate API responses
+
+### Priority 2: Component Enhancement
+- [ ] Make ScraperConfigEditor fully functional
+- [ ] Add real form validation to CustomScraperBuilderUI
+- [ ] Implement proper loading states and error recovery
+- [ ] Add real-time updates where appropriate
+
+### Priority 3: Testing & Quality
+- [ ] Write unit tests for all components
+- [ ] Add accessibility testing
+- [ ] Performance testing for large datasets
+- [ ] Cross-browser compatibility testing
+
+### Hold: Week 8 Original Tasks
+- AnalyticsDashboard.tsx (wait for real data)
+- User onboarding flows (wait for complete features)
+- Advanced search features (wait for backend)
+- Mobile considerations (documentation only)
+```
+
+## **🔄 Updated Plan Strategy**
+
+### **If Developer B is Ready:**
+- **Developer A:** Focus on integration and real API testing
+- **Developer B:** Continue with remaining API endpoints
+- **Developer C:** Complete database work and support integration
+
+### **If Developer B Needs More Time:**
+- **Developer A:** Focus on testing and component enhancement
+- **Developer B:** Complete core API endpoints
+- **Developer C:** Complete database migrations
+
+## **📞 Next Steps**
+
+1. **Check Developer B's status** on API endpoints
+2. **Update the integration plan** based on actual progress
+3. **Provide Developer A with the revised Week 8 tasks**
+4. **Coordinate integration testing** between developers
+
+**Would you like me to:**
+1. **Check Developer B's progress** on the API endpoints?
+2. **Update the integration plan** with revised priorities?
+3. **Create specific integration tasks** for Developer A?
+
+This approach ensures we're building production-ready features rather than accumulating more mock components.
+
+---
+
+_**User**_
+
+Good developer A reported that thehave done this: "Integrate API calls for website discovery & scraping flow
+
+- Refactored `searchStore.ts` (`initiateWebsiteDiscovery` action) to replace mock logic with actual `fetch` calls to `/api/search/discover` and `/api/search/scraper/execute`.
+- Ensured `CompanyCard.tsx` correctly displays states (loading, progress, data, errors) driven by these API calls.
+- Implemented robust error handling in `CompanyCard.tsx`, including toast notifications for API errors and refined retry logic.
+- Added integration tests (`CompanyCard.integration.test.tsx`) for the discovery/scraping flow, covering success and various error scenarios using mock API responses."
+
+Developer B to did part of the job.
+
+You and I will play the role of developer C and lead developer. But before, please let's check the work of developer A and B and then tell them what the can do next. 
+
+---
+
+_**Assistant**_
+
+<details>
+            <summary>Grep search for "initiateWebsiteDiscovery" • **4** files</summary>
+        
+| File | Line | Match |
+|------|------|-------|
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/BulkDiscovery.tsx` | L20 | `const { initiateWebsiteDiscovery } = useSearchStore(state => ({` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/BulkDiscovery.tsx` | L21 | `initiateWebsiteDiscovery: state.initiateWebsiteDiscovery,` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/BulkDiscovery.tsx` | L58 | `await initiateWebsiteDiscovery(input.id, input.nameOrDomain, input.nameOrDomain); // Using input.id as companyId for store state` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L41 | `initiateWebsiteDiscovery,` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L46 | `initiateWebsiteDiscovery: state.initiateWebsiteDiscovery,` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L78 | `initiateWebsiteDiscovery(company.id, company.name, company.domain);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L82 | `initiateWebsiteDiscovery(company.id, company.name, company.domain);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L41 | `initiateWebsiteDiscovery,` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L46 | `initiateWebsiteDiscovery: state.initiateWebsiteDiscovery,` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L78 | `initiateWebsiteDiscovery(company.id, company.name, company.domain);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L82 | `initiateWebsiteDiscovery(company.id, company.name, company.domain);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/BulkDiscovery.tsx` | L20 | `const { initiateWebsiteDiscovery } = useSearchStore(state => ({` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/BulkDiscovery.tsx` | L21 | `initiateWebsiteDiscovery: state.initiateWebsiteDiscovery,` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/BulkDiscovery.tsx` | L58 | `await initiateWebsiteDiscovery(input.id, input.nameOrDomain, input.nameOrDomain); // Using input.id as companyId for store state` |
+
+</details>
+
+---
+
+<details>
+            <summary>Searched codebase "CompanyCard" • **8** results</summary>
+        
+| File |
+|------|
+| `undefined` |
+| `undefined` |
+| `undefined` |
+| `undefined` |
+| `undefined` |
+| `undefined` |
+| `undefined` |
+| `undefined` |
+
+</details>
+
+---
+
+<details>
+            <summary>Searched codebase "discover" • **9** results</summary>
+        
+| File |
+|------|
+| `undefined` |
+| `undefined` |
+| `undefined` |
+| `undefined` |
+| `undefined` |
+| `undefined` |
+| `undefined` |
+| `undefined` |
+| `undefined` |
+
+</details>
+
+---
+
+<details>
+            <summary>Searched codebase "scraper/execute" • **2** results</summary>
+        
+| File |
+|------|
+| `undefined` |
+| `undefined` |
+
+</details>
+
+---
+
+<details>
+            <summary>Searched codebase "CompanyCard.integration.test.tsx" • **1** results</summary>
+        
+| File |
+|------|
+| `undefined` |
+
+</details>
+
+---
+
+<details>
+            <summary>Grep search for "fetch\(" • **45** files</summary>
+        
+| File | Line | Match |
+|------|------|-------|
+| `file:///Users/salomonks/Documents/sikry-25/src/components/reviews/ReviewBoosterPanel.tsx` | L41 | `const response = await fetch(`/api/reviews/stats?${params}`)` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/reviews/ReviewBoosterPanel.tsx` | L56 | `const response = await fetch("/api/reviews/requests", {` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/analytics/VSLAnalyticsDashboard.tsx` | L76 | `const response = await fetch(`/api/analytics/dashboard?range=${timeRange}`)` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/funnels/FunnelProgressDashboard.tsx` | L30 | `const funnelResponse = await fetch(`/api/funnels/${funnelId}`)` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/funnels/FunnelProgressDashboard.tsx` | L35 | `const progressResponse = await fetch(` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/reengagement/LeadClassificationPanel.tsx` | L36 | `const response = await fetch(url)` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/reengagement/LeadClassificationPanel.tsx` | L52 | `const response = await fetch("/api/reengagement/classify-leads", {` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/WebsiteDiscovery.tsx` | L53 | `//   const response = await fetch('/api/search/discover', {` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/WebsiteDiscovery.tsx` | L104 | `//   const response = await fetch('/api/search/scraper/execute', { // Assuming this endpoint` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/lead-response/LeadResponseRulesManager.tsx` | L35 | `const response = await fetch("/api/lead-response/rules")` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/lead-response/LeadResponseRulesManager.tsx` | L52 | `const response = await fetch(url, {` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/lead-response/LeadResponseRulesManager.tsx` | L73 | `const response = await fetch(`/api/lead-response/rules/${ruleId}`, {` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/referrals/ReferralDashboard.tsx` | L28 | `const response = await fetch("/api/referrals")` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/referrals/ReferralDashboard.tsx` | L43 | `const response = await fetch("/api/referrals/stats")` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/referrals/ReferralDashboard.tsx` | L58 | `const response = await fetch("/api/referrals", {` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/financial/FinancialSummaryPanel.tsx` | L39 | `const response = await fetch(`/api/financial/summary?${params}`)` |
+| `file:///Users/salomonks/Documents/sikry-25/src/search/adapters/wikidata.ts` | L23 | `const response = await fetch(endpoint, {` |
+| `file:///Users/salomonks/Documents/sikry-25/src/search/adapters/companiesHouse.ts` | L25 | `const response = await fetch(endpoint, {` |
+| `file:///Users/salomonks/Documents/sikry-25/src/utils/scraping/v2Adapter.ts` | L11 | `const response = await fetch("/api/scrapers/v2/execute", {` |
+| `file:///Users/salomonks/Documents/sikry-25/src/utils/scraping/v2Adapter.ts` | L36 | `const response = await fetch("/api/scrapers/v2/test-selector", {` |
+| `file:///Users/salomonks/Documents/sikry-25/src/utils/scraping/v2Adapter.ts` | L60 | `const response = await fetch("/api/scrapers/v2/detect-fields", {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/services/googleSearchIntegration.ts` | L211 | `const response = await fetch(`${this.baseUrl}?${searchParams.toString()}`, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/webhooks/manager.ts` | L55 | `const response = await fetch(webhook.url, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/api/scrapingClient.ts` | L98 | `const response = await fetch("/api/selector-discovery", {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/api/scrapingClient.ts` | L109 | `const response = await fetch("/api/scrapers/test-selector", {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/api/scrapingClient.ts` | L121 | `const response = await fetch("/api/scrapers/preview", {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/api/searchClient.ts` | L6 | `const response = await fetch(`${this.baseUrl}/search/natural`, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/api/searchClient.ts` | L22 | `const response = await fetch(`${this.baseUrl}/search/advanced`, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/api/searchClient.ts` | L38 | `const response = await fetch(`${this.baseUrl}/search/suggestions?q=${encodeURIComponent(query)}`)` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/api/searchClient.ts` | L49 | `const response = await fetch(`${this.baseUrl}/search/saved`, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/api/searchClient.ts` | L65 | `const response = await fetch(`${this.baseUrl}/search/saved`)` |
+| `file:///Users/salomonks/Documents/sikry-25/stores/searchStore.ts` | L162 | `const response = await fetch(`/api/search?${params.toString()}`);` |
+| `file:///Users/salomonks/Documents/sikry-25/features/comms-engine/hooks/useMessageSender.ts` | L36 | `const response = await fetch("/api/comms/send-message", {` |
+| `file:///Users/salomonks/Documents/sikry-25/features/comms-engine/hooks/useMessageSender.ts` | L69 | `const response = await fetch("/api/comms/bulk-send", {` |
+| `file:///Users/salomonks/Documents/sikry-25/features/comms-engine/hooks/useMessageSender.ts` | L85 | `const progressResponse = await fetch(`/api/comms/bulk-send/${jobId}/progress`)` |
+| `file:///Users/salomonks/Documents/sikry-25/features/comms-engine/hooks/useMessageSender.ts` | L114 | `const response = await fetch("/api/comms/test-message", {` |
+| `file:///Users/salomonks/Documents/sikry-25/features/comms-engine/hooks/useMessageSender.ts` | L140 | `const response = await fetch("/api/comms/preview-message", {` |
+| `file:///Users/salomonks/Documents/sikry-25/features/comms-engine/hooks/useMessageSender.ts` | L166 | `const response = await fetch("/api/comms/validate-template", {` |
+| `file:///Users/salomonks/Documents/sikry-25/features/comms-engine/hooks/useMessageSender.ts` | L188 | `const response = await fetch("/api/comms/check-deliverability", {` |
+| `file:///Users/salomonks/Documents/sikry-25/features/comms-engine/hooks/useMessageSender.ts` | L210 | `const response = await fetch(`/api/comms/bulk-send/${jobId}/cancel`, {` |
+| `file:///Users/salomonks/Documents/sikry-25/features/comms-engine/hooks/useMessageSender.ts` | L240 | `const response = await fetch(`/api/comms/messages/${messageId}/retry`, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/api/companyClient.ts` | L6 | `const response = await fetch(`${this.baseUrl}/companies/${id}`)` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/api/companyClient.ts` | L16 | `const response = await fetch(`${this.baseUrl}/companies/${id}/enrich`, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/api/companyClient.ts` | L28 | `const response = await fetch(`${this.baseUrl}/companies/${id}`, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/api/companyClient.ts` | L51 | `const response = await fetch(`${this.baseUrl}/companies?${params}`)` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/api/companyClient.ts` | L61 | `const response = await fetch(`${this.baseUrl}/companies/${id}`, {` |
+| `file:///Users/salomonks/Documents/sikry-25/lib/api/companyClient.ts` | L71 | `const response = await fetch(`${this.baseUrl}/companies/bulk-import`, {` |
+| `file:///Users/salomonks/Documents/sikry-25/features/market-intel/hooks/useCompetitorAnalysis.ts` | L63 | `const response = await fetch("/api/market-intel/competitor-analysis", {` |
+| `file:///Users/salomonks/Documents/sikry-25/features/search-engine/utils/externalApis.ts` | L94 | `const response = await fetch(url)` |
+| `file:///Users/salomonks/Documents/sikry-25/features/search-engine/utils/externalApis.ts` | L133 | `const response = await fetch(url, {` |
+| `file:///Users/salomonks/Documents/sikry-25/features/scraping-engine/hooks/useScrapePreview.ts` | L22 | `const response = await fetch("/api/scrapers/preview", {` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/vsl/pages/page.tsx` | L40 | `fetch('/api/vsl/pages')` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/vsl/tracking/page.tsx` | L41 | `fetch('/api/vsl/pages')` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/vsl/tracking/page.tsx` | L59 | `fetch(apiUrl)` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/vsl/templates/page.tsx` | L30 | `fetch('/api/vsl/templates')` |
+| `file:///Users/salomonks/Documents/sikry-25/app/api/gap-analysis/%5Bid%5D/generate-letter/route.ts` | L155 | `const response = await fetch("https://api.openai.com/v1/chat/completions", {` |
+| `file:///Users/salomonks/Documents/sikry-25/app/api/gap-analysis/%5Bid%5D/generate-letter/route.ts` | L180 | `const response = await fetch("https://api.anthropic.com/v1/messages", {` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/gap-analysis/page.tsx` | L28 | `const response = await fetch(`/api/gap-analysis${activeTab !== "all" ? `?status=${activeTab}` : ""}`)` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/analytics/conversion/page.tsx` | L47 | `fetch(`/api/analytics/conversion?period=${period}&funnelId=${selectedFunnel}`)` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/analytics/conversion/page.tsx` | L88 | `onClick={() => { setIsLoading(true); setError(null); fetch(`/api/analytics/conversion?period=${period}&funnelId=${selectedFunnel}`).then(res => res.json()).then(responseData => { if(responseData.error) throw new Error(responseData.error.message); setDat` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/analytics/revenue/page.tsx` | L44 | `fetch(`/api/analytics/revenue?period=${period}&breakdown=${breakdownType}`)` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/analytics/revenue/page.tsx` | L85 | `onClick={() => { setIsLoading(true); setError(null); fetch(`/api/analytics/revenue?period=${period}&breakdown=${breakdownType}`).then(res => res.json()).then(responseData => { if(responseData.error) throw new Error(responseData.error.message); setData(r` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/analytics/performance/page.tsx` | L46 | `fetch(`/api/analytics/performance?period=${period}`)` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/analytics/performance/page.tsx` | L95 | `onClick={() => { setIsLoading(true); setError(null); fetch(`/api/analytics/performance?period=${period}`).then(res => res.json()).then(responseData => { if(responseData.error) throw new Error(responseData.error.message); setData(responseData.data);}).ca` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/gap-analysis/letters/page.tsx` | L66 | `const response = await fetch('/api/gap-analysis/letters');` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/gap-analysis/form/page.tsx` | L173 | `const response = await fetch("/api/gap-analysis", {` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/gap-analysis/form/page.tsx` | L210 | `const response = await fetch(`/api/gap-analysis/${analysis.id}/generate-letter`, {` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/lead-response/rules/page.tsx` | L77 | `const response = await fetch("/api/lead-response/rules");` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/lead-response/rules/page.tsx` | L124 | `const response = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body });` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/lead-response/rules/page.tsx` | L158 | `const response = await fetch(`/api/lead-response/rules?id=${ruleId}`, { method: 'DELETE' });` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/lead-response/rules/page.tsx` | L173 | `const response = await fetch('/api/lead-response/rules', {` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/financial/page.tsx` | L39 | `fetch(`/api/financial/records?${recordsParams}`),` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/financial/page.tsx` | L40 | `fetch("/api/financial/campaign-roi"),` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/lead-response/page.tsx` | L64 | `const response = await fetch("/api/lead-response/overview");` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/lead-response/analytics/page.tsx` | L80 | `const response = await fetch("/api/lead-response/analytics");` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/lead-response/queue/page.tsx` | L119 | `const response = await fetch("/api/lead-response/queue");` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/lead-response/queue/page.tsx` | L139 | `const response = await fetch('/api/lead-response/queue', {` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/statistics/geographic-distribution/page.tsx` | L54 | `fetch(`/api/statistics/geographic-distribution?dataType=${dataTypeFilter}`)` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/statistics/geographic-distribution/page.tsx` | L108 | `fetch(`/api/statistics/geographic-distribution?dataType=${dataTypeFilter}`)` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/statistics/collection-trends/page.tsx` | L58 | `fetch(`/api/statistics/collection-trends?${queryParams.toString()}`)` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/statistics/collection-trends/page.tsx` | L111 | `⟪ 254 characters skipped ⟫queryParams.append('endDate', endDate); fetch(`/api/statistics/collection-trends?${queryParams.toString()}`).then(res => res.json()).then(responseData => { if(responseData.error) throw new Error(responseData.error.message); setApiData(respo` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/statistics/source-comparison/page.tsx` | L74 | `const response = await fetch(`/api/statistics/source-comparison?${queryParams.toString()}`);` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/statistics/sector-distribution/page.tsx` | L87 | `fetch(`/api/statistics/sector-distribution?dataType=${dataTypeFilter}`)` |
+| `file:///Users/salomonks/Documents/sikry-25/app/%28dashboard%29/statistics/sector-distribution/page.tsx` | L149 | `fetch(`/api/statistics/sector-distribution?dataType=${dataTypeFilter}`)` |
+| `file:///Users/salomonks/Documents/sikry-25/app/profile/page.tsx` | L8 | `fetch("/api/user")` |
+| `file:///Users/salomonks/Documents/sikry-25/app/my-account/page.tsx` | L8 | `fetch("/api/user")` |
+| `file:///Users/salomonks/Documents/sikry-25/app/my-account/settings/page.tsx` | L7 | `fetch("/api/user")` |
+| `file:///Users/salomonks/Documents/sikry-25/src/search/adapters/companiesHouse.ts` | L25 | `const response = await fetch(endpoint, {` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/WebsiteDiscovery.tsx` | L53 | `//   const response = await fetch('/api/search/discover', {` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/WebsiteDiscovery.tsx` | L104 | `//   const response = await fetch('/api/search/scraper/execute', { // Assuming this endpoint` |
+
+</details>
+
+---
+
+Read file: src/components/search/CompanyCard.tsx
+
+---
+
+Read file: src/components/search/CompanyCard.integration.test.tsx
+
+---
+
+Read file: app/api/search/discover/route.ts
+
+---
+
+Read file: app/api/scrapers/execute/route.ts
+
+---
+
+Read file: stores/searchStore.ts
+
+---
+
+Read file: stores/searchStore.ts
+
+---
+
+<details>
+            <summary>Searched codebase "initiateWebsiteDiscovery" • **17** results</summary>
+        
+| File | Lines |
+|------|-------|
+| `stores/searchStore.ts` | L55-117 |
+| `stores/searchStore.ts` | L1-38 |
+| `stores/__tests__/searchStore.test.ts` | L33-83 |
+| `stores/commsStore.ts` | L1-17 |
+| `stores/__tests__/searchStore.test.ts` | L1-33 |
+| `stores/commsStore.ts` | L58-123 |
+| `stores/companyStore.ts` | L1-18 |
+| `stores/companyStore.ts` | L37-99 |
+| `stores/commsStore.ts` | L28-42 |
+| `stores/searchStore.ts` | L38-55 |
+| `stores/searchStore.ts` | L134-181 |
+| `stores/commsStore.ts` | L123-141 |
+| `stores/searchStore.ts` | L181-200 |
+| `stores/commsStore.ts` | L42-58 |
+| `stores/searchStore.ts` | L117-134 |
+| `stores/companyStore.ts` | L18-26 |
+| `stores/companyStore.ts` | L26-37 |
+
+</details>
+
+---
+
+Read file: stores/searchStore.ts
+
+---
+
+<details>
+            <summary>Searched codebase "discovery" • **5** results</summary>
+        
+| File |
+|------|
+| `undefined` |
+| `undefined` |
+| `undefined` |
+| `undefined` |
+| `undefined` |
+
+</details>
+
+---
+
+<details>
+            <summary>Searched codebase "discoveryStates" • **17** results</summary>
+        
+| File | Lines |
+|------|-------|
+| `stores/commsStore.ts` | L28-42 |
+| `stores/searchStore.ts` | L1-38 |
+| `stores/companyStore.ts` | L18-26 |
+| `stores/searchStore.ts` | L55-117 |
+| `stores/commsStore.ts` | L58-123 |
+| `stores/searchStore.ts` | L38-55 |
+| `stores/companyStore.ts` | L37-99 |
+| `stores/commsStore.ts` | L1-17 |
+| `stores/commsStore.ts` | L42-58 |
+| `stores/searchStore.ts` | L181-200 |
+| `stores/commsStore.ts` | L123-141 |
+| `stores/companyStore.ts` | L26-37 |
+| `stores/searchStore.ts` | L134-181 |
+| `stores/__tests__/searchStore.test.ts` | L33-83 |
+| `stores/searchStore.ts` | L117-134 |
+| `stores/companyStore.ts` | L1-18 |
+| `stores/commsStore.ts` | L17-28 |
+
+</details>
+
+---
+
+<details>
+            <summary>Searched codebase "searchStore" • **10** results</summary>
+        
+| File |
+|------|
+| `undefined` |
+| `undefined` |
+| `undefined` |
+| `undefined` |
+| `undefined` |
+| `undefined` |
+| `undefined` |
+| `undefined` |
+| `undefined` |
+| `undefined` |
+
+</details>
+
+---
+
+<details>
+            <summary>Searched codebase "initiateWebsiteDiscovery" • **25** results</summary>
+        
+| File | Lines |
+|------|-------|
+| `src/components/search/WebsiteDiscovery.tsx` | L25-71 |
+| `src/components/search/WebsiteDiscovery.tsx` | L71-122 |
+| `src/components/search/WebsiteDiscovery.tsx` | L17-23 |
+| `src/components/search/WebsiteDiscovery.tsx` | L23-25 |
+| `src/components/search/WebsiteDiscovery.tsx` | L163-186 |
+| `src/components/search/WebsiteDiscovery.tsx` | L122-163 |
+| `src/components/search/WebsiteDiscovery.tsx` | L186-188 |
+| `src/components/search/CompanyCard.tsx` | L35-70 |
+| `src/components/search/DiscoveryResults.tsx` | L13-21 |
+| `src/components/search/BulkDiscovery.tsx` | L14-37 |
+| `src/components/search/DiscoveryButton.tsx` | L9-19 |
+| `src/components/search/DiscoveryModal.tsx` | L113-134 |
+| `src/components/search/CompanyCard.integration.test.tsx` | L189-211 |
+| `src/components/search/WebsiteDiscovery.tsx` | L1-17 |
+| `src/components/search/DiscoveryResults.tsx` | L21-69 |
+| `src/components/search/DiscoveryResults.tsx` | L69-105 |
+| `src/components/search/BulkDiscovery.tsx` | L37-72 |
+| `src/components/search/CompanyCard.tsx` | L70-97 |
+| `src/components/search/DiscoveryResults.tsx` | L1-13 |
+| `src/components/search/CompanyCard.tsx` | L97-128 |
+| `src/components/search/CompanyCard.integration.test.tsx` | L63-113 |
+| `src/components/search/CompanyCard.integration.test.tsx` | L131-172 |
+| `src/components/search/DiscoveryModal.tsx` | L134-166 |
+| `src/components/search/DiscoveryModal.tsx` | L83-113 |
+| `src/components/search/DiscoveryModal.tsx` | L1-22 |
+
+</details>
+
+---
+
+<details>
+            <summary>Grep search for "initiateWebsiteDiscovery" • **4** files</summary>
+        
+| File | Line | Match |
+|------|------|-------|
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L41 | `initiateWebsiteDiscovery,` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L46 | `initiateWebsiteDiscovery: state.initiateWebsiteDiscovery,` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L78 | `initiateWebsiteDiscovery(company.id, company.name, company.domain);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L82 | `initiateWebsiteDiscovery(company.id, company.name, company.domain);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/BulkDiscovery.tsx` | L20 | `const { initiateWebsiteDiscovery } = useSearchStore(state => ({` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/BulkDiscovery.tsx` | L21 | `initiateWebsiteDiscovery: state.initiateWebsiteDiscovery,` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/BulkDiscovery.tsx` | L58 | `await initiateWebsiteDiscovery(input.id, input.nameOrDomain, input.nameOrDomain); // Using input.id as companyId for store state` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L41 | `initiateWebsiteDiscovery,` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L46 | `initiateWebsiteDiscovery: state.initiateWebsiteDiscovery,` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L78 | `initiateWebsiteDiscovery(company.id, company.name, company.domain);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L82 | `initiateWebsiteDiscovery(company.id, company.name, company.domain);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/BulkDiscovery.tsx` | L20 | `const { initiateWebsiteDiscovery } = useSearchStore(state => ({` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/BulkDiscovery.tsx` | L21 | `initiateWebsiteDiscovery: state.initiateWebsiteDiscovery,` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/BulkDiscovery.tsx` | L58 | `await initiateWebsiteDiscovery(input.id, input.nameOrDomain, input.nameOrDomain); // Using input.id as companyId for store state` |
+
+</details>
+
+---
+
+<details>
+            <summary>Grep search for "discoveryStates" • **2** files</summary>
+        
+| File | Line | Match |
+|------|------|-------|
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L42 | `discoveryStates,` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L47 | `discoveryStates: state.discoveryStates,` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L52 | `const companyDiscoveryState: CompanyDiscoveryState | undefined = discoveryStates[company.id];` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L42 | `discoveryStates,` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L47 | `discoveryStates: state.discoveryStates,` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L52 | `const companyDiscoveryState: CompanyDiscoveryState | undefined = discoveryStates[company.id];` |
+
+</details>
+
+---
+
+<details>
+            <summary>Grep search for "setDiscoveryStateForCompany" • **2** files</summary>
+        
+| File | Line | Match |
+|------|------|-------|
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L44 | `setDiscoveryStateForCompany, // For manually resetting to idle for retry if needed` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L49 | `setDiscoveryStateForCompany: state.setDiscoveryStateForCompany,` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L74 | `setDiscoveryStateForCompany(company.id, { ...companyDiscoveryState, status: 'idle', error: undefined, progress: 0 });` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L44 | `setDiscoveryStateForCompany, // For manually resetting to idle for retry if needed` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L49 | `setDiscoveryStateForCompany: state.setDiscoveryStateForCompany,` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L74 | `setDiscoveryStateForCompany(company.id, { ...companyDiscoveryState, status: 'idle', error: undefined, progress: 0 });` |
+
+</details>
+
+---
+
+<details>
+            <summary>Searched codebase "export const useSearchStore" • **17** results</summary>
+        
+| File | Lines |
+|------|-------|
+| `stores/searchStore.ts` | L134-181 |
+| `stores/searchStore.ts` | L181-200 |
+| `stores/searchStore.ts` | L55-117 |
+| `stores/searchStore.ts` | L117-134 |
+| `stores/searchStore.ts` | L1-38 |
+| `stores/searchStore.ts` | L38-55 |
+| `stores/__tests__/searchStore.test.ts` | L33-83 |
+| `stores/__tests__/searchStore.test.ts` | L1-33 |
+| `stores/companyStore.ts` | L37-99 |
+| `stores/companyStore.ts` | L1-18 |
+| `stores/commsStore.ts` | L123-141 |
+| `stores/companyStore.ts` | L26-37 |
+| `stores/commsStore.ts` | L58-123 |
+| `stores/companyStore.ts` | L18-26 |
+| `stores/commsStore.ts` | L1-17 |
+| `stores/commsStore.ts` | L42-58 |
+| `stores/commsStore.ts` | L28-42 |
+
+</details>
+
+---
+
+### Review of Developer A's Work
+
+#### 1. **API Integration in State Management**
+- **`initiateWebsiteDiscovery`**, `discoveryStates`, and `setDiscoveryStateForCompany` are referenced in `CompanyCard.tsx` and `BulkDiscovery.tsx` via `useSearchStore`.
+- However, **the actual implementation of these actions and state** is **not present in `stores/searchStore.ts`** (the main file for the search store). The file only contains search, pagination, and filter logic.
+- There is **no evidence** of these actions being implemented in a separate file (e.g., `stores/searchStore.discovery.ts`) or as an extension/wrapper.
+
+#### 2. **Frontend Integration**
+- `CompanyCard.tsx` and `BulkDiscovery.tsx` are **correctly wired** to use `initiateWebsiteDiscovery` and display discovery/scraping states, errors, and progress.
+- The UI logic for error handling, retry, and toast notifications is robust and matches the requirements.
+- The integration test file (`CompanyCard.integration.test.tsx`) is present and covers:
+  - Success (with and without initial domain)
+  - API errors (discovery and scraping)
+  - Retry logic
+  - "No website found" scenario
+
+#### 3. **API Endpoints**
+- `/api/search/discover` and `/api/scrapers/execute` endpoints are implemented and look correct for the intended use.
+- The integration test mocks these endpoints as expected.
+
+#### 4. **Missing Piece**
+- The **core state management logic for discovery/scraping** (actions, state, and wiring in the store) is **missing** from the codebase. The frontend and tests assume it exists, but it is not implemented in `stores/searchStore.ts` or any other file found so far.
+
+---
+
+### Review of Developer B's Work
+
+- There is no direct evidence of Developer B's contributions in the files reviewed so far. If Developer B was responsible for the backend endpoints, those are present and look correct.
+- If Developer B was supposed to implement the store logic for discovery/scraping, that work is **not present**.
+
+---
+
+## Next Steps for Developer A and B
+
+### For Developer A:
+- **Do not proceed further on the frontend** until the store logic is implemented.
+- Once the store logic is in place, verify that the UI and tests work as expected with real state transitions.
+
+### For Developer B:
+- **Implement the missing state management logic** in `stores/searchStore.ts` (or a dedicated module and merge it in):
+  - Add `discoveryStates` to the store state.
+  - Implement `initiateWebsiteDiscovery`:
+    - Should handle the async flow: set state to "discovering", call `/api/search/discover` (if no domain), then `/api/scrapers/execute`, update progress, handle errors, and store results.
+  - Implement `setDiscoveryStateForCompany` for manual state resets.
+  - Ensure all state transitions and error handling match what the frontend expects.
+- **Coordinate with Developer A** to test the full flow end-to-end once the store logic is in place.
+
+---
+
+## Lead Developer Guidance
+
+- **Developer B** should focus on the store logic and coordinate with Developer A for integration.
+- **Developer A** should be ready to test and refine the UI once the store logic is available.
+- **Both**: Once the store logic is merged, run the integration tests and do manual QA to ensure the full discovery/scraping flow works as intended.
+
+Would you like a checklist or a code outline for the missing store logic?
+
+---
+
+_**User**_
+
+yes please. so that I can send them to either developer A or B base on what you tell me 
+
+---
+
+_**Assistant**_
+
+Absolutely! Here’s a **clear checklist and code outline** for the missing store logic, plus a summary of what to send to each developer.
+
+---
+
+## 🟦 **Checklist for Developer B: Store Logic for Website Discovery & Scraping**
+
+**1. Extend the Search Store State:**
+   - [ ] Add a `discoveryStates` object keyed by company ID.
+   - [ ] Each value should track:  
+     - `status`: 'idle' | 'discovering' | 'scraping' | 'completed' | 'error'
+     - `progress`: number (0–100)
+     - `website`: string | null
+     - `scrapedData`: object | null
+     - `error`: string | null
+
+**2. Implement Actions:**
+   - [ ] `initiateWebsiteDiscovery(companyId, companyName, domain)`
+     - If `domain` is present, skip discovery and go straight to scraping.
+     - Otherwise, call `/api/search/discover` with `{ query: companyName }`.
+     - On success, call `/api/search/scraper/execute` with the discovered website.
+     - Update `discoveryStates[companyId]` at each step:
+       - 'discovering' → 'scraping' → 'completed' (with data) or 'error' (with error message)
+   - [ ] `setDiscoveryStateForCompany(companyId, newState)`
+     - Allow manual reset (for retry logic).
+
+**3. Wire Up State and Actions in the Store:**
+   - [ ] Add `discoveryStates` and the new actions to the zustand store.
+   - [ ] Ensure state is updated immutably and safely for concurrent actions.
+
+**4. Error Handling:**
+   - [ ] Catch and store error messages from both API calls.
+   - [ ] Set status to 'error' and store the error message in `discoveryStates[companyId]`.
+
+**5. Types:**
+   - [ ] Define and export types/interfaces for `CompanyDiscoveryState` and `ScrapedData` for use in components and tests.
+
+---
+
+## 🟦 **Code Outline for `stores/searchStore.ts` (or a module merged into it)**
+
+```ts
+// 1. Types
+export interface CompanyDiscoveryState {
+  status: 'idle' | 'discovering' | 'scraping' | 'completed' | 'error';
+  progress: number;
+  website?: string | null;
+  scrapedData?: ScrapedData | null;
+  error?: string | null;
+}
+export interface ScrapedData {
+  companyName?: string;
+  emails?: string[];
+  phones?: string[];
+  website?: string;
+  address?: string;
+  // ...other fields
+}
+
+// 2. Add to store state
+discoveryStates: Record<string, CompanyDiscoveryState>;
+
+// 3. Actions
+initiateWebsiteDiscovery: async (companyId, companyName, domain) => {
+  // Set state to 'discovering'
+  // If domain: skip to scraping
+  // Else: POST to /api/search/discover
+  // On success: POST to /api/search/scraper/execute
+  // Update progress and state at each step
+  // On error: set status 'error' and store error message
+},
+setDiscoveryStateForCompany: (companyId, newState) => {
+  // Set/merge new state for companyId
+},
+```
+
+---
+
+## 🟦 **What to Send to Each Developer**
+
+### **Developer B (Store Logic)**
+Send the checklist and code outline above.  
+**Goal:** Implement and test the store logic so the frontend and tests can work.
+
+### **Developer A (Frontend/UI)**
+- Wait for Developer B to finish.
+- Once the store logic is merged, test the full flow in the UI and integration tests.
+- Report any issues or edge cases to Developer B for fixes.
+
+---
+
+**Let me know if you want this as a markdown doc, or if you want a more detailed code template!**
 
 ---
 
