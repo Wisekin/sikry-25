@@ -1,0 +1,57 @@
+{
+  "title": "Scraper Service Dashboard",
+  "panels": [
+    {
+      "title": "Jobs Processed (per hour)",
+      "type": "graph",
+      "datasource": "Supabase PostgreSQL",
+      "targets": [
+        {
+          "query": "SELECT metric_timestamp AS time, SUM(metric_value) AS value \nFROM metrics \nWHERE metric_name = 'scraper_executions_total' \nAND $__timeFilter(metric_timestamp) \nGROUP BY time \nORDER BY time ASC;"
+        }
+      ]
+    },
+    {
+      "title": "Success Rate (%)",
+      "type": "graph",
+      "datasource": "Supabase PostgreSQL",
+      "targets": [
+        {
+          "query": "SELECT metric_timestamp AS time, \n  (SUM(CASE WHEN tags->>'status' = 'success' THEN metric_value ELSE 0 END) * 100.0 / SUM(metric_value)) AS success_percentage \nFROM metrics \nWHERE metric_name = 'scraper_executions_total' \nAND $__timeFilter(metric_timestamp) \nGROUP BY time \nORDER BY time ASC;"
+        }
+      ]
+    },
+    {
+      "title": "Data Quality (Avg Score %)",
+      "type": "graph",
+      "datasource": "Supabase PostgreSQL",
+      "targets": [
+        {
+          "query": "SELECT metric_timestamp AS time, AVG(metric_value) AS avg_quality_score \nFROM metrics \nWHERE metric_name = 'data_quality_score' AND tags->>'entity_type' LIKE '%scraper%' \nAND $__timeFilter(metric_timestamp) \nGROUP BY time \nORDER BY time ASC;"
+        }
+      ]
+    },
+    {
+      "title": "System CPU Usage (%)",
+      "type": "graph",
+      "datasource": "Supabase PostgreSQL",
+      "targets": [
+        {
+          "query": "SELECT metric_timestamp AS time, AVG(metric_value) AS avg_cpu_usage \nFROM metrics \nWHERE metric_name = 'system_cpu_usage' \nAND $__timeFilter(metric_timestamp) \nGROUP BY time \nORDER BY time ASC;"
+        }
+      ],
+      "description": "Average system-wide CPU usage. May not be scraper-specific unless on dedicated infrastructure."
+    },
+    {
+      "title": "System Memory Usage (%)",
+      "type": "graph",
+      "datasource": "Supabase PostgreSQL",
+      "targets": [
+        {
+          "query": "SELECT metric_timestamp AS time, AVG(metric_value) AS avg_memory_usage \nFROM metrics \nWHERE metric_name = 'system_memory_usage' \nAND $__timeFilter(metric_timestamp) \nGROUP BY time \nORDER BY time ASC;"
+        }
+      ],
+      "description": "Average system-wide Memory usage. May not be scraper-specific."
+    }
+  ]
+}

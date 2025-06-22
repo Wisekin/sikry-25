@@ -1,0 +1,46 @@
+{
+  "title": "Discovery Service Dashboard",
+  "panels": [
+    {
+      "title": "Request Rate (Requests per minute)",
+      "type": "graph",
+      "datasource": "Supabase PostgreSQL",
+      "targets": [
+        {
+          "query": "SELECT metric_timestamp AS time, SUM(metric_value) AS value \nFROM metrics \nWHERE metric_name = 'api_requests_total' \nAND (tags->>'endpoint' LIKE '%/api/search%' OR tags->>'endpoint' LIKE '%/api/discovery%') \nAND $__timeFilter(metric_timestamp) \nGROUP BY time \nORDER BY time ASC;"
+        }
+      ]
+    },
+    {
+      "title": "Error Rate (5xx errors %)",
+      "type": "graph",
+      "datasource": "Supabase PostgreSQL",
+      "targets": [
+        {
+          "query": "SELECT metric_timestamp AS time, \n  (SUM(CASE WHEN tags->>'status' LIKE '5%' THEN metric_value ELSE 0 END) * 100.0 / SUM(metric_value)) AS error_percentage \nFROM metrics \nWHERE metric_name = 'api_requests_total' \nAND (tags->>'endpoint' LIKE '%/api/search%' OR tags->>'endpoint' LIKE '%/api/discovery%') \nAND $__timeFilter(metric_timestamp) \nGROUP BY time \nORDER BY time ASC;"
+        }
+      ]
+    },
+    {
+      "title": "Latency (95th Percentile, ms)",
+      "type": "graph",
+      "datasource": "Supabase PostgreSQL",
+      "targets": [
+        {
+          "query": "SELECT metric_timestamp AS time, \n  AVG(metric_value) FILTER (WHERE metric_name = 'api_request_duration' AND (tags->>'endpoint' LIKE '%/api/search%' OR tags->>'endpoint' LIKE '%/api/discovery%')) AS p95_latency \nFROM metrics \nWHERE $__timeFilter(metric_timestamp) \nGROUP BY time \nORDER BY time ASC; \n-- NOTE: The above AVG is a placeholder. True P95 over time windows needs more complex SQL or Grafana features/transformations."
+        }
+      ]
+    },
+    {
+      "title": "Search Cache Hit Rate (%)",
+      "type": "graph", // Changed to graph for time series view
+      "datasource": "Supabase PostgreSQL",
+      "targets": [
+        {
+          "query": "SELECT metric_timestamp AS time, \n  (SUM(CASE WHEN tags->>'status' = 'hit' THEN metric_value ELSE 0 END) * 100.0 / SUM(metric_value)) AS value \nFROM metrics \nWHERE metric_name = 'cache_access_total' AND tags->>'cache_type' = 'search_results' \n  AND $__timeFilter(metric_timestamp) \nGROUP BY time \nORDER BY time ASC;"
+        }
+      ],
+      "description": "Cache Hit Rate for search results (discovery services)."
+    }
+  ]
+}

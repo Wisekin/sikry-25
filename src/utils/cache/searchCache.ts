@@ -1,5 +1,6 @@
 import { createClient } from "@/utils/supabase/server"
 import type { SearchResponse } from "@/types/search"
+import { MetricsCollector } from "@/lib/monitoring/metrics";
 
 interface SearchCacheKey {
   query: string
@@ -47,6 +48,7 @@ export async function getCachedSearchResults(
   const startTime = Date.now()
   const supabase = createClient()
   const cacheKey = generateCacheKey(query, sources, options)
+  const cacheType = 'search_results';
 
   try {
     const { data: cache } = await supabase
@@ -62,6 +64,7 @@ export async function getCachedSearchResults(
     if (cache && new Date(cache.expires_at) > new Date()) {
       metrics.hits++
       metrics.timings.push(responseTime)
+      MetricsCollector.recordCacheAccessMetric(cacheType, 'hit', responseTime);
       return { 
         data: cache.data as SearchResponse,
         metrics: calculateMetrics() 
@@ -70,6 +73,7 @@ export async function getCachedSearchResults(
 
     metrics.misses++
     metrics.timings.push(responseTime)
+    MetricsCollector.recordCacheAccessMetric(cacheType, 'miss', responseTime);
     return { 
       data: null,
       metrics: calculateMetrics() 
@@ -77,6 +81,8 @@ export async function getCachedSearchResults(
     
   } catch (error) {
     console.error('Cache retrieval error:', error)
+    // Potentially record a cache error metric here as well
+    // MetricsCollector.recordCacheAccessMetric(cacheType, 'error', responseTime);
     return {
       data: null,
       metrics: calculateMetrics()

@@ -1,6 +1,6 @@
 -- SQL migration for discovery tables
 
-CREATE TABLE discovery_requests (
+CREATE TABLE IF NOT EXISTS discovery_requests (
   id UUID PRIMARY KEY,
   company_id UUID REFERENCES companies(id),
   status VARCHAR(50),
