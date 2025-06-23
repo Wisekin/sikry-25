@@ -1,4 +1,4 @@
-import { createClient } from "@/utils/supabase/server"
+import { createClient } from "@/src/utils/supabase/server"
 
 export interface MetricData {
   name: string
@@ -113,5 +113,26 @@ export class MetricsCollector {
         unit: "percentage",
       }),
     ])
+  }
+
+  static async recordCacheAccessMetric(cacheType: string, status: 'hit' | 'miss', duration?: number) {
+    const metricsToRecord: MetricData[] = [
+      {
+        name: "cache_access_total",
+        value: 1,
+        tags: { cache_type: cacheType, status },
+      }
+    ];
+
+    if (duration !== undefined) {
+      metricsToRecord.push({
+        name: "cache_access_duration",
+        value: duration,
+        unit: "milliseconds",
+        tags: { cache_type: cacheType, status },
+      });
+    }
+    
+    await Promise.all(metricsToRecord.map((metric) => this.recordMetric(metric)));
   }
 }

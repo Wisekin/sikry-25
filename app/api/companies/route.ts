@@ -1,5 +1,31 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/utils/supabase/server"
+import redis from "@/lib/redis"
+import redisConfig from "@/lib/config/redis"
+import { z } from "zod"
+
+// Zod schema for creating a company
+const createCompanySchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  domain: z.string().optional().nullable(),
+  description: z.string().optional().nullable(),
+  industry: z.string().optional().nullable(),
+  location: z.string().optional().nullable(), // Corresponds to location_text
+  founded_year: z.number().int().positive().optional().nullable(),
+  employee_count: z.number().int().positive().optional().nullable(),
+  revenue_range: z.string().optional().nullable(),
+  technologies: z.array(z.string()).optional().nullable(), // Corresponds to technologies_list
+  source_url: z.string().url().optional().nullable(),
+  confidence_score: z.number().min(0).max(1).optional().nullable(),
+  company_size: z.string().optional().nullable(),
+  location_structured: z.object({}).passthrough().optional().nullable(), // Assuming object, refine if known structure
+  financials: z.object({}).passthrough().optional().nullable(),     // Assuming object, refine if known structure
+  technology_profile: z.object({}).passthrough().optional().nullable(),// Assuming object, refine if known structure
+  social: z.object({}).passthrough().optional().nullable(),          // Assuming object, refine if known structure
+  tags: z.array(z.string()).optional().nullable(), // Corresponds to tags_list
+  notes: z.string().optional().nullable(),       // Corresponds to internal_notes
+});
+
 
 export async function GET(request: Request) {
   try {
@@ -35,6 +61,20 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "User not part of any organization" }, { status: 403 })
     }
 
+    const organizationId = teamMember.organization_id
+
+    // Cache key generation
+    const cacheParams = { page, limit, sort, order, industry, location, search, size, organizationId }
+    const cacheKey = redis.generateKey("companies", cacheParams)
+
+    // Check cache
+    if (redis.isEnabled()) {
+      const cachedData = await redis.get(cacheKey)
+      if (cachedData) {
+        return NextResponse.json(cachedData)
+      }
+    }
+
     // Calculate pagination
     const from = (page - 1) * limit
     const to = from + limit - 1
@@ -43,7 +83,7 @@ export async function GET(request: Request) {
     let query = supabase
       .from("discovered_companies")
       .select("*", { count: "exact" })
-      .eq("organization_id", teamMember.organization_id)
+      .eq("organization_id", organizationId)
 
     // Apply filters using correct field names from schema
     if (industry) {
@@ -71,16 +111,23 @@ export async function GET(request: Request) {
       throw error
     }
 
-    return NextResponse.json({
+    const responseData = {
       data: data || [],
       success: true,
       meta: {
         total: count || 0,
         page,
         limit,
-        hasMore: count ? from + data.length < count : false,
+        hasMore: count ? from + (data?.length || 0) < count : false,
       },
-    })
+    }
+
+    // Store in cache
+    if (redis.isEnabled()) {
+      await redis.set(cacheKey, responseData, redisConfig.ttl.searchResults)
+    }
+
+    return NextResponse.json(responseData)
   } catch (error) {
     console.error("Companies API error:", error)
     return NextResponse.json(
@@ -96,8 +143,23 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json()
+    const requestBody = await request.json()
     const supabase = await createClient()
+
+    // Validate request body
+    const validationResult = createCompanySchema.safeParse(requestBody)
+    if (!validationResult.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Validation failed",
+          errors: validationResult.error.flatten().fieldErrors,
+        },
+        { status: 400 },
+      )
+    }
+    const body = validationResult.data;
+
 
     // Get current user's organization
     const {
@@ -119,46 +181,47 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "User not part of any organization" }, { status: 403 })
     }
 
-    // Validate required fields
-    if (!body.name) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Missing required fields",
-          errors: [{ code: "validation_error", message: "Name is required" }],
-        },
-        { status: 400 },
-      )
-    }
-
     // Create company using exact schema field names
     const companyData = {
       organization_id: teamMember.organization_id,
-      name: body.name,
-      domain: body.domain || null,
-      description: body.description || null,
-      industry: body.industry || null,
-      location_text: body.location || null, // Schema uses location_text
-      founded_year: body.founded_year || null,
-      employee_count: body.employee_count || null,
-      revenue_range: body.revenue_range || null,
-      technologies_list: body.technologies || [],
-      source_url: body.source_url || "manual_entry",
-      confidence_score: body.confidence_score || 0.5,
-      company_size: body.company_size || null, // Schema field name
-      location_structured: body.location_structured || null, // Schema field
-      financials_data: body.financials || null, // Schema field
-      technology_profile: body.technology_profile || null, // Schema field
-      social_media_profiles: body.social || null, // Schema field
-      company_status: "active", // Schema field
-      tags_list: body.tags || [], // Schema field
-      internal_notes: body.notes || null, // Schema field
+      name: body.name, // Already validated to be present by Zod
+      domain: body.domain,
+      description: body.description,
+      industry: body.industry,
+      location_text: body.location,
+      founded_year: body.founded_year,
+      employee_count: body.employee_count,
+      revenue_range: body.revenue_range,
+      technologies_list: body.technologies || [], // Default to empty array if null/undefined
+      source_url: body.source_url, // Zod handles optional, so it's either valid URL, undefined or null
+      confidence_score: body.confidence_score,
+      company_size: body.company_size,
+      location_structured: body.location_structured,
+      financials_data: body.financials,
+      technology_profile: body.technology_profile,
+      social_media_profiles: body.social,
+      company_status: "active", // Default status
+      tags_list: body.tags || [], // Default to empty array
+      internal_notes: body.notes,
     }
 
     const { data, error } = await supabase.from("discovered_companies").insert(companyData).select().single()
 
     if (error) {
       throw error
+    }
+
+    // Invalidate cache for companies list for this organization
+    if (redis.isEnabled()) {
+      // Construct a prefix that includes the organization ID if you want to be more specific,
+      // for now, clearing all "companies" prefixed cache.
+      // A more granular approach might involve a prefix like `companies_org:${teamMember.organization_id}`
+      // For simplicity here, we clear all company lists.
+      // Consider the implications: this clears lists for ALL users if not scoped by organization.
+      // For now, let's assume `generateKey` for GET uses a prefix that includes `organizationId` or similar.
+      // The current `generateCacheKey("companies", ...)` in GET implicitly handles org-scoping if organizationId is in cacheParams.
+      // So, clearing by "companies" prefix should be safe if keys are like "companies:<hash_of_params_including_orgId>"
+      await redis.clearByPrefix("companies")
     }
 
     return NextResponse.json({

@@ -2,9 +2,10 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { searchRateLimitMiddleware } from "./middleware/searchRateLimit";
+import { apiRateLimiter, authRateLimiter, scraperRateLimiter } from "./lib/security/rateLimiter";
 
-// Define auth-related routes
-const authRoutes = [
+// Define auth-related page routes (not API)
+const authPageRoutes = [
   '/login',
   '/signup',
   '/forgot-password'
@@ -52,13 +53,54 @@ export async function middleware(request: NextRequest) {
     },
   });
 
-  // Apply search rate limiting first for /api/search routes
-  if (request.nextUrl.pathname.startsWith('/api/search')) {
-    const rateLimitResponse = await searchRateLimitMiddleware(request);
-    if (rateLimitResponse.status === 429 || rateLimitResponse.status === 401) {
-      return rateLimitResponse;
-    } // Allow other responses from searchRateLimitMiddleware to pass through or be handled by main logic
+  const { pathname } = request.nextUrl;
+
+  // API Route Rate Limiting
+  if (pathname.startsWith('/api/')) {
+    let limiterResponse;
+    if (pathname.startsWith('/api/auth')) { // Assuming /api/auth/login, /api/auth/signup etc.
+      limiterResponse = await authRateLimiter.isAllowed(request);
+    } else if (pathname.startsWith('/api/scrapers') || pathname.startsWith('/api/search/scraper')) {
+      limiterResponse = await scraperRateLimiter.isAllowed(request);
+    } else if (pathname.startsWith('/api/search')) {
+      // DbRateLimiter is handled by searchRateLimitMiddleware
+      const searchRlResponse = await searchRateLimitMiddleware(request);
+      if (searchRlResponse.status === 429 || searchRlResponse.status === 401) {
+        return searchRlResponse;
+      }
+      // If searchRlResponse is not a rate limit error, it might be NextResponse.next() or a warning.
+      // We let it pass through, or if it's a simple NextResponse.next(), it will be the `response` variable.
+      if (searchRlResponse.headers.has("X-Rate-Limit-Warning") || searchRlResponse.headers.get("content-type")?.includes("application/json")) {
+         // if it's a json response (error or actual data from a GET in middleware) or has a warning, return it
+        if(searchRlResponse.status !== 200 && !searchRlResponse.headers.has("X-Rate-Limit-Warning")) return searchRlResponse;
+        // if it was a warning, let's update the response object to carry headers from searchRlResponse
+        searchRlResponse.headers.forEach((v, k) => response.headers.set(k, v));
+      }
+      // Continue to Supabase client and session logic if not blocked by search rate limiter
+    } else if (pathname.startsWith('/api/docs')) {
+      // No rate limiting for API docs
+    }
+    else {
+      limiterResponse = await apiRateLimiter.isAllowed(request);
+    }
+
+    if (limiterResponse && !limiterResponse.allowed) {
+      return NextResponse.json(
+        { message: "Too many requests", remaining: limiterResponse.remaining, reset: new Date(limiterResponse.resetTime) },
+        {
+          status: 429,
+          headers: {
+            'X-RateLimit-Remaining': limiterResponse.remaining.toString(),
+            'X-RateLimit-Reset': new Date(limiterResponse.resetTime).toISOString(),
+          },
+        }
+      );
+    }
+    // If rate limited by in-memory limiters, the response is returned.
+    // Otherwise, for /api routes, we continue to Supabase client init and session handling.
+    // This is important if API routes need auth.
   }
+
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -90,10 +132,10 @@ export async function middleware(request: NextRequest) {
   // This will update the cookies if the session is refreshed.
   const { data: { session } } = await supabase.auth.getSession();
 
-  const { pathname } = request.nextUrl;
+  // const { pathname } = request.nextUrl; // pathname is already defined above
 
-  // Check route types
-  const isAuthRoute = authRoutes.some(route => pathname.startsWith(route));
+  // Check route types for page routes (non-API)
+  const isAuthPageRoute = authPageRoutes.some(route => pathname.startsWith(route));
   const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));
   const isSystemRoute = systemRoutes.some(route => pathname.startsWith(route));
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route) || pathname === route); // Ensure exact match for /(dashboard)
@@ -104,15 +146,15 @@ export async function middleware(request: NextRequest) {
     return response; // Use the potentially modified response from Supabase client
   }
 
-  // If user is logged in and tries to access auth routes, redirect to dashboard
-  if (session && isAuthRoute) {
-    // console.log('Middleware: Session found, redirecting from auth route to /dashboard');
+  // If user is logged in and tries to access auth page routes, redirect to dashboard
+  if (session && isAuthPageRoute && !pathname.startsWith('/api')) {
+    // console.log('Middleware: Session found, redirecting from auth page route to /dashboard');
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
-  // If user is not logged in and tries to access a protected route, redirect to login
-  if (!session && isProtectedRoute) {
-    // console.log('Middleware: No session, protected route, redirecting to login for:', pathname);
+  // If user is not logged in and tries to access a protected page route, redirect to login
+  if (!session && isProtectedRoute && !pathname.startsWith('/api')) {
+    // console.log('Middleware: No session, protected page route, redirecting to login for:', pathname);
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('returnTo', pathname);
     return NextResponse.redirect(loginUrl);
@@ -133,7 +175,7 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Match all paths except static files and api routes
-    "/((?!_next/static|_next/image|favicon.ico|api).*)",
+    // Match all paths except static files and specific Next.js internals
+    "/((?!_next/static|_next/image|favicon.ico).*)",
   ],
 }
