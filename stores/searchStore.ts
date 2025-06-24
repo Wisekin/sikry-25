@@ -154,14 +154,14 @@ export const useSearchStore = create<SearchState & SearchActions>()(
       ...initialState,
 
       // Main Actions
-      setQuery: (query) => set((state) => ({ query, pagination: { ...state.pagination, currentPage: 1 }, discoveryStates: {} })), 
-      setFilters: (newFilters) => set((state) => ({ filters: { ...state.filters, ...newFilters }, pagination: { ...state.pagination, currentPage: 1 }, discoveryStates: {} })), 
+      setQuery: (query) => set((state) => ({ query, pagination: { ...state.pagination, currentPage: 1 } })), 
+      setFilters: (newFilters) => set((state) => ({ filters: { ...state.filters, ...newFilters }, pagination: { ...state.pagination, currentPage: 1 } })), 
       setViewMode: (viewMode) => set({ viewMode }),
-      clearResults: () => set((state) => ({ results: [], pagination: { ...state.pagination, totalCount: 0 }, cacheKey: null, discoveryStates: {} })),
-      setPageSize: (pageSize) => set((state) => ({ pagination: { ...state.pagination, pageSize, currentPage: 1 }, discoveryStates: {} })), 
+      clearResults: () => set((state) => ({ results: [], pagination: { ...state.pagination, totalCount: 0 }, cacheKey: null })),
+      setPageSize: (pageSize) => set((state) => ({ pagination: { ...state.pagination, pageSize, currentPage: 1 } })), 
       setCacheKey: (cacheKey) => set({ cacheKey }),
       clearCache: () => set({ cacheKey: null }),
-      clearFilters: () => set({ filters: initialState.filters, discoveryStates: {} }), // Resetting discoveryStates with filters seems reasonable
+      clearFilters: () => set({ filters: initialState.filters }), 
       reset: () => set({...initialState, discoveryStates: {}, preferences: initialState.preferences}), // Ensure preferences are also reset or handled
       setSelectedSources: (sources) => set({ selectedSources: sources }),
 
@@ -196,17 +196,27 @@ export const useSearchStore = create<SearchState & SearchActions>()(
         const { currentPage, pageSize } = pagination;
         const { forceRefresh = false, type = 'new-search' } = options;
 
+        console.log('[searchStore] fetchSearchResults called', { query, options, filters, pagination });
+
         if (!query) {
           return set((state) => ({ 
             results: [], 
             pagination: { ...state.pagination, totalCount: 0, currentPage: 1 }, 
-            isLoading: false, isFetchingPage: false, status: 'idle', 
-            discoveryStates: {} 
+            isLoading: false, isFetchingPage: false, status: 'idle',
+            // discoveryStates should persist if query is cleared
           }));
         }
         
         if (type === 'new-search') {
-          set({ isLoading: true, isFetchingPage: false, error: null, status: 'loading', discoveryStates: {} }); 
+          // Reset results and pagination for a new search, but keep discoveryStates
+          set((state) => ({ 
+            isLoading: true, 
+            isFetchingPage: false, 
+            error: null, 
+            status: 'loading', 
+            results: [], 
+            pagination: { ...state.pagination, currentPage: 1, totalCount: 0 } 
+          }));
         } else {
           set({ isFetchingPage: true, error: null, status: 'fetching' });
         }
@@ -224,8 +234,10 @@ export const useSearchStore = create<SearchState & SearchActions>()(
           // Serialize filters manually for more control
           if (filters.industry.length > 0) params.set('industry', filters.industry.join(','));
           if (filters.location) params.set('location', filters.location);
-          if (filters.employeeCount.min !== null) params.set('employeeMin', filters.employeeCount.min.toString());
-          if (filters.employeeCount.max !== null) params.set('employeeMax', filters.employeeCount.max.toString());
+          if (filters.employeeCount && typeof filters.employeeCount === 'object' && 'min' in filters.employeeCount && 'max' in filters.employeeCount) {
+            if (filters.employeeCount.min !== null) params.set('employeeMin', filters.employeeCount.min.toString());
+            if (filters.employeeCount.max !== null) params.set('employeeMax', filters.employeeCount.max.toString());
+          }
           if (filters.confidenceScore > 0) params.set('confidenceMin', filters.confidenceScore.toString());
           if (filters.hasEmail) params.set('hasEmail', 'true');
           if (filters.hasPhone) params.set('hasPhone', 'true');
@@ -238,9 +250,11 @@ export const useSearchStore = create<SearchState & SearchActions>()(
           const response = await fetch(`/api/search?${params.toString()}`);
           if (!response.ok) {
             const errorData = await response.json().catch(() => ({ message: 'Network response was not ok' }));
+            console.error('[searchStore] fetchSearchResults error:', errorData.message || 'Network response was not ok');
             throw new Error(errorData.message || 'Network response was not ok');
           }
           const data = await response.json();
+          console.log('[searchStore] fetchSearchResults response:', data);
 
           if (data.success) {
             set((state) => ({
@@ -252,12 +266,13 @@ export const useSearchStore = create<SearchState & SearchActions>()(
               error: null,
               status: 'success',
               searchTimestamp: Date.now(),
-              discoveryStates: type === 'new-search' ? {} : state.discoveryStates, 
+              // discoveryStates should persist and not be reset here
             }));
           } else {
             throw new Error(data.message || 'Failed to fetch results');
           }
         } catch (error) {
+          console.error('[searchStore] fetchSearchResults exception:', (error as Error).message);
           set({ error: (error as Error).message, isLoading: false, isFetchingPage: false, status: 'error' });
         }
       },
@@ -278,6 +293,7 @@ export const useSearchStore = create<SearchState & SearchActions>()(
 
       initiateWebsiteDiscovery: async (companyId, companyName, manualUrl) => {
         const { setDiscoveryStateForCompany, updateCompanyDataWithScrapedResults } = get();
+        console.log('[searchStore] initiateWebsiteDiscovery called', { companyId, companyName, manualUrl });
         
         // 1. Initial state: Discovering
         setDiscoveryStateForCompany(companyId, { status: 'discovering', progress: 20, error: undefined, website: manualUrl });
@@ -296,6 +312,7 @@ export const useSearchStore = create<SearchState & SearchActions>()(
 
             if (!discoveryResponse.ok) {
               const errorData = await discoveryResponse.json().catch(() => ({ message: 'Discovery request failed' }));
+              console.error('[searchStore] initiateWebsiteDiscovery discovery error:', errorData.message || 'Failed to discover website');
               throw new Error(errorData.message || 'Failed to discover website');
             }
             const discoveryResult = await discoveryResponse.json();
@@ -327,6 +344,7 @@ export const useSearchStore = create<SearchState & SearchActions>()(
 
           if (!scraperResponse.ok) {
             const errorData = await scraperResponse.json().catch(() => ({ message: 'Scraping request failed'}));
+            console.error('[searchStore] initiateWebsiteDiscovery scraping error:', errorData.message || 'Failed to scrape website');
             throw new Error(errorData.message || 'Failed to scrape website');
           }
           
@@ -348,6 +366,7 @@ export const useSearchStore = create<SearchState & SearchActions>()(
 
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred during discovery/scraping.';
+          console.error('[searchStore] initiateWebsiteDiscovery exception:', errorMessage);
           setDiscoveryStateForCompany(companyId, { status: 'error', error: errorMessage, progress: 0 });
         }
       },

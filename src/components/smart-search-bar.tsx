@@ -13,6 +13,8 @@ interface SmartSearchBarProps {
   placeholder?: string
   showSuggestions?: boolean
   className?: string
+  onSearch?: (query: string) => void
+  initialQuery?: string
 }
 
 import { useNaturalLanguage, EnhancedSearchResult } from '@/features/search-engine/hooks/useNaturalLanguage'
@@ -37,9 +39,11 @@ export function SmartSearchBar({
   placeholder = "Search for companies or topics...",
   showSuggestions = true,
   className = "",
+  onSearch,
+  initialQuery = ""
 }: SmartSearchBarProps) {
   const { search, getSuggestions, results, isLoading } = useNaturalLanguage()
-  const [query, setQuery] = useState("")
+  const [query, setQuery] = useState(initialQuery)
   const [suggestions, setSuggestions] = useState<SuggestionItem[]>([])
   const [isFocused, setIsFocused] = useState(false)
   const [selectedSources, setSelectedSources] = useState<string[]>(["google", "linkedin", "crunchbase"])
@@ -117,14 +121,19 @@ export function SmartSearchBar({
   }
 
   const handleSearch = useCallback(async () => {
-    if (!query.trim()) return
+    const searchQuery = query.trim()
+    if (!searchQuery) return
     
     try {
-      await search(query)
+      if (onSearch) {
+        onSearch(searchQuery)
+      } else {
+        await search(searchQuery)
+      }
     } catch (error) {
       console.error('Search error:', error)
     }
-  }, [query, search])
+  }, [query, search, onSearch])
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
