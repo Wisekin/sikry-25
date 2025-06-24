@@ -38,17 +38,10 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
   const { t } = useTranslation('searchPage');
   const { toast } = useToast(); // Initialize toast
 
-  const {
-    initiateWebsiteDiscovery,
-    discoveryStates,
-    preferences,
-    setDiscoveryStateForCompany, // For manually resetting to idle for retry if needed
-  } = useSearchStore(state => ({
-    initiateWebsiteDiscovery: state.initiateWebsiteDiscovery,
-    discoveryStates: state.discoveryStates,
-    preferences: state.preferences,
-    setDiscoveryStateForCompany: state.setDiscoveryStateForCompany,
-  }));
+  const initiateWebsiteDiscovery = useSearchStore(state => state.initiateWebsiteDiscovery);
+  const discoveryStates = useSearchStore(state => state.discoveryStates);
+  const preferences = useSearchStore(state => state.preferences);
+  const setDiscoveryStateForCompany = useSearchStore(state => state.setDiscoveryStateForCompany);
 
   const companyDiscoveryState: CompanyDiscoveryState | undefined = discoveryStates[company.id];
   const prevStatusRef = useRef<CompanyDiscoveryState['status'] | undefined>(undefined);

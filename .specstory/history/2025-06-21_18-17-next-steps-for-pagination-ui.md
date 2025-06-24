@@ -5724,3 +5724,15 @@ If you want, I can help you draft a message to Developer C and the team, or help
 
 ---
 
+_**User**_
+
+if you remember in our previous chat, you and I were suppose to be the team leader that  will anylize or review code and dispatch. Previously I showed you the code or developer A and now developer B. Since developer A abd B cannot commmunicate to each other, please have this in mind will give instruction
+
+---
+
+_**Assistant**_
+
+
+
+---
+

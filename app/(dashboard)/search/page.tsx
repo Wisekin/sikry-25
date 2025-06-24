@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useMemo, Suspense } from 'react';
+import { useEffect, useState, useMemo, Suspense, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useSearchStore } from '@/stores/searchStore';
@@ -17,6 +17,7 @@ import {
 
 import { MapView } from '@/src/components/map/MapView';
 import { ResultsGrid } from '@/src/components/search/ResultsGrid';
+import { SmartSearchBar } from '@/src/components/smart-search-bar';
 
 // Type for company data
 interface Company {
@@ -32,7 +33,15 @@ interface Company {
 }
 
 const industries = ['Technology', 'Finance', 'Healthcare', 'Retail', 'Education'];
-const companySizes = ['1-10', '11-50', '51-200', '201-500', '501-1000', '1001+'];
+const companySizes = [
+  { label: 'All Sizes', value: { min: null, max: null } },
+  { label: '1-10', value: { min: 1, max: 10 } },
+  { label: '11-50', value: { min: 11, max: 50 } },
+  { label: '51-200', value: { min: 51, max: 200 } },
+  { label: '201-500', value: { min: 201, max: 500 } },
+  { label: '501-1000', value: { min: 501, max: 1000 } },
+  { label: '1001+', value: { min: 1001, max: null } },
+];
 
 // Reusable debounce hook
 function useDebounce<T>(value: T, delay: number): T {
@@ -73,11 +82,12 @@ function SearchPageContent() {
   }, []);
 
   const debouncedQuery = useDebounce(query, 500);
+  const isInitialQueryProcessed = useRef(false); // Renamed and will adjust logic
   
   const [filters, setFilters] = useState({
     industry: 'All Industries',
     location: "",
-    employeeCount: "All Sizes",
+    employeeCount: { min: null, max: null },
     confidenceScore: 0,
     hasEmail: false,
     hasPhone: false,
@@ -87,12 +97,18 @@ function SearchPageContent() {
     setFilters({
       industry: 'All Industries',
       location: "",
-      employeeCount: "All Sizes",
+      employeeCount: { min: null, max: null },
       confidenceScore: 70,
       hasEmail: false,
       hasPhone: false,
     });
   };
+
+  // Handle search from SmartSearchBar
+  const handleSearch = useCallback((searchQuery: string) => {
+    setQuery(searchQuery);
+    fetchSearchResults({ forceRefresh: true });
+  }, [setQuery, fetchSearchResults]);
 
   // Apply filters to results
   const filteredCompanies = useMemo(() => {
@@ -102,8 +118,9 @@ function SearchPageContent() {
       // Location (use location_text if present, fallback to location)
       const locationValue = (company.location_text || company.location || '').toLowerCase();
       if (filters.location && !locationValue.includes(filters.location.toLowerCase())) return false;
-      // Employee Count (use employee_count string)
-      if (filters.employeeCount !== "All Sizes" && company.employee_count !== filters.employeeCount) return false;
+      // Employee Count
+      if (filters.employeeCount.min !== null && (company.employee_count === undefined || company.employee_count < filters.employeeCount.min)) return false;
+      if (filters.employeeCount.max !== null && (company.employee_count === undefined || company.employee_count > filters.employeeCount.max)) return false;
       // Confidence Score (ensure number)
       const score = typeof company.confidenceScore === 'number' ? company.confidenceScore : 0;
       if (filters.confidenceScore && score < filters.confidenceScore) return false;
@@ -117,11 +134,33 @@ function SearchPageContent() {
 
   // Trigger search when debounced query changes
   useEffect(() => {
-    if (debouncedQuery.trim()) {
-      setQuery(debouncedQuery.trim());
-      fetchSearchResults({ forceRefresh: true });
+    // If debouncedQuery is empty after trimming, do nothing further in this effect.
+    // The store's fetchSearchResults handles empty queries by returning early if it were called.
+    if (!debouncedQuery.trim()) {
+      // Optionally, if you want to clear results when query becomes empty:
+      // if (results.length > 0 || status !== 'idle') { useSearchStore.getState().clearResults(); }
+      return;
     }
-  }, [debouncedQuery, fetchSearchResults, setQuery]);
+
+    if (!isInitialQueryProcessed.current) {
+      // This is the first non-empty debouncedQuery, likely from persisted state.
+      isInitialQueryProcessed.current = true;
+      
+      // Prevent automatic fetch for this initial persisted query.
+      // console.log("Initial debounced query detected, preventing automatic fetch:", debouncedQuery);
+      return; 
+    }
+
+    // This part runs for subsequent non-empty debouncedQuery values,
+    // implying they resulted from user interaction changing the 'query' state.
+    // console.log("Debounced query changed by user, fetching:", debouncedQuery);
+    
+    // The setQuery(debouncedQuery.trim()) call that was here is redundant
+    // if the search input field (e.g., in SecondaryMenuBar) directly calls
+    // the store's setQuery action. Removing it to avoid potential issues.
+    fetchSearchResults({ forceRefresh: true });
+
+  }, [debouncedQuery, fetchSearchResults]); // Dependencies: only fetch when debouncedQuery or fetchSearchResults changes.
 
   const totalPages = pagination ? Math.ceil(pagination.totalCount / pagination.pageSize) : 0;
   const isLoading = status === 'loading' && results.length === 0;
@@ -154,7 +193,14 @@ function SearchPageContent() {
         {/* Export button removed, now in SecondaryMenuBar */}
       </div>
       
-      {/* Search and Source Filters are now in SecondaryMenuBar */}
+      {/* Search Bar */}
+      <div className="mt-6">
+        <SmartSearchBar 
+          onSearch={handleSearch}
+          initialQuery={query}
+          className="w-full max-w-3xl mx-auto"
+        />
+      </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Advanced Filters Sidebar */}
@@ -197,14 +243,13 @@ function SearchPageContent() {
               {/* Company Size */}
               <div>
                 <h3 className="text-sm font-semibold mb-2 flex items-center text-gray-700"><Users className="w-4 h-4 mr-2" /> {t('filters.companySize')}</h3>
-                <Select value={filters.employeeCount} onValueChange={value => setFilters(prev => ({ ...prev, employeeCount: value }))}>
+                <Select value={JSON.stringify(filters.employeeCount)} onValueChange={value => setFilters(prev => ({ ...prev, employeeCount: JSON.parse(value) }))}>
                   <SelectTrigger className="w-full bg-gray-50 border-gray-200">
                     <SelectValue placeholder={t('filters.companySize', 'Select company size')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="All Sizes">{t('filters.allSizes')}</SelectItem>
                     {companySizes.map(size => (
-                      <SelectItem key={size} value={size}>{size} {t('company.employees', 'employees')}</SelectItem>
+                      <SelectItem key={size.label} value={JSON.stringify(size.value)}>{size.label} {size.label !== 'All Sizes' ? t('company.employees', 'employees') : ''}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>

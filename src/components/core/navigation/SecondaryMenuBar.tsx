@@ -31,12 +31,21 @@ export function SecondaryMenuBar() {
   // Handlers for /search
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (query.trim()) {
-      setQuery(query.trim());
-      fetchSearchResults({ forceRefresh: true });
+    const trimmedQuery = query.trim();
+    if (trimmedQuery) {
+      // Update the query in the store and trigger search
+      setQuery(trimmedQuery);
+      // Use a small timeout to ensure the query is updated in the store before fetching
+      setTimeout(() => {
+        fetchSearchResults({ forceRefresh: true, type: 'new-search' });
+      }, 0);
     }
   };
-  const handleClear = () => setQuery("");
+  const handleClear = () => {
+    setQuery("");
+    // Clear results when search is cleared
+    fetchSearchResults({ forceRefresh: true, type: 'new-search' });
+  };
   const toggleSource = (source: string) => {
     setSelectedSources(
       selectedSources.includes(source)
@@ -321,14 +330,32 @@ export function SecondaryMenuBar() {
                 <Input
                   value={query}
                   onChange={e => setQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleSearch(e);
+                    }
+                  }}
                   placeholder="Search by company name, keywords, industry, location..."
                   className="h-9 text-sm pr-8 min-w-[220px] md:min-w-[320px] lg:min-w-[400px]"
                 />
                 {query && (
-                  <button type="button" onClick={handleClear} className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                  <button 
+                    type="button" 
+                    onClick={handleClear} 
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    aria-label="Clear search"
+                  >
                     <X className="h-4 w-4" />
                   </button>
                 )}
+                <button 
+                  type="submit" 
+                  className="absolute right-8 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  aria-label="Search"
+                >
+                  <Search className="h-4 w-4" />
+                </button>
               </div>
             </form>
             <div className="flex items-center gap-1 ml-2">

@@ -12,8 +12,10 @@ export async function POST(request: Request) {
   try {
     const body = await request.json()
     const { query, sources = ["google", "linkedin", "crunchbase"] as ExternalSource[], limit = 20, language } = body
+    console.log('[API /search/natural] POST called', { query, sources, limit, language });
 
     if (!query) {
+      console.error('[API /search/natural] Missing query');
       return NextResponse.json(
         {
           success: false,
@@ -34,6 +36,7 @@ export async function POST(request: Request) {
     } = await supabase.auth.getUser()
 
     if (userError || !user) {
+      console.error('[API /search/natural] Unauthorized', { userError });
       return NextResponse.json(
         {
           success: false,
@@ -51,6 +54,7 @@ export async function POST(request: Request) {
       .single()
 
     if (!teamMember) {
+      console.error('[API /search/natural] User not part of any organization', { userId: user.id });
       return NextResponse.json(
         {
           success: false,
@@ -65,6 +69,7 @@ export async function POST(request: Request) {
     const { data: cachedData, metrics: cacheMetrics } = await getCachedSearchResults(query, sources, { limit, organization: teamMember?.organization_id });
     
     if (cachedData) {
+      console.log('[API /search/natural] Cache HIT', { query, org: teamMember.organization_id });
       // Log cache hit in search history
       await supabase.from("search_history").insert({
         organization_id: teamMember.organization_id,
@@ -86,6 +91,8 @@ export async function POST(request: Request) {
           cacheMetrics,
         },
       })
+    } else {
+      console.log('[API /search/natural] Cache MISS', { query, org: teamMember.organization_id });
     }
 
     // Parse the natural language query
@@ -178,6 +185,7 @@ export async function POST(request: Request) {
     const { data: dbResults, error, count } = await dbQuery
 
     if (error) {
+      console.error('[API /search/natural] DB error', error);
       throw error
     }
 
@@ -294,9 +302,12 @@ export async function POST(request: Request) {
     // Cache for future use
     await cacheSearchResults(query, sources, response, { limit, organization: teamMember?.organization_id });
 
+    // Log completion
+    console.log('[API /search/natural] Search completed', { query, org: teamMember.organization_id, durationMs: Date.now() - startTime });
+
     return NextResponse.json(response)
   } catch (error) {
-    console.error("Natural language search API error:", error)
+    console.error('[API /search/natural] Exception', error);
     return NextResponse.json(
       {
         success: false,

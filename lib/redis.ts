@@ -133,13 +133,14 @@ export async function delCache(key: string): Promise<boolean> {
 }
 
 // Generate a cache key from a prefix and parameters
-export function generateCacheKey(prefix: string, params: Record<string, any>): string {
+export function generateCacheKey(prefix: string, params: Record<string, any> = {}): string {
   // Sort keys to ensure consistent key generation
-  const sortedParams = Object.keys(params)
+  const safeParams = params || {};
+  const sortedParams = Object.keys(safeParams)
     .sort()
     .reduce((acc, key) => {
-      if (params[key] !== undefined && params[key] !== null && params[key] !== '') {
-        acc[key] = params[key];
+      if (safeParams[key] !== undefined && safeParams[key] !== null && safeParams[key] !== '') {
+        acc[key] = safeParams[key];
       }
       return acc;
     }, {} as Record<string, any>);
@@ -220,7 +221,7 @@ export default {
   generateKey: generateCacheKey,
   clearByPrefix: clearCacheByPrefix, // Added this
   close: closeRedis,
-  clearSearchCache, // Kept for specific search cache clearing if needed elsewhere
+  //clearSearchCache, 
   isConnected: () => isConnected,
   isEnabled: () => redisConfig.enabled,
 };
