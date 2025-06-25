@@ -73,3 +73,47 @@ Discover/Scrape Button	Basic present	Phase 1, CompanyCard
 Scraper Config Modal	Not present	Phase 2, ScraperConfigEditor
 Progress Indicator	Not present	Phase 2, ScrapingProgress
 Data Preview/Enrichment	Not present	Phase 3, DataPreview, Enrich
+
+
+
+---------
+Where Does the User Write What They Want to Scrape?
+The user defines what they want to scrape in the “Scraper Configuration Editor” (the dialog/modal that appears after discovery, or when you click “Advanced” or “Scrape” on a company card).
+This is the place where the user can:
+Select which fields or data types to extract (emails, phones, social links, etc.)
+Optionally, write custom selectors, patterns, or rules (if your UI supports it)
+Review a preview of the site and see what will be scraped
+The “Discover with this Configuration” button is what triggers the actual scraping request, using the configuration the user just set.
+
+
+What Happens When You Click “Discover with this Configuration”?
+The frontend sends a POST request to /api/search/scraper/execute (or similar), including:
+The company ID or URL
+The user’s scraping configuration (fields, selectors, etc.)
+The backend receives the request and should:
+Validate the configuration
+Launch the scraping process (using your scraper engine)
+Return the results or an error
+The frontend updates the UI:
+Shows progress (ScrapingProgress)
+Shows results or an error
+
+Why Are You Seeing “Scraping request failed”?
+This error means the POST request to /api/search/scraper/execute failed.
+Possible reasons:
+The backend endpoint /api/search/scraper/execute is not implemented, not reachable, or returns an error.
+The request payload (configuration) is invalid or missing required fields.
+The scraper engine is not set up or is failing internally.
+There’s a bug in how the frontend sends the config.
+
+
+Summary Table
+Step	What Happens	Where User Interacts
+Discovery	Finds website for company	Discovery modal/dialog
+Scraper Config Editor	User defines what to scrape	ScraperConfigEditor in modal
+Click “Discover with Config”	Sends config to backend, starts scraping	Button in modal
+Scraping	Backend scrapes, returns results or error	Progress bar, then results
+What To Do Next
+Check if /api/search/scraper/execute is implemented and working.
+Check the request/response in the browser dev tools.
+If you want, I can help you debug the backend endpoint or review the request payload.
