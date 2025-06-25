@@ -153,5 +153,6 @@
   "noResults.map": "No results to show on map",
   "company.na": "N/A",
   "discovery.customizeScraping": "Customize Scraping",
-  "tooltip.startDiscovery": "Start automatic website discovery and data scraping."
+  "tooltip.startDiscovery": "Start automatic website discovery and data scraping.",
+  "tooltip.customizeScraping": "Manually set website URL or customize scraping configuration."
 }
