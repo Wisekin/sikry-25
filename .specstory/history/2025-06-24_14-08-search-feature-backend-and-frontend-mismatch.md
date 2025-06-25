@@ -1401,9 +1401,353 @@ _**Assistant**_
 
 ---
 
+Read file: app/api/search/route.ts
+
+---
+
+```diff
+    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '10', 10)));
+    const forceRefresh = searchParams.get('refresh') === 'true';
++   const sourcesParam = searchParams.get('sources') || 'database,free_data';
++   const selectedSources = sourcesParam.split(',').filter(Boolean);
++ 
++   console.log('[API Search] Sources selected:', selectedSources);
+  
+    // --- Start: Rate Limiting and Auth ---
+```
+
+```diff
+      }
+      
+-     // Perform searches on all sources for the CURRENT page
+-     const [supabaseResult, companiesHouseResponse, wikidataResponse] = await Promise.all([
+-       performSearch(query, scope, organizationId, { page, limit }),
+-       companiesHouseAdapter.search(parsedQuery, { limit, page }),
+-       wikidataAdapter.search(parsedQuery, { limit, page })
+-     ]);
+- 
+-     if (!supabaseResult.success) {
++     // Initialize results arrays
++     let supabaseResult = { success: true, data: [], metadata: { totalCount: 0 } };
++     let companiesHouseResponse = { results: [], totalCount: 0 };
++     let wikidataResponse = { results: [], totalCount: 0 };
++ 
++     // Perform searches based on selected sources
++     const searchPromises = [];
++ 
++     // Query database if selected
++     if (selectedSources.includes('database')) {
++       console.log('[API Search] Querying database...');
++       searchPromises.push(performSearch(query, scope, organizationId, { page, limit }));
++     }
++ 
++     // Query external sources if free_data is selected
++     if (selectedSources.includes('free_data')) {
++       console.log('[API Search] Querying external sources...');
++       searchPromises.push(
++         companiesHouseAdapter.search(parsedQuery, { limit, page }),
++         wikidataAdapter.search(parsedQuery, { limit, page })
++       );
++     }
++ 
++     // Wait for all selected searches to complete
++     const searchResults = await Promise.all(searchPromises);
++ 
++     // Process results based on what was queried
++     let resultIndex = 0;
++     
++     if (selectedSources.includes('database')) {
++       supabaseResult = searchResults[resultIndex++];
++       if (!supabaseResult.success) {
+          console.error("Search failed due to database error:", supabaseResult.error);
+          return NextResponse.json({ success: false, message: 'An error occurred during the database search.' }, { status: 500 });
++       }
++     }
++ 
++     if (selectedSources.includes('free_data')) {
++       companiesHouseResponse = searchResults[resultIndex++];
++       wikidataResponse = searchResults[resultIndex++];
+      }
+  
+```
+
+```diff
+      const { mergedResults, mergeMetadata } = await mergeAndRankResults(allResults, parsedQuery);
+  
+-     // Calculate total count from all sources
++     // Calculate total count from selected sources
+      const supabaseTotal = supabaseResult.metadata?.totalCount || 0;
+      const companiesHouseTotal = companiesHouseResponse.totalCount || 0;
+```
+
+```diff
+      const responseMetadata = {
+        query, scope, page, limit, totalCount, pageCount, searchCacheKey, cached: false,
++       sources: selectedSources,
+        mergeDetails: {
+          ...mergeMetadata,
+```
+
+---
+
+```diff
+      
+      // Initialize results arrays
+-     let supabaseResult = { success: true, data: [], metadata: { totalCount: 0 } };
+-     let companiesHouseResponse = { results: [], totalCount: 0 };
+-     let wikidataResponse = { results: [], totalCount: 0 };
++     let supabaseResult: { success: boolean; data: SearchResult[] | null; error?: { code: string; message: string }; metadata?: Record<string, any> } = { success: true, data: [], metadata: { totalCount: 0 } };
++     let companiesHouseResponse: { results: any[]; totalCount: number } = { results: [], totalCount: 0 };
++     let wikidataResponse: { results: any[]; totalCount: number } = { results: [], totalCount: 0 };
+  
+      // Perform searches based on selected sources
+-     const searchPromises = [];
++     const searchPromises: Promise<any>[] = [];
+  
+      // Query database if selected
+```
+
+---
+
+Read file: lib/redis.ts
+
+---
+
+```diff
+  import { randomUUID } from 'crypto';
+  import { Company } from '@/src/types/company';
+- import { getCache, setCache, generateCacheKey, clearSearchCache } from '@/lib/redis';
++ import { getCache, setCache, generateCacheKey } from '@/lib/redis';
+  
+  import redisConfig from '@/lib/config/redis';
+```
+
+```diff
+    filters?: Record<string, any>;
+  }): string {
+-   return generateCacheKey({
++   return generateCacheKey('search', {
+      q: params.query,
+      s: params.scope,
+```
+
+---
+
+Now let's update the UI to show the new source options:
 
 
 ---
+
+Read file: src/components/core/navigation/SecondaryMenuBar.tsx
+
+---
+
+<details>
+            <summary>Grep search for "toggleSource" • **4** files</summary>
+        
+| File | Line | Match |
+|------|------|-------|
+| `file:///Users/salomonks/Documents/sikry-25/src/components/smart-search-bar.tsx` | L143 | `const toggleSource = (sourceId: string) => {` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/EnhancedSearchBar.tsx` | L177 | `const toggleSource = (sourceId: string) => {` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/EnhancedSearchBar.tsx` | L342 | `onClick={() => toggleSource(id)}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/core/navigation/SecondaryMenuBar.tsx` | L48 | `const toggleSource = (source: string) => {` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/core/navigation/SecondaryMenuBar.tsx` | L367 | `onClick={() => toggleSource(source)}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/SmartSearchBar.tsx` | L74 | `const toggleSource = (sourceId: string) => {` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/SmartSearchBar.tsx` | L162 | `onClick={() => toggleSource(source.id)}` |
+
+</details>
+
+---
+
+Read file: src/components/core/navigation/SecondaryMenuBar.tsx
+
+---
+
+```diff
+              </form>
+              <div className="flex items-center gap-1 ml-2">
+-               {["google", "linkedin", "crunchbase"].map(source => (
++               {[
++                 { id: "database", label: "Database", icon: Database },
++                 { id: "free_data", label: "Free Data", icon: Globe }
++               ].map(source => (
+                  <Button
+-                   key={source}
++                   key={source.id}
+                    size="sm"
+-                   variant={selectedSources.includes(source) ? "default" : "outline"}
++                   variant={selectedSources.includes(source.id) ? "default" : "outline"}
+                    className={`px-2 py-1 text-xs ${hoverClass}`}
+-                   onClick={() => toggleSource(source)}
++                   onClick={() => toggleSource(source.id)}
+                  >
+-                   {source === "google" && <Globe className="w-4 h-4 mr-1" />}
+-                   {source === "linkedin" && <Linkedin className="w-4 h-4 mr-1" />}
+-                   {source === "crunchbase" && <Database className="w-4 h-4 mr-1" />}
+-                   <span className="capitalize">{source}</span>
++                   <source.icon className="w-4 h-4 mr-1" />
++                   <span>{source.label}</span>
+                  </Button>
+                ))}
+```
+
+---
+
+Perfect! Now let's test the implementation. Here's a summary of what we've implemented:
+
+## **✅ Implementation Complete**
+
+### **Step 1: Updated Store**
+- Changed `selectedSources` from `["google", "linkedin", "crunchbase"]` to `["database", "free_data"]`
+- Default selection now includes "Database" so users get internal results by default
+
+### **Step 2: Updated Backend**
+- Modified `/api/search` to parse the `sources` parameter
+- Added conditional logic:
+  - If `"database"` is selected → query Supabase only
+  - If `"free_data"` is selected → query external APIs only  
+  - If both → query both and merge results
+- Added logging to track which sources are being queried
+
+### **Step 3: Updated UI**
+- Updated the source selector in `SecondaryMenuBar` to show:
+  - **"Database"** button (with Database icon) - for internal data
+  - **"Free Data"** button (with Globe icon) - for external sources
+- Users can toggle these independently
+
+---
+
+## **How It Works Now**
+
+1. **Default Behavior**: Both "Database" and "Free Data" are selected by default
+2. **User Control**: Users can uncheck either source to limit results
+3. **Backend Logic**: The API only queries the selected sources
+4. **Results**: Combined results from selected sources are returned
+
+---
+
+## **Test It**
+
+1. **Go to your search page**
+2. **Type a search query** (e.g., "AI companies")
+3. **Check the browser console** - you should see logs like:
+   ```
+   [API Search] Sources selected: ['database', 'free_data']
+   [API Search] Querying database...
+   [API Search] Querying external sources...
+   ```
+4. **Try toggling the source buttons** to see different results
+
+**The implementation is now complete and ready for testing!** 🎉
+
+Let me know if you see any issues or want to make any adjustments to the behavior.
+
+---
+
+_**User**_
+
+great thank you. now on the company cards, I see the button that show the dial box and the site preview. And I want to improve the company card design and the dialbox too. can you show me where the respective files are located so that I can copy their content and give to a my web designer enginieer to improve the design? 
+
+---
+
+_**Assistant**_
+
+Perfect! Here are the key files for the company card design and dialogs/modals:
+
+## **Company Card Files**
+
+### **Main Company Card Component**
+- **File**: `src/components/search/CompanyCard.tsx`
+- **Purpose**: The main company card that displays company info, discovery button, and scraping progress
+- **Contains**: Card layout, discovery states, enriched data display, progress indicators
+
+### **Discovery Button Component**
+- **File**: `src/components/search/DiscoveryButton.tsx`
+- **Purpose**: The button that triggers discovery/scraping
+- **Contains**: Button styling and states
+
+### **Scraping Progress Component**
+- **File**: `src/components/search/ScrapingProgress.tsx`
+- **Purpose**: Shows progress during discovery/scraping
+- **Contains**: Progress bar and status text
+
+---
+
+## **Dialog/Modal Files**
+
+### **Discovery Modal**
+- **File**: `src/components/search/DiscoveryModal.tsx`
+- **Purpose**: Modal for discovery configuration and results
+- **Contains**: Modal layout, configuration options, results display
+
+### **Scraper Config Editor**
+- **File**: `src/components/search/ScraperConfigEditor.tsx`
+- **Purpose**: Editor for customizing scraping configuration
+- **Contains**: Form fields for scraping options
+
+### **Data Preview Component**
+- **File**: `src/components/search/DataPreview.tsx`
+- **Purpose**: Preview of scraped/enriched data
+- **Contains**: Data display layout
+
+### **Enriched Data Display**
+- **File**: `src/components/search/EnrichedDataDisplay.tsx`
+- **Purpose**: Display enriched company data
+- **Contains**: Enhanced data visualization
+
+---
+
+## **Additional UI Components**
+
+### **Website Discovery**
+- **File**: `src/components/search/WebsiteDiscovery.tsx`
+- **Purpose**: Website discovery interface
+- **Contains**: Discovery results and options
+
+### **Discovery Results**
+- **File**: `src/components/search/DiscoveryResults.tsx`
+- **Purpose**: Display discovery results
+- **Contains**: Results layout and filtering
+
+### **Confidence Indicator**
+- **File**: `src/components/search/ConfidenceIndicator.tsx`
+- **Purpose**: Shows confidence scores for data
+- **Contains**: Confidence visualization
+
+---
+
+## **Key Design Areas to Focus On**
+
+1. **CompanyCard.tsx** - Main card layout and responsive design
+2. **DiscoveryModal.tsx** - Modal dialog design and user experience
+3. **ScrapingProgress.tsx** - Progress indicators and animations
+4. **DataPreview.tsx** - Data presentation and visualization
+
+---
+
+## **How to Share with Your Designer**
+
+1. **Copy the content** of these files
+2. **Share the file structure** so they understand the component hierarchy
+3. **Highlight the key areas** that need design improvements
+4. **Note the current styling** (Tailwind CSS classes) so they can enhance them
+
+**The most important files to start with are:**
+- `CompanyCard.tsx` (main card design)
+- `DiscoveryModal.tsx` (dialog design)
+- `ScrapingProgress.tsx` (progress indicators)
+
+Would you like me to show you the content of any specific file, or do you need help identifying which components are currently being used vs. which ones are available but not yet integrated?
+
+---
+
+_**User**_
+
+can you give intruction for better and beautiful, enterprise or eye appealing desgin impelementation for they key areas and my designer will try to work on that?
+
+---
+
+_**Assistant**_
 
 
 
