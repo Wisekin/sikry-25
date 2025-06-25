@@ -321,10 +321,10 @@ export function DiscoveryModal({
       <DialogContent className={
         currentView === 'scraperConfig'
           // START: Increased max-width for scraper config view
-          ? "sm:max-w-6xl md:max-w-7xl max-h-[90vh] rounded-lg" // Adjust these as needed, e.g., "lg:max-w-7xl xl:max-w-8xl"
+          ? "sm:max-w-6xl md:max-w-6xl max-h-[90vh] rounded-lg" // Adjust these as needed, e.g., "lg:max-w-7xl xl:max-w-8xl"
           // END: Increased max-width for scraper config view
           // START: Increased max-width for URL input view
-          : "sm:max-w-4xl md:max-w-5xl max-h-[90vh] rounded-lg" // Adjust these as needed
+          : "sm:max-w-4xl md:max-w-7xl max-h-[90vh] rounded-lg" // Adjust these as needed
           // END: Increased max-width for URL input view
       }>
         {currentView === 'urlInput' && renderUrlInputView()}
