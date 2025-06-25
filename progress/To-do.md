@@ -53,3 +53,22 @@ FOR DEVELOPER A:
 . Missing Piece
 The core state management logic for discovery/scraping (actions, state, and wiring in the store) is missing from the codebase. The frontend and tests assume it exists, but it is not implemented in stores/searchStore.ts or any other file found so far.
 Path: stores/searchStore.ts
+
+
+-keep both AI triggered scraper Approach
+-Leave the old scraper component to support advanced/manual scraping for power users (e.g., custom selectors, scheduled scrapes, bulk jobs),upport advanced/manual scraping for power users (e.g., custom selectors, scheduled scrapes, bulk jobs), an admin dashboard for managing all scrapers, monitoring jobs, or debugging scraping issues.
+
+-----
+Old Approach: Users could create/manage custom scrapers, configure selectors, and run them manually.
+New Approach: Scraping is triggered directly from the search/company card UI, often with auto-generated or AI-assisted config, and is more “one-click” for the user.
+
+
+Further automating the scraping logic
+Improving the UI/UX for the one-click flow
+Integrating more AI/auto-detection
+Or anything else in this new approach
+
+
+CompanyCard.tsx (main card design)
+DiscoveryModal.tsx (dialog design)
+ScrapingProgress.tsx (progress indicators) -- to beautify

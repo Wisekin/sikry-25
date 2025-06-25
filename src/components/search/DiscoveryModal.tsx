@@ -26,6 +26,12 @@ interface DiscoveryModalProps {
   onConfirmManualUrl?: (companyId: string, manualUrl: string, config?: ScraperConfig) => Promise<void>;
 }
 
+function normalizeUrl(url: string): string {
+  if (!url) return '';
+  if (/^https?:\/\//i.test(url)) return url;
+  return `https://${url}`;
+}
+
 export function DiscoveryModal({
   isOpen,
   onClose,
@@ -48,7 +54,10 @@ export function DiscoveryModal({
 
   useEffect(() => {
     if (isOpen) {
-      const urlToUse = companyDiscoveryState?.website || initialUrl || '';
+      let urlToUse = companyDiscoveryState?.website || initialUrl || '';
+      if (urlToUse) {
+        urlToUse = normalizeUrl(urlToUse);
+      }
       setManualUrl(urlToUse);
       if (isValidHttpUrl(urlToUse)) {
         setPreviewUrl(urlToUse);

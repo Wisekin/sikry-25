@@ -1749,6 +1749,614 @@ can you give intruction for better and beautiful, enterprise or eye appealing de
 
 _**Assistant**_
 
+# **Design Enhancement Instructions for Company Cards & Discovery UI**
+
+## **🎨 Overall Design Philosophy**
+**Goal**: Create a modern, enterprise-grade interface that feels premium, intuitive, and visually appealing while maintaining excellent UX.
+
+---
+
+## **🏢 Company Card Design (`CompanyCard.tsx`)**
+
+### **Visual Hierarchy & Layout**
+- **Card Structure**: Use subtle shadows, rounded corners (12-16px), and clean borders
+- **Spacing**: Generous padding (20-24px) with consistent 8px grid system
+- **Typography**: Clear hierarchy with proper font weights and sizes
+- **Color Scheme**: Professional blues, grays, and accent colors
+
+### **Key Improvements**
+1. **Header Section**:
+   - Larger company logo (64x64px) with fallback avatar
+   - Company name in bold, prominent typography
+   - Confidence score as a prominent badge with color coding
+   - Website link with hover effects
+
+2. **Content Section**:
+   - Clean, organized information layout
+   - Icons for each data point (location, employees, industry)
+   - Enriched data indicators (sparkle icons, color highlights)
+   - Better spacing between sections
+
+3. **Discovery Section**:
+   - Prominent, well-designed discovery button
+   - Clear progress indicators with animations
+   - Error states with helpful messaging
+   - Success states with celebration elements
+
+### **Interactive Elements**
+- **Hover Effects**: Subtle card elevation, color transitions
+- **Loading States**: Skeleton loaders, smooth transitions
+- **Status Indicators**: Color-coded badges for different states
+- **Responsive Design**: Mobile-first approach with breakpoints
+
+---
+
+## **�� Discovery Modal (`DiscoveryModal.tsx`)**
+
+### **Modal Design**
+- **Size**: Large modal (800-1000px width) for desktop, full-screen for mobile
+- **Backdrop**: Subtle blur effect with dark overlay
+- **Animation**: Smooth slide-in from bottom with fade
+- **Close Button**: Prominent X button in top-right corner
+
+### **Content Structure**
+1. **Header**:
+   - Company name and logo
+   - Clear title: "Website Discovery & Scraping"
+   - Progress indicator showing current step
+
+2. **Configuration Section**:
+   - Clean form layout with proper spacing
+   - Toggle switches for different data types
+   - Dropdown menus for advanced options
+   - Help text and tooltips
+
+3. **Preview Section**:
+   - Real-time preview of what will be scraped
+   - Sample data structure
+   - Confidence indicators
+
+4. **Action Buttons**:
+   - Primary "Start Discovery" button
+   - Secondary "Cancel" button
+   - Clear visual hierarchy
+
+### **User Experience**
+- **Step-by-step flow**: Clear progression through discovery process
+- **Real-time feedback**: Live updates as configuration changes
+- **Error handling**: Inline validation and helpful error messages
+- **Success states**: Celebration animations and clear next steps
+
+---
+
+## **📊 Progress Indicators (`ScrapingProgress.tsx`)**
+
+### **Progress Bar Design**
+- **Style**: Modern, rounded progress bars with gradients
+- **Animation**: Smooth progress updates with easing
+- **Colors**: Green for success, blue for progress, red for errors
+- **Text**: Clear status messages with icons
+
+### **States to Design**
+1. **Idle**: Subtle placeholder state
+2. **Discovering**: Animated search icon with progress
+3. **Scraping**: Data extraction animation
+4. **Completed**: Success checkmark with celebration
+5. **Error**: Error icon with retry option
+
+### **Micro-interactions**
+- **Loading animations**: Spinning icons, pulsing effects
+- **Progress updates**: Smooth transitions between states
+- **Completion**: Confetti or success animations
+- **Error recovery**: Clear retry mechanisms
+
+---
+
+## **🎯 Data Preview (`DataPreview.tsx`)**
+
+### **Data Display**
+- **Layout**: Clean, organized data presentation
+- **Typography**: Monospace font for data, regular font for labels
+- **Grouping**: Logical grouping of related data
+- **Visual hierarchy**: Important data highlighted
+
+### **Interactive Elements**
+- **Expandable sections**: Collapsible data groups
+- **Copy buttons**: Easy data copying with feedback
+- **Export options**: Download data in various formats
+- **Edit capabilities**: Inline editing where appropriate
+
+---
+
+## **�� Color Palette & Styling**
+
+### **Primary Colors**
+- **Primary Blue**: `#1B1F3B` (your existing brand color)
+- **Secondary Blue**: `#2A3050` (hover states)
+- **Accent Blue**: `#3C4568` (active states)
+
+### **Status Colors**
+- **Success**: `#10B981` (green)
+- **Warning**: `#F59E0B` (amber)
+- **Error**: `#EF4444` (red)
+- **Info**: `#3B82F6` (blue)
+
+### **Neutral Colors**
+- **Background**: `#F9FAFB` (light gray)
+- **Card Background**: `#FFFFFF` (white)
+- **Border**: `#E5E7EB` (light gray)
+- **Text**: `#111827` (dark gray)
+
+---
+
+## **📱 Responsive Design**
+
+### **Breakpoints**
+- **Mobile**: 320px - 768px
+- **Tablet**: 768px - 1024px
+- **Desktop**: 1024px+
+
+### **Mobile Considerations**
+- **Touch targets**: Minimum 44px for buttons
+- **Swipe gestures**: Support for card swiping
+- **Full-screen modals**: Better mobile experience
+- **Simplified layouts**: Streamlined for small screens
+
+---
+
+## **✨ Animation & Micro-interactions**
+
+### **Transitions**
+- **Duration**: 200-300ms for most interactions
+- **Easing**: `cubic-bezier(0.4, 0, 0.2, 1)` for smooth feel
+- **Stagger**: Sequential animations for multiple elements
+
+### **Hover Effects**
+- **Cards**: Subtle elevation and color changes
+- **Buttons**: Background color transitions
+- **Links**: Underline animations
+- **Icons**: Scale and color changes
+
+---
+
+## **🔧 Technical Implementation Notes**
+
+### **CSS Framework**
+- **Tailwind CSS**: Use utility classes for consistency
+- **Custom CSS**: For complex animations and unique styles
+- **CSS Variables**: For theme consistency
+
+### **Component Structure**
+- **Atomic Design**: Build from atoms to organisms
+- **Reusable Components**: Create shared design system
+- **Props Interface**: Clear TypeScript interfaces
+
+### **Performance**
+- **Lazy Loading**: Load components as needed
+- **Optimized Images**: Use next/image for logos
+- **Smooth Animations**: Use CSS transforms and opacity
+
+---
+
+## **📋 Design Checklist**
+
+### **Company Card**
+- [ ] Clean, modern card design with proper shadows
+- [ ] Responsive layout for all screen sizes
+- [ ] Clear visual hierarchy for information
+- [ ] Smooth hover and interaction effects
+- [ ] Proper loading and error states
+- [ ] Accessibility considerations (ARIA labels, keyboard navigation)
+
+### **Discovery Modal**
+- [ ] Professional modal design with backdrop
+- [ ] Clear step-by-step progression
+- [ ] Intuitive form controls and validation
+- [ ] Real-time preview and feedback
+- [ ] Smooth animations and transitions
+- [ ] Mobile-responsive design
+
+### **Progress Indicators**
+- [ ] Modern progress bar design
+- [ ] Clear status messaging
+- [ ] Smooth animations between states
+- [ ] Error handling and recovery options
+- [ ] Success celebrations
+
+### **Data Preview**
+- [ ] Clean data presentation
+- [ ] Interactive elements (copy, export)
+- [ ] Expandable/collapsible sections
+- [ ] Visual data hierarchy
+- [ ] Export functionality
+
+---
+
+## **�� Success Metrics**
+- **Visual Appeal**: Modern, professional appearance
+- **Usability**: Intuitive user interactions
+- **Performance**: Smooth animations and fast loading
+- **Accessibility**: WCAG 2.1 AA compliance
+- **Responsiveness**: Works perfectly on all devices
+
+**Focus on creating a premium, enterprise-grade experience that makes users feel confident and productive!** 🚀
+
+---
+
+_**User**_
+
+Thanks you for your help. Could you please tell me. At what moment or at what level does the user write what the want to scrape? 
+I see the I see the diolog and preview of teh site now when I enter a site link. I also see the Scraper Configuration Editor but when I click on Discover with this Configuration I get this error "Discovery Failed
+
+Scraping request failed
+
+Try Again"  so I am a bit loss here. I dont know what really happen at that level. 
+
+---
+
+_**Assistant**_
+
+Great question! Here’s a clear explanation of the flow and what’s happening at the “scrape configuration” step:
+
+---
+
+## **Where Does the User Write What They Want to Scrape?**
+
+**The user defines what they want to scrape in the “Scraper Configuration Editor”** (the dialog/modal that appears after discovery, or when you click “Advanced” or “Scrape” on a company card).
+
+- **This is the place** where the user can:
+  - Select which fields or data types to extract (emails, phones, social links, etc.)
+  - Optionally, write custom selectors, patterns, or rules (if your UI supports it)
+  - Review a preview of the site and see what will be scraped
+
+**The “Discover with this Configuration” button** is what triggers the actual scraping request, using the configuration the user just set.
+
+---
+
+## **What Happens When You Click “Discover with this Configuration”?**
+
+1. **The frontend sends a POST request** to `/api/search/scraper/execute` (or similar), including:
+   - The company ID or URL
+   - The user’s scraping configuration (fields, selectors, etc.)
+
+2. **The backend receives the request** and should:
+   - Validate the configuration
+   - Launch the scraping process (using your scraper engine)
+   - Return the results or an error
+
+3. **The frontend updates the UI**:
+   - Shows progress (ScrapingProgress)
+   - Shows results or an error
+
+---
+
+## **Why Are You Seeing “Scraping request failed”?**
+
+This error means the POST request to `/api/search/scraper/execute` failed.  
+**Possible reasons:**
+- The backend endpoint `/api/search/scraper/execute` is not implemented, not reachable, or returns an error.
+- The request payload (configuration) is invalid or missing required fields.
+- The scraper engine is not set up or is failing internally.
+- There’s a bug in how the frontend sends the config.
+
+---
+
+## **How to Debug and Fix**
+
+1. **Check the Network Tab** in your browser dev tools:
+   - Is a POST request sent to `/api/search/scraper/execute`?
+   - What is the request payload?
+   - What is the response (status code, error message)?
+
+2. **Check the Backend Logs**:
+   - Is the endpoint hit?
+   - Is there a stack trace or error message?
+
+3. **Check the Implementation**:
+   - Is `/api/search/scraper/execute` implemented in your backend?
+   - Does it handle the config sent by the frontend?
+   - Is the scraper engine working?
+
+---
+
+## **Summary Table**
+
+| Step                        | What Happens                                 | Where User Interacts         |
+|-----------------------------|----------------------------------------------|------------------------------|
+| Discovery                   | Finds website for company                    | Discovery modal/dialog       |
+| Scraper Config Editor       | User defines what to scrape                  | ScraperConfigEditor in modal |
+| Click “Discover with Config”| Sends config to backend, starts scraping     | Button in modal              |
+| Scraping                    | Backend scrapes, returns results or error    | Progress bar, then results   |
+
+---
+
+## **What To Do Next**
+
+- **Check if `/api/search/scraper/execute` is implemented and working.**
+- **Check the request/response in the browser dev tools.**
+- **If you want, I can help you debug the backend endpoint or review the request payload.**
+
+Let me know if you want to dig into the backend or see the request details!
+
+---
+
+_**User**_
+
+great explanation thank you very much. But I have this app/(dashboard)/scrapers. Do I have to keep it? what can we do here since now the scrapping is done  in one from from /search. 
+Can you please fo through the content of app/(dashboard)/scrapers , check all the files and  we will think together about how we can use that cononent? 
+
+---
+
+_**Assistant**_
+
+<details>
+            <summary>Listed directory app/(dashboard)/scrapers • **3** results</summary>
+        
+| Name |
+|-------|
+| 📄 `page.tsx` |
+| 📁 `new` |
+| 📁 `[id]` |
+
+</details>
+
+---
+
+<details>
+            <summary>Listed directory app/(dashboard)/scrapers/new • **2** results</summary>
+        
+| Name |
+|-------|
+| 📄 `page.tsx` |
+| 📄 `loading.tsx` |
+
+</details>
+
+---
+
+<details>
+            <summary>Listed directory app/(dashboard)/scrapers/[id] • **1** results</summary>
+        
+| Name |
+|-------|
+| 📁 `configure` |
+
+</details>
+
+---
+
+<details>
+            <summary>Listed directory app/(dashboard)/scrapers/[id]/configure • **1** results</summary>
+        
+| Name |
+|-------|
+| 📄 `page.tsx` |
+
+</details>
+
+---
+
+Read file: app/(dashboard)/scrapers/page.tsx
+
+---
+
+Read file: app/(dashboard)/scrapers/new/page.tsx
+
+---
+
+Read file: app/(dashboard)/scrapers/[id]/configure/page.tsx
+
+---
+
+Here’s a summary of what’s in `app/(dashboard)/scrapers` and its subfolders, and how you might use or refactor them:
+
+---
+
+## **What’s in `app/(dashboard)/scrapers`?**
+
+### **1. `page.tsx`**
+- **Purpose:** Main dashboard for managing all scrapers.
+- **Features:** Lists all scrapers, shows stats, allows filtering, status changes, and running scrapers.
+- **UI:** Table/list of scrapers, status badges, action buttons.
+
+### **2. `new/page.tsx`**
+- **Purpose:** Page for creating a new scraper.
+- **Features:** Uses a `V2ScraperEditor` for building/configuring a new scraper (AI-powered field detection).
+- **UI:** Form for scraper name, config, and test run/save buttons.
+
+### **3. `[id]/configure/page.tsx`**
+- **Purpose:** Page for configuring an existing scraper.
+- **Features:** Tabs for general settings, CSS selectors, advanced options, and schedule.
+- **UI:** Form fields for selectors, timeouts, retries, user agent, etc.
+
+### **4. `[id]/` (folder)**
+- **Purpose:** Contains configuration and possibly other detail pages for individual scrapers.
+
+---
+
+## **How Does This Relate to the New Search/Scraping Flow?**
+
+- **Old Approach:** Users could create/manage custom scrapers, configure selectors, and run them manually.
+- **New Approach:** Scraping is triggered directly from the search/company card UI, often with auto-generated or AI-assisted config, and is more “one-click” for the user.
+
+---
+
+## **Should You Keep These Files?**
+
+### **You should keep them if:**
+- You want to support **advanced/manual scraping** for power users (e.g., custom selectors, scheduled scrapes, bulk jobs).
+- You want an **admin dashboard** for managing all scrapers, monitoring jobs, or debugging scraping issues.
+- You want to allow users to **save and reuse** custom scraper configurations.
+
+### **You could deprecate or hide them if:**
+- You want to keep the UX simple and only allow scraping via the search/company card flow.
+- You don’t need advanced/manual scraping or scheduled jobs.
+
+---
+
+## **How Could You Use or Refactor This?**
+
+- **Admin/Power User Panel:** Keep this dashboard for admins or advanced users to create, edit, and monitor scrapers.
+- **Bulk/Scheduled Scraping:** Use this for jobs that run on a schedule or for scraping many companies at once.
+- **Template Management:** Allow users to save, edit, and reuse scraping templates/configurations.
+- **Debugging:** Use the dashboard to debug scraping issues, view logs, and retry failed jobs.
+
+---
+
+## **Summary Table**
+
+| File/Folder                        | Purpose/Feature                                 | Keep/Refactor/Remove?         |
+|------------------------------------|------------------------------------------------|-------------------------------|
+| `scrapers/page.tsx`                | Scraper dashboard (list, stats, actions)        | Keep for admin/advanced users  |
+| `scrapers/new/page.tsx`            | Create new scraper (manual/AI config)           | Keep for advanced/manual mode  |
+| `scrapers/[id]/configure/page.tsx` | Configure existing scraper (selectors, etc.)    | Keep for advanced/manual mode  |
+
+---
+
+## **Recommendation**
+
+- **Keep these files** for now, especially if you want to support advanced/manual scraping, admin features, or future bulk/scheduled jobs.
+- **You can hide them from regular users** and only expose them to admins or power users.
+- **If you want a simpler product,** you can phase them out, but they are valuable for debugging and advanced workflows.
+
+---
+
+**If you want, I can help you:**
+- Refactor these pages for admin-only access
+- Integrate them with the new search/scraping flow
+- Or help you decide which features to keep/remove
+
+Let me know how you’d like to proceed!
+
+---
+
+_**User**_
+
+Okay, great thank you. I am gonna keep it. but for now we will work more on the new approach (The AI scrapping approch with zero user input - one-click” for the user.) As I think it is specified here:  progress/Building-Plan.md
+
+---
+
+_**Assistant**_
+
+That’s a great decision! Focusing on the new “AI scraping, one-click, zero user input” approach will provide a much smoother and more modern user experience for most users. You can always keep the advanced/manual scrapers dashboard for admin or power users in the future.
+
+### **Key Points for the New Approach:**
+- **User Experience:** Users just click “Discover” or “Scrape” on a company card—no need to configure selectors or scraping logic.
+- **AI/Auto-Config:** The backend (or frontend) uses AI or smart defaults to determine what to scrape (emails, phones, social, etc.).
+- **Minimal Friction:** The user gets results with minimal effort, and the UI handles all progress, errors, and enrichment display.
+- **Fallback:** If you ever need to debug or handle edge cases, you still have the manual tools in the dashboard.
+
+---
+
+### **What to Focus on Next**
+- **Polish the one-click scraping flow:** Make sure the “Discover”/“Scrape” button works reliably, with clear feedback and error handling.
+- **Improve the enrichment and preview UI:** Make the results visually appealing and easy to understand.
+- **Add logging and analytics:** Track usage and errors to keep improving the experience.
+- **(Optional) Hide or restrict the old dashboard:** Only show it to admins or via a special route.
+
+---
+
+### **Reference**
+You are correct: the direction is specified in `progress/Building-Plan.md` and the related progress docs. The goal is a seamless, AI-powered, low-friction search and enrichment experience.
+
+---
+
+**If you need help with:**
+- Further automating the scraping logic
+- Improving the UI/UX for the one-click flow
+- Integrating more AI/auto-detection
+- Or anything else in this new approach
+
+Just let me know!  
+You’re on the right track—keep going! 🚀
+
+---
+
+_**User**_
+
+Thank you, I save your suggestion and we will come back to that later.
+for now here is what I want use to do. When I click on the button that display th emodal, the link is gotten from the campanyCard, when there is a website llink available. See this for exemple. this: neuralleap.ai is from my database, but the site is not displayed in the preview because it lack the "@https://www. * or http://www. is the a way we can a that to the model if the site of a card does not have that initially?  
+
+---
+
+_**Assistant**_
+
+Read file: src/components/search/DiscoveryModal.tsx
+
+---
+
+Yes, you can automatically add the `https://` prefix if the website link from the company card does not already have it. This will ensure the preview and scraping work for domains like `neuralleap.ai`.
+
+### **Where to Add This Logic**
+- In `DiscoveryModal.tsx`, the URL is set from `companyDiscoveryState?.website` or `initialUrl`.
+- The function `isValidHttpUrl` is used to check if the URL is valid.
+- If the URL is missing the protocol, you can prepend `https://` before using it for preview or scraping.
+
+---
+
+## **How to Implement**
+
+**Add a normalization step** before setting the preview URL or confirming the URL for scraping:
+
+```ts
+function normalizeUrl(url: string): string {
+  if (!url) return '';
+  if (/^https?:\/\//i.test(url)) return url;
+  // Optionally, add 'www.' if you want, but 'https://' is usually enough
+  return `https://${url}`;
+}
+```
+
+**Use this function:**
+- When setting `manualUrl` from the company card
+- When confirming the URL for preview or scraping
+
+**Example in your `useEffect` in `DiscoveryModal.tsx`:**
+```ts
+useEffect(() => {
+  if (isOpen) {
+    let urlToUse = companyDiscoveryState?.website || initialUrl || '';
+    urlToUse = normalizeUrl(urlToUse);
+    setManualUrl(urlToUse);
+    if (isValidHttpUrl(urlToUse)) {
+      setPreviewUrl(urlToUse);
+      setConfirmedUrl(urlToUse);
+    } else {
+      setPreviewUrl('');
+      setConfirmedUrl(null);
+    }
+    // ...rest of your logic
+  }
+  // ...rest of your effect
+}, [isOpen, initialUrl, companyDiscoveryState?.website, companyDiscoveryState?.scraperConfig]);
+```
+
+**Also use `normalizeUrl` in `handleManualUrlChange` if you want to auto-correct user input.**
+
+---
+
+## **Result**
+- If the company’s website is `neuralleap.ai`, the modal will use `https://neuralleap.ai` for preview and scraping.
+- This will fix the issue where the preview does not load for domains without a protocol.
+
+---
+
+Would you like me to make this code change for you?
+
+---
+
+_**User**_
+
+Okay sure, since therre are some card like those of the free data that do not have website, we need to check if the have website and if the websites do not have https:// then we can append. Please make this code change. thanks
+
+---
+
+_**Assistant**_
+
+
+
+---
+
 
 
 ---
