@@ -23,10 +23,28 @@ export interface CompanyDiscoveryState {
   status: DiscoveryStatus;
   website?: string;
   scraperId?: string; // As per plan, might be used later
+  scraperConfig?: ScraperConfig; // Added to store the config for a company/website
   scrapedData?: ScrapedData;
   error?: string;
   progress?: number; // For discovery or scraping progress
   lastUpdated?: number; // Timestamp for managing state, e.g., for timeouts or cleanup
+}
+
+// Forward declare ScraperConfig from ScraperConfigEditor.tsx to avoid circular dependency if imported directly
+// This assumes ScraperConfig is defined elsewhere and SearchStore doesn't need its internal details.
+// A better approach would be to have ScraperConfig in a shared types file.
+export interface ScraperConfig {
+  id?: string;
+  websiteUrl: string;
+  selectors: Array<{
+    fieldName: string;
+    cssSelector: string;
+    type: 'text' | 'attribute' | 'html';
+    attributeName?: string;
+  }>;
+  extractionRules?: Record<string, any>;
+  lastModified?: string;
+  version?: number;
 }
 
 interface SearchState {
@@ -92,10 +110,11 @@ interface SearchActions {
   setSelectedSources: (sources: string[]) => void;
 
   // Discovery and Scraping Actions
-  initiateWebsiteDiscovery: (companyId: string, companyName: string, manualUrl?: string) => Promise<void>;
+  initiateWebsiteDiscovery: (companyId: string, companyName: string, manualUrl?: string, config?: ScraperConfig) => Promise<void>; // Added optional config
   setDiscoveryStateForCompany: (companyId: string, updates: Partial<CompanyDiscoveryState>) => void;
   updateCompanyDataWithScrapedResults: (companyId: string, scrapedData: ScrapedData) => void; 
   clearDiscoveryStateForCompany: (companyId: string) => void;
+  saveScraperConfiguration: (companyId: string, config: ScraperConfig) => Promise<void>; // New action
 
   // Preferences Actions
   toggleShowCompanyDescription: () => void;
@@ -134,7 +153,7 @@ const initialState: SearchState = {
   // View settings
   viewMode: "grid",
   // Source selection
-  selectedSources: ["google", "linkedin", "crunchbase"],
+  selectedSources: ["database", "free_data"],
   // Caching
   cacheKey: null,
   searchTimestamp: null,
@@ -291,19 +310,26 @@ export const useSearchStore = create<SearchState & SearchActions>()(
         }));
       },
 
-      initiateWebsiteDiscovery: async (companyId, companyName, manualUrl) => {
+      initiateWebsiteDiscovery: async (companyId, companyName, manualUrl, config) => {
         const { setDiscoveryStateForCompany, updateCompanyDataWithScrapedResults } = get();
-        console.log('[searchStore] initiateWebsiteDiscovery called', { companyId, companyName, manualUrl });
+        console.log('[searchStore] initiateWebsiteDiscovery called', { companyId, companyName, manualUrl, hasConfig: !!config });
         
-        // 1. Initial state: Discovering
-        setDiscoveryStateForCompany(companyId, { status: 'discovering', progress: 20, error: undefined, website: manualUrl });
+        // 1. Initial state: Discovering or Preparing to Scrape with Config
+        setDiscoveryStateForCompany(companyId, { 
+          status: 'discovering', // This status might need adjustment if config is provided directly
+          progress: 20, 
+          error: undefined, 
+          website: manualUrl,
+          scraperConfig: config // Store the provided config
+        });
 
-        let discoveredUrl = manualUrl;
-        let discoveryConfidence: number | undefined;
+        let discoveredUrl = manualUrl || config?.websiteUrl;
+        // let discoveryConfidence: number | undefined; // Not used currently if API not called for discovery
 
         try {
-          // 2. Call /api/search/discover
-          if (!discoveredUrl) { // Only call discover API if no manual URL is provided
+          // 2. Call /api/search/discover IF no URL is available yet
+          if (!discoveredUrl) {
+            setDiscoveryStateForCompany(companyId, { status: 'discovering', progress: 30 });
             const discoveryResponse = await fetch('/api/search/discover', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -312,7 +338,6 @@ export const useSearchStore = create<SearchState & SearchActions>()(
 
             if (!discoveryResponse.ok) {
               const errorData = await discoveryResponse.json().catch(() => ({ message: 'Discovery request failed' }));
-              console.error('[searchStore] initiateWebsiteDiscovery discovery error:', errorData.message || 'Failed to discover website');
               throw new Error(errorData.message || 'Failed to discover website');
             }
             const discoveryResult = await discoveryResponse.json();
@@ -320,10 +345,10 @@ export const useSearchStore = create<SearchState & SearchActions>()(
               throw new Error(discoveryResult.message || 'No website found by discovery API');
             }
             discoveredUrl = discoveryResult.website;
-            discoveryConfidence = discoveryResult.confidence; // Store if needed
+            // discoveryConfidence = discoveryResult.confidence;
             setDiscoveryStateForCompany(companyId, { website: discoveredUrl, progress: 50 });
           } else {
-             // If manual URL is provided, we skip discovery API and use it directly
+             // If manual URL or config.websiteUrl is provided, use it directly
              setDiscoveryStateForCompany(companyId, { website: discoveredUrl, progress: 50 });
           }
 
@@ -334,17 +359,20 @@ export const useSearchStore = create<SearchState & SearchActions>()(
           // 3. Update state: Scraping
           setDiscoveryStateForCompany(companyId, { status: 'scraping', progress: 70 });
 
-          // 4. Call /api/search/scraper/execute (or similar)
-          // Assuming the plan's /api/search/scraper/route.ts is the base, let's use /api/search/scraper/execute
+          // 4. Call /api/search/scraper/execute
+          const scraperPayload: any = { companyId, url: discoveredUrl };
+          if (config) {
+            scraperPayload.config = config; // Send config to backend if provided
+          }
+
           const scraperResponse = await fetch('/api/search/scraper/execute', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ companyId, url: discoveredUrl }), // Send companyId and the URL to scrape
+            body: JSON.stringify(scraperPayload),
           });
 
           if (!scraperResponse.ok) {
             const errorData = await scraperResponse.json().catch(() => ({ message: 'Scraping request failed'}));
-            console.error('[searchStore] initiateWebsiteDiscovery scraping error:', errorData.message || 'Failed to scrape website');
             throw new Error(errorData.message || 'Failed to scrape website');
           }
           
@@ -358,14 +386,15 @@ export const useSearchStore = create<SearchState & SearchActions>()(
           setDiscoveryStateForCompany(companyId, { 
             status: 'completed', 
             scrapedData: finalScrapedData, 
-            progress: 100 
+            progress: 100,
+            // Keep scraperConfig if it was used
           });
           
           // 6. Update main company results with enriched data
           updateCompanyDataWithScrapedResults(companyId, finalScrapedData);
 
         } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred during discovery/scraping.';
+          const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
           console.error('[searchStore] initiateWebsiteDiscovery exception:', errorMessage);
           setDiscoveryStateForCompany(companyId, { status: 'error', error: errorMessage, progress: 0 });
         }
@@ -375,10 +404,32 @@ export const useSearchStore = create<SearchState & SearchActions>()(
         set(state => ({
           results: state.results.map(company => 
             company.id === companyId 
-              ? { ...company, ...scrapedData, enriched: true } 
+              ? { ...company, ...scrapedData, enriched: true, /* other scraped fields */ } 
               : company
           )
         }));
+      },
+
+      saveScraperConfiguration: async (companyId, config) => {
+        // Placeholder for actual API call to save config
+        // For now, just updates the store state
+        console.log('[searchStore] saveScraperConfiguration called', { companyId, config });
+        get().setDiscoveryStateForCompany(companyId, { scraperConfig: config, website: config.websiteUrl });
+        // Example:
+        // try {
+        //   const response = await fetch('/api/search/scraper/config', {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify({ companyId, config }),
+        //   });
+        //   if (!response.ok) throw new Error('Failed to save config');
+        //   const result = await response.json();
+        //   if (!result.success) throw new Error(result.message || 'Failed to save config on backend');
+        //   get().setDiscoveryStateForCompany(companyId, { scraperConfig: result.data, website: result.data.websiteUrl });
+        // } catch (error) {
+        //   console.error("Failed to save scraper config:", error);
+        //   throw error; // Re-throw to be caught by UI
+        // }
       },
 
       clearDiscoveryStateForCompany: (companyId) => {

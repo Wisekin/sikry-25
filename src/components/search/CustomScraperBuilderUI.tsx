@@ -1,17 +1,36 @@
 import React, { useState, useCallback, useEffect } from 'react';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+  DragOverlay,
+  Active,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/src/components/ui/card';
 import { Button } from '@/src/components/ui/button';
 import { Input } from '@/src/components/ui/input';
 import { Label } from '@/src/components/ui/label';
 import { Textarea } from '@/src/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/components/ui/select';
-import { Trash2Icon, PlusCircleIcon, EyeIcon, CodeIcon, SaveIcon, FolderOpenIcon, HelpCircleIcon, Loader2 } from 'lucide-react';
+import { Trash2Icon, PlusCircleIcon, EyeIcon, CodeIcon, SaveIcon, FolderOpenIcon, HelpCircleIcon, Loader2, GripVerticalIcon, PackageIcon } from 'lucide-react'; // Added GripVerticalIcon, PackageIcon
 import { useToast } from '@/hooks/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/src/components/ui/tooltip';
 
 // Matches ScraperConfig in ScraperConfigEditor.tsx for potential compatibility
 export interface ScraperFieldConfig {
-  id: string; // Unique ID for the field for list rendering
+  id: string; // Unique ID for the field for list rendering and dnd
   fieldName: string;
   cssSelector: string;
   type: 'text' | 'attribute' | 'html' | 'link';
@@ -41,6 +60,15 @@ export function CustomScraperBuilderUI() {
   const [isLoadingPreview, setIsLoadingPreview] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
+  const [activeDragItem, setActiveDragItem] = useState<Active | null>(null);
+
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const updateField = (index: number, updatedField: Partial<ScraperFieldConfig>) => {
     const newFields = [...config.fields];
@@ -98,11 +126,84 @@ export function CustomScraperBuilderUI() {
     toast({ title: "Configuration Loaded", description: `${mockLoadedConfig.name} loaded (mocked).` });
   }
 
+  const handleDragEnd = (event: DragEndEvent) => {
+    setActiveDragItem(null);
+    const { active, over } = event;
+    console.log("DragEndEvent: ", event);
+
+    if (over && active.id !== over.id) {
+      // Handle reordering of existing fields
+      if (active.data.current?.type === 'field' && over.data.current?.type === 'fieldContainer') {
+         setConfig((prevConfig) => {
+          const oldIndex = prevConfig.fields.findIndex(f => f.id === active.id);
+          // Approximate new index based on over.id if it's another field, or drop into container
+          // This needs refinement for dropping into specific positions vs end of list.
+          // For now, let's assume over.id is a field if reordering or the container id.
+          // This logic is simplified and will be improved.
+          let newIndex = prevConfig.fields.length -1; // Default to end
+          
+          // A more robust way would be to find the index of 'over.id' if it's a field
+          const overIsField = prevConfig.fields.find(f => f.id === over.id);
+          if (overIsField) {
+            newIndex = prevConfig.fields.findIndex(f => f.id === over.id);
+          }
+
+          return {
+            ...prevConfig,
+            fields: arrayMove(prevConfig.fields, oldIndex, newIndex),
+          };
+        });
+        return;
+      }
+      
+      // Handle dropping a new field from the palette
+      if (active.data.current?.type === 'paletteItem' && over.data.current?.type === 'fieldContainer') {
+        const fieldType = active.data.current?.fieldType as ScraperFieldConfig['type'];
+        let newField: ScraperFieldConfig = {
+            id: crypto.randomUUID(),
+            fieldName: `new${fieldType.charAt(0).toUpperCase() + fieldType.slice(1)}Field`,
+            cssSelector: '',
+            type: fieldType,
+        };
+        if (fieldType === 'attribute') {
+            newField.attributeName = '';
+        }
+        setConfig(prev => ({ ...prev, fields: [...prev.fields, newField] }));
+      }
+    }
+  };
+  
+  const handleDragStart = (event: DragEndEvent) => {
+    setActiveDragItem(event.active);
+  };
+
+  const predefinedFieldTypes: { name: string; type: ScraperFieldConfig['type'] }[] = [
+    { name: 'Text Field', type: 'text' },
+    { name: 'Attribute Field', type: 'attribute' },
+    { name: 'HTML Content', type: 'html' },
+    { name: 'Link (URL)', type: 'link' },
+  ];
+
+
   return (
+    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd} onDragCancel={() => setActiveDragItem(null)}>
     <TooltipProvider>
     <div className="flex flex-col lg:flex-row gap-4 p-4 h-[calc(100vh-100px)] max-h-full">
-      {/* Left Panel: Configuration */}
-      <Card className="w-full lg:w-1/3 flex flex-col max-h-full">
+      {/* Palette Panel (New) */}
+      <Card className="w-full lg:w-1/4 xl:w-1/5 flex flex-col max-h-full">
+        <CardHeader>
+          <CardTitle>Field Palette</CardTitle>
+          <CardDescription>Drag fields to the builder.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-2 flex-grow overflow-y-auto">
+          {predefinedFieldTypes.map(pf => (
+            <DraggablePaletteItem key={pf.type} id={`palette-${pf.type}`} fieldName={pf.name} fieldType={pf.type} />
+          ))}
+        </CardContent>
+      </Card>
+
+      {/* Center Panel: Configuration */}
+      <Card className="w-full lg:w-1/3 xl:w-2/5 flex flex-col max-h-full">
         <CardHeader>
           <CardTitle>Scraper Configuration</CardTitle>
           <CardDescription>Define the target and fields for your custom scraper.</CardDescription>
@@ -123,48 +224,21 @@ export function CustomScraperBuilderUI() {
           </div>
           <div>
             <Label>Fields to Extract</Label>
-            <div className="space-y-3 max-h-96 overflow-y-auto border p-2 rounded-md">
-              {config.fields.map((field, index) => (
-                <Card key={field.id} className="p-3 bg-gray-50/50">
-                  <div className="flex justify-between items-center mb-2">
-                    <Label className="text-sm font-medium">Field #{index + 1}</Label>
-                    <Button variant="ghost" size="icon" onClick={() => removeField(index)} className="text-red-500 hover:text-red-700">
-                      <Trash2Icon className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <div>
-                      <Label htmlFor={`fieldName-${index}`} className="text-xs">Field Name</Label>
-                      <Input id={`fieldName-${index}`} value={field.fieldName} onChange={e => updateField(index, { fieldName: e.target.value })} placeholder="e.g., title" />
+            {/* This div is the droppable container for fields */}
+            <SortableContext items={config.fields.map(f => f.id)} strategy={verticalListSortingStrategy}>
+              <div id="fields-container" className="space-y-3 min-h-[100px] max-h-96 overflow-y-auto border p-2 rounded-md bg-slate-50">
+                {config.fields.map((field, index) => (
+                  <SortableFieldItem key={field.id} id={field.id} field={field} index={index} updateField={updateField} removeField={removeField} />
+                ))}
+                {config.fields.length === 0 && (
+                    <div className="text-center text-gray-400 py-8">
+                        <p>Drag fields from the palette here.</p>
                     </div>
-                    <div>
-                      <Label htmlFor={`fieldType-${index}`} className="text-xs">Type</Label>
-                      <Select value={field.type} onValueChange={(value: ScraperFieldConfig['type']) => updateField(index, { type: value })}>
-                        <SelectTrigger id={`fieldType-${index}`}><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="text">Text</SelectItem>
-                          <SelectItem value="attribute">Attribute</SelectItem>
-                          <SelectItem value="html">HTML</SelectItem>
-                          <SelectItem value="link">Link (href)</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                  <div className="mt-2">
-                    <Label htmlFor={`cssSelector-${index}`} className="text-xs">CSS Selector</Label>
-                    <Input id={`cssSelector-${index}`} value={field.cssSelector} onChange={e => updateField(index, { cssSelector: e.target.value })} placeholder="e.g., h1.main-title" />
-                  </div>
-                  {field.type === 'attribute' && (
-                    <div className="mt-2">
-                      <Label htmlFor={`attributeName-${index}`} className="text-xs">Attribute Name</Label>
-                      <Input id={`attributeName-${index}`} value={field.attributeName || ''} onChange={e => updateField(index, { attributeName: e.target.value })} placeholder="e.g., data-id, src" />
-                    </div>
-                  )}
-                </Card>
-              ))}
-            </div>
+                )}
+              </div>
+            </SortableContext>
             <Button variant="outline" onClick={addField} className="mt-2 w-full">
-              <PlusCircleIcon className="mr-2 h-4 w-4" /> Add Field
+              <PlusCircleIcon className="mr-2 h-4 w-4" /> Add Field Manually
             </Button>
           </div>
            <div>
@@ -234,8 +308,129 @@ export function CustomScraperBuilderUI() {
         </CardContent>
       </Card>
     </div>
+    <DragOverlay>
+        {activeDragItem ? (
+          activeDragItem.data.current?.type === 'paletteItem' ?
+            <PaletteItemDragOverlay fieldName={activeDragItem.data.current.fieldName} /> :
+          activeDragItem.data.current?.type === 'field' ?
+            <FieldItemDragOverlay fieldName={activeDragItem.data.current.field.fieldName} /> : null
+        ) : null}
+    </DragOverlay>
     </TooltipProvider>
+    </DndContext>
   );
 }
+
+
+// --- Draggable Components ---
+
+// Draggable item from the palette
+interface DraggablePaletteItemProps {
+  id: string;
+  fieldName: string;
+  fieldType: ScraperFieldConfig['type'];
+}
+function DraggablePaletteItem({ id, fieldName, fieldType }: DraggablePaletteItemProps) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: id,
+    data: { type: 'paletteItem', fieldType: fieldType, fieldName: fieldName } // Add type for onDragEnd
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 100 : 'auto',
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}
+         className="p-2 border rounded-md bg-sky-50 hover:bg-sky-100 cursor-grab flex items-center gap-2 shadow-sm">
+      <PackageIcon className="h-5 w-5 text-sky-600" />
+      <span className="text-sm text-sky-700">{fieldName}</span>
+    </div>
+  );
+}
+
+// Sortable item for existing fields
+interface SortableFieldItemProps {
+  id: string;
+  field: ScraperFieldConfig;
+  index: number;
+  updateField: (index: number, updatedField: Partial<ScraperFieldConfig>) => void;
+  removeField: (index: number) => void;
+}
+
+function SortableFieldItem({ id, field, index, updateField, removeField }: SortableFieldItemProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging
+  } = useSortable({ id: id, data: { type: 'field', field: field } }); // Add type for onDragEnd
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 100 : 'auto',
+  };
+
+  return (
+    <Card ref={setNodeRef} style={style} className="p-3 bg-white shadow-md">
+      <div className="flex justify-between items-center mb-2">
+        <div className="flex items-center gap-1">
+            <button {...attributes} {...listeners} className="cursor-grab p-1 text-gray-400 hover:text-gray-600" aria-label="Drag to reorder field">
+                <GripVerticalIcon className="h-5 w-5" />
+            </button>
+            <Label className="text-sm font-medium">Field #{index + 1}: {field.fieldName || "Untitled"}</Label>
+        </div>
+        <Button variant="ghost" size="icon" onClick={() => removeField(index)} className="text-red-500 hover:text-red-700">
+          <Trash2Icon className="h-4 w-4" />
+        </Button>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div>
+          <Label htmlFor={`fieldName-${index}`} className="text-xs">Field Name</Label>
+          <Input id={`fieldName-${index}`} value={field.fieldName} onChange={e => updateField(index, { fieldName: e.target.value })} placeholder="e.g., title" />
+        </div>
+        <div>
+          <Label htmlFor={`fieldType-${index}`} className="text-xs">Type</Label>
+          <Select value={field.type} onValueChange={(value: ScraperFieldConfig['type']) => updateField(index, { type: value, attributeName: value !== 'attribute' ? undefined : field.attributeName })}>
+            <SelectTrigger id={`fieldType-${index}`}><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="text">Text</SelectItem>
+              <SelectItem value="attribute">Attribute</SelectItem>
+              <SelectItem value="html">HTML</SelectItem>
+              <SelectItem value="link">Link (href)</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      <div className="mt-2">
+        <Label htmlFor={`cssSelector-${index}`} className="text-xs">CSS Selector</Label>
+        <Input id={`cssSelector-${index}`} value={field.cssSelector} onChange={e => updateField(index, { cssSelector: e.target.value })} placeholder="e.g., h1.main-title" />
+      </div>
+      {field.type === 'attribute' && (
+        <div className="mt-2">
+          <Label htmlFor={`attributeName-${index}`} className="text-xs">Attribute Name</Label>
+          <Input id={`attributeName-${index}`} value={field.attributeName || ''} onChange={e => updateField(index, { attributeName: e.target.value })} placeholder="e.g., data-id, src" />
+        </div>
+      )}
+    </Card>
+  );
+}
+
+
+// Drag Overlay Components (simple versions)
+function PaletteItemDragOverlay({ fieldName }: { fieldName: string }) {
+  return <div className="p-2 border rounded-md bg-sky-500 text-white shadow-xl flex items-center gap-2"><PackageIcon className="h-5 w-5" />{fieldName}</div>;
+}
+function FieldItemDragOverlay({ fieldName }: { fieldName: string }) {
+  return <div className="p-3 border rounded-md bg-slate-600 text-white shadow-xl"><GripVerticalIcon className="inline mr-2 h-5 w-5" />{fieldName || "Field"}</div>;
+}
+
 
 export default CustomScraperBuilderUI;

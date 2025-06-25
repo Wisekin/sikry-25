@@ -359,18 +359,19 @@ export function SecondaryMenuBar() {
               </div>
             </form>
             <div className="flex items-center gap-1 ml-2">
-              {["google", "linkedin", "crunchbase"].map(source => (
+              {[
+                { id: "database", label: "Database", icon: Database },
+                { id: "free_data", label: "Free Data", icon: Globe }
+              ].map(source => (
                 <Button
-                  key={source}
+                  key={source.id}
                   size="sm"
-                  variant={selectedSources.includes(source) ? "default" : "outline"}
+                  variant={selectedSources.includes(source.id) ? "default" : "outline"}
                   className={`px-2 py-1 text-xs ${hoverClass}`}
-                  onClick={() => toggleSource(source)}
+                  onClick={() => toggleSource(source.id)}
                 >
-                  {source === "google" && <Globe className="w-4 h-4 mr-1" />}
-                  {source === "linkedin" && <Linkedin className="w-4 h-4 mr-1" />}
-                  {source === "crunchbase" && <Database className="w-4 h-4 mr-1" />}
-                  <span className="capitalize">{source}</span>
+                  <source.icon className="w-4 h-4 mr-1" />
+                  <span>{source.label}</span>
                 </Button>
               ))}
             </div>

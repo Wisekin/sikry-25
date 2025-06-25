@@ -1,14 +1,17 @@
-import React, { useEffect, useRef } from 'react'; // Added useEffect, useRef
+import React, { useEffect, useRef, useState } from 'react';
 import { Card, CardHeader, CardContent, CardFooter } from "@/src/components/ui/card";
 import { Company } from "@/src/lib/types";
-import { Users, MapPin, Mail, Phone, ExternalLink, Briefcase, Tag, SearchIcon, AlertTriangleIcon, CheckCircle2Icon, SparklesIcon, LinkedinIcon, TwitterIcon, FacebookIcon, InstagramIcon, LinkIcon as LucideLinkIcon } from "lucide-react";
+import { Users, MapPin, Mail, Phone, ExternalLink, Briefcase, Tag, SearchIcon, AlertTriangleIcon, CheckCircle2Icon, SparklesIcon, LinkedinIcon, TwitterIcon, FacebookIcon, InstagramIcon, LinkIcon as LucideLinkIcon, Settings2Icon, EyeIcon, FileTextIcon } from "lucide-react"; // Added FileTextIcon
 import { useTranslation } from 'react-i18next';
 import { DiscoveryButton } from './DiscoveryButton';
 import { ScrapingProgress } from './ScrapingProgress';
 import { useSearchStore, CompanyDiscoveryState, ScrapedData } from '@/stores/searchStore';
 import { Button } from '@/src/components/ui/button';
 import { Badge } from '@/src/components/ui/badge';
-import { useToast } from '@/hooks/use-toast'; // Added useToast
+import { useToast } from '@/hooks/use-toast';
+import { DiscoveryModal } from './DiscoveryModal';
+import { DataPreview } from './DataPreview';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip"; // Added Tooltip components
 
 // Patch: extend Company type to include employee_count for linter
 // Also, ensure 'id' is available as per src/lib/types.ts for discovery state mapping.
@@ -36,7 +39,9 @@ interface CompanyCardProps {
 
 export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
   const { t } = useTranslation('searchPage');
-  const { toast } = useToast(); // Initialize toast
+  const { toast } = useToast();
+  const [isDiscoveryModalOpen, setIsDiscoveryModalOpen] = useState(false);
+  const [isDataPreviewModalOpen, setIsDataPreviewModalOpen] = useState(false); // State for DataPreview modal
 
   const initiateWebsiteDiscovery = useSearchStore(state => state.initiateWebsiteDiscovery);
   const discoveryStates = useSearchStore(state => state.discoveryStates);
@@ -62,19 +67,27 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
   const scrapedData: ScrapedData | undefined = companyDiscoveryState?.scrapedData;
   const isEnriched = companyDiscoveryState?.status === 'completed' && !!scrapedData;
 
-  const handleDiscoverClick = () => {
-    // If retrying from an error state, good to reset the specific error message before new attempt
+  const handleDiscoverClick = (manualUrl?: string) => {
     if (companyDiscoveryState?.status === 'error') {
         setDiscoveryStateForCompany(company.id, { ...companyDiscoveryState, status: 'idle', error: undefined, progress: 0 });
-        // Short delay to allow state to update before initiating, preventing potential race if not using await properly in store
         setTimeout(() => {
             if (company.id && company.name) {
-                initiateWebsiteDiscovery(company.id, company.name, company.domain);
+                initiateWebsiteDiscovery(company.id, company.name, manualUrl || company.domain);
             }
         }, 50);
     } else if (company.id && company.name) {
-      initiateWebsiteDiscovery(company.id, company.name, company.domain);
+      initiateWebsiteDiscovery(company.id, company.name, manualUrl || company.domain);
     }
+    setIsDiscoveryModalOpen(false); // Close modal after initiating
+  };
+
+  const handleConfirmManualUrl = async (companyId: string, manualUrl: string) => {
+    // This function will be passed to DiscoveryModal
+    // It will call initiateWebsiteDiscovery with the manualUrl
+    if (company.id && company.name) {
+      await initiateWebsiteDiscovery(company.id, company.name, manualUrl);
+    }
+    setIsDiscoveryModalOpen(false); // Close modal after initiating
   };
 
   const getConfidenceColor = (score: number) => {
@@ -92,14 +105,23 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
   const renderDiscoverySection = () => {
     if (!companyDiscoveryState || companyDiscoveryState.status === 'idle') {
       return (
-        <DiscoveryButton
-          onClick={handleDiscoverClick}
-          loading={false}
-          companyName={company.name}
-          variant="outline"
-          size="sm"
-          className="w-full group-hover:bg-sky-500 group-hover:text-white group-hover:border-sky-500"
-        />
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <DiscoveryButton
+                onClick={() => handleDiscoverClick()}
+                loading={false}
+                companyName={company.name}
+                variant="outline"
+                size="sm"
+                className="w-full group-hover:bg-sky-500 group-hover:text-white group-hover:border-sky-500"
+              />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{t('tooltip.startDiscovery', "Start automatic website discovery and data scraping.")}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       );
     }
 
@@ -115,8 +137,34 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
               <CheckCircle2Icon className="w-5 h-5 mr-2"/>
               <p>{t('discovery.status.completed', "Data enriched!")}</p>
             </div>
-            {/* Placeholder for a "View Enriched Data" button or similar */}
-            {/* <Button size="sm" variant="ghost" className="text-xs">View Data</Button> */}
+            <div className="flex flex-col sm:flex-row gap-1 mt-1.5 w-full">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button size="sm" variant="outline" className="text-xs flex-1 hover:bg-sky-50 group-hover:text-sky-600 group-hover:border-sky-400" onClick={() => setIsDiscoveryModalOpen(true)}>
+                        <Settings2Icon className="w-3.5 h-3.5 mr-1.5" /> {t('discovery.customizeScraping', "Re-Scrape/Config")}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{t('tooltip.customizeScraping', "Manually set website URL or customize scraping configuration.")}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              {scrapedData && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button size="sm" variant="default" className="text-xs flex-1 bg-emerald-600 hover:bg-emerald-700 group-hover:bg-emerald-500 group-hover:text-white" onClick={() => setIsDataPreviewModalOpen(true)}>
+                          <FileTextIcon className="w-3.5 h-3.5 mr-1.5" /> {t('discovery.viewScrapedData', "View Data")}
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{t('tooltip.viewScrapedData', "View the data that has been scraped and enriched for this company.")}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+            </div>
           </div>
         );
       case 'error':
@@ -160,9 +208,18 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
                 {company.name}
               </h3>
               {isEnriched && (
-                <Badge variant="outline" className="border-green-500 text-green-600 group-hover:bg-green-500 group-hover:text-white text-xs px-1.5 py-0.5">
-                  <SparklesIcon className="w-3 h-3 mr-1" /> Enriched
-                </Badge>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Badge variant="outline" className="border-green-500 text-green-600 group-hover:bg-green-500 group-hover:text-white text-xs px-1.5 py-0.5">
+                        <SparklesIcon className="w-3 h-3 mr-1" /> Enriched
+                      </Badge>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{t('tooltip.enrichedData', "This company's data has been successfully enriched through web scraping.")}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               )}
             </div>
             {company.domain && (
@@ -197,6 +254,7 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
 
   // Grid Layout (remains mostly the same, height was already adjusted)
   return (
+    <>
     <div className={`${cardClasses} flex flex-col h-[calc(384px+80px)] hover:bg-[#2A3050]`}> {/* Increased height for discovery section */}
       <CardHeader className="p-4 border-b border-gray-100 group-hover:border-gray-600 flex-shrink-0">
         <div className="flex items-start justify-between gap-4">
@@ -206,9 +264,18 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
               <div className="flex items-center gap-2">
                 <h3 className="font-bold text-base text-[#1B1F3B] group-hover:text-white truncate" title={company.name}>{company.name}</h3>
                 {isEnriched && (
-                  <Badge variant="outline" className="border-green-500 text-green-600 group-hover:bg-green-500 group-hover:text-white text-xs px-1.5 py-0.5 flex-shrink-0">
-                    <SparklesIcon className="w-3 h-3 mr-1" /> Enriched
-                  </Badge>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Badge variant="outline" className="border-green-500 text-green-600 group-hover:bg-green-500 group-hover:text-white text-xs px-1.5 py-0.5 flex-shrink-0">
+                        <SparklesIcon className="w-3 h-3 mr-1" /> Enriched
+                      </Badge>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{t('tooltip.enrichedData', "This company's data has been successfully enriched through web scraping.")}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
                 )}
               </div>
               {company.domain && (
@@ -218,8 +285,16 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
               )}
             </div>
           </div>
-          <div className={`text-xs font-bold px-2 py-1 rounded-full border ${confidenceStyle.bg} ${confidenceStyle.text} ${confidenceStyle.border} group-hover:bg-opacity-20 group-hover:text-white group-hover:border-white/50 flex-shrink-0`}>
-            {confidenceScore}%
+          <div className="flex flex-col items-end gap-1.5">
+            <div className={`text-xs font-bold px-2 py-1 rounded-full border ${confidenceStyle.bg} ${confidenceStyle.text} ${confidenceStyle.border} group-hover:bg-opacity-20 group-hover:text-white group-hover:border-white/50 flex-shrink-0`}>
+              {confidenceScore}%
+            </div>
+            {/* Always show customize button unless actively discovering/scraping for THIS company */}
+            {(!companyDiscoveryState || companyDiscoveryState.status === 'idle' || companyDiscoveryState.status === 'completed' || companyDiscoveryState.status === 'error') && (
+            <Button variant="ghost" size="icon" className="h-7 w-7 text-gray-400 hover:text-sky-500 group-hover:text-sky-300" onClick={() => setIsDiscoveryModalOpen(true)} title={t('discovery.customizeScraping', "Customize Scraping")}>
+              <Settings2Icon className="w-4 h-4" />
+            </Button>
+            )}
           </div>
         </div>
       </CardHeader>
@@ -303,5 +378,27 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
         {renderDiscoverySection()}
       </CardFooter>
     </div>
+    {company.id && company.name && ( // Ensure company id and name are available for the modal
+        <DiscoveryModal
+          isOpen={isDiscoveryModalOpen}
+          onClose={() => setIsDiscoveryModalOpen(false)}
+          companyId={company.id}
+          companyName={company.name}
+          initialUrl={companyDiscoveryState?.website || company.domain}
+          onConfirmManualUrl={handleConfirmManualUrl}
+        />
+      )}
+      {company.id && company.name && scrapedData && ( // Ensure data is available for preview
+        <DataPreview
+          isOpen={isDataPreviewModalOpen}
+          onClose={() => setIsDataPreviewModalOpen(false)}
+          companyName={company.name}
+          scrapedData={scrapedData}
+          isLoading={companyDiscoveryState?.status === 'scraping' || companyDiscoveryState?.status === 'discovering'} // Should typically not be loading if data is present
+          error={companyDiscoveryState?.status === 'error' ? companyDiscoveryState.error : null}
+        />
+      )}
+    </>
   );
 };
+  

@@ -7,7 +7,7 @@ import { CacheManager } from '@/src/utils/cache/cacheManager';
 import { DbRateLimiter } from '@/src/utils/cache/rateLimiter';
 import { randomUUID } from 'crypto';
 import { Company } from '@/src/types/company';
-import { getCache, setCache, generateCacheKey, clearSearchCache } from '@/lib/redis';
+import { getCache, setCache, generateCacheKey } from '@/lib/redis';
 
 import redisConfig from '@/lib/config/redis';
 
@@ -28,7 +28,7 @@ function createSearchCacheKey(params: {
   organizationId?: string;
   filters?: Record<string, any>;
 }): string {
-  return generateCacheKey({
+  return generateCacheKey('search', {
     q: params.query,
     s: params.scope,
     org: params.organizationId || '',
@@ -46,6 +46,10 @@ export async function GET(req: NextRequest) {
   const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
   const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '10', 10)));
   const forceRefresh = searchParams.get('refresh') === 'true';
+  const sourcesParam = searchParams.get('sources') || 'database,free_data';
+  const selectedSources = sourcesParam.split(',').filter(Boolean);
+
+  console.log('[API Search] Sources selected:', selectedSources);
 
   // --- Start: Rate Limiting and Auth ---
   const rateLimiter = new DbRateLimiter();
@@ -99,16 +103,46 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ success: false, message: 'Failed to parse search query.' }, { status: 400 });
     }
     
-    // Perform searches on all sources for the CURRENT page
-    const [supabaseResult, companiesHouseResponse, wikidataResponse] = await Promise.all([
-      performSearch(query, scope, organizationId, { page, limit }),
-      companiesHouseAdapter.search(parsedQuery, { limit, page }),
-      wikidataAdapter.search(parsedQuery, { limit, page })
-    ]);
+    // Initialize results arrays
+    let supabaseResult: { success: boolean; data: SearchResult[] | null; error?: { code: string; message: string }; metadata?: Record<string, any> } = { success: true, data: [], metadata: { totalCount: 0 } };
+    let companiesHouseResponse: { results: any[]; totalCount: number } = { results: [], totalCount: 0 };
+    let wikidataResponse: { results: any[]; totalCount: number } = { results: [], totalCount: 0 };
 
-    if (!supabaseResult.success) {
+    // Perform searches based on selected sources
+    const searchPromises: Promise<any>[] = [];
+
+    // Query database if selected
+    if (selectedSources.includes('database')) {
+      console.log('[API Search] Querying database...');
+      searchPromises.push(performSearch(query, scope, organizationId, { page, limit }));
+    }
+
+    // Query external sources if free_data is selected
+    if (selectedSources.includes('free_data')) {
+      console.log('[API Search] Querying external sources...');
+      searchPromises.push(
+        companiesHouseAdapter.search(parsedQuery, { limit, page }),
+        wikidataAdapter.search(parsedQuery, { limit, page })
+      );
+    }
+
+    // Wait for all selected searches to complete
+    const searchResults = await Promise.all(searchPromises);
+
+    // Process results based on what was queried
+    let resultIndex = 0;
+    
+    if (selectedSources.includes('database')) {
+      supabaseResult = searchResults[resultIndex++];
+      if (!supabaseResult.success) {
         console.error("Search failed due to database error:", supabaseResult.error);
         return NextResponse.json({ success: false, message: 'An error occurred during the database search.' }, { status: 500 });
+      }
+    }
+
+    if (selectedSources.includes('free_data')) {
+      companiesHouseResponse = searchResults[resultIndex++];
+      wikidataResponse = searchResults[resultIndex++];
     }
 
     // Map adapter results
@@ -120,7 +154,7 @@ export async function GET(req: NextRequest) {
     // Merge and rank the results for the CURRENT page
     const { mergedResults, mergeMetadata } = await mergeAndRankResults(allResults, parsedQuery);
 
-    // Calculate total count from all sources
+    // Calculate total count from selected sources
     const supabaseTotal = supabaseResult.metadata?.totalCount || 0;
     const companiesHouseTotal = companiesHouseResponse.totalCount || 0;
     const wikidataTotal = (wikidataResponse.results.length === limit) ? (page * limit) + 1 : ((page - 1) * limit) + wikidataResponse.results.length;
@@ -129,6 +163,7 @@ export async function GET(req: NextRequest) {
 
     const responseMetadata = {
       query, scope, page, limit, totalCount, pageCount, searchCacheKey, cached: false,
+      sources: selectedSources,
       mergeDetails: {
         ...mergeMetadata,
         supabaseCount: supabaseResult.data?.length || 0,
