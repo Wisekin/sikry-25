@@ -193,14 +193,7 @@ function SearchPageContent() {
         {/* Export button removed, now in SecondaryMenuBar */}
       </div>
       
-      {/* Search Bar */}
-      <div className="mt-6">
-        <SmartSearchBar 
-          onSearch={handleSearch}
-          initialQuery={query}
-          className="w-full max-w-3xl mx-auto"
-        />
-      </div>
+ 
       
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Advanced Filters Sidebar */}

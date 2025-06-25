@@ -55,6 +55,52 @@
     "contactInfo": "Contact Information",
     "technologies": "Technologies"
   },
+  "discovery": {
+    "status": {
+      "discovering": "Discovering website...",
+      "scraping": "Scraping {{website}}...",
+      "completed": "Data enriched!",
+      "errorTitle": "Discovery Failed",
+      "unknownError": "An unknown error occurred."
+    },
+    "toast": {
+      "errorTitle": "Discovery Error: {{companyName}}"
+    },
+    "viewData": "View Data",
+    "viewDataTooltip": "View the enriched data scraped for this company.",
+    "enrichedDataTitle": "Enriched Data for {{companyName}}",
+    "enrichedDataDescription": "The following data was discovered and scraped.",
+    "tryAgain": "Try Again"
+  },
+  "discoveryModal": {
+    "title": "Website Discovery for {{companyName}}",
+    "urlDescription": "Enter or verify the website URL. You can also customize scraping parameters.",
+    "customizeScraperButton": "Customize Scraper",
+    "customizeScraperTooltip": "Advanced: Define custom selectors for scraping this specific site.",
+    "useUrlAndDiscoverButton": "Use URL & Discover",
+    "useUrlAndDiscoverTooltip": "Start the discovery and scraping process with the current URL and configuration.",
+    "error": {
+      "validationTitle": "Validation Error",
+      "urlRequired": "Please enter a URL.",
+      "invalidUrl": "Please enter a valid HTTP/HTTPS URL."
+    },
+    "toast": {
+      "initiatedTitle": "Discovery Initiated",
+      "initiatedDescription": "Discovery process started for {{companyName}} with URL {{manualUrl}}.",
+      "configUpdatedTitle": "Configuration Updated",
+      "configUpdatedDescription": "Scraper config updated locally in modal."
+    },
+    "previewError": {
+      "loadFailed": "Could not load preview. The website might block embedding or is unavailable.",
+      "enterValidUrl": "Enter a valid HTTP/HTTPS URL to preview."
+    },
+    "previewLoading": "Loading preview...",
+    "previewPlaceholder": "Enter a valid URL above to see a preview.",
+    "configTitle": "Customize Scraper for {{companyName}}",
+    "configDescription": "Define specific CSS selectors and extraction rules for this website. Changes here will affect the current discovery attempt.",
+    "backToUrlButton": "Back to URL Input",
+    "cancelButton": "Cancel"
+  },
   "sources": {
     "google": "Google",
     "linkedin": "LinkedIn",
@@ -105,5 +151,7 @@
     "next": "Next"
   },
   "noResults.map": "No results to show on map",
-  "company.na": "N/A"
+  "company.na": "N/A",
+  "discovery.customizeScraping": "Customize Scraping",
+  "tooltip.startDiscovery": "Start automatic website discovery and data scraping."
 }

@@ -1,6 +1,72 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card';
-import { BarChart, ListChecks, FileText, Zap } from 'lucide-react'; // Example Icons
+import { BarChart as LucideBarChart, ListChecks, FileText, Zap } from 'lucide-react'; // Renamed BarChart to avoid conflict
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler, // Added Filler for area charts if needed
+} from 'chart.js';
+
+// Register Chart.js components
+import { ExportButton } from './ExportButton'; // Added ExportButton
+
+// Register Chart.js components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
+
+// --- CSV Export Utility --- (Integrated directly for this example)
+function downloadDataAsCSV(data: any[], filename: string = 'export.csv') {
+  if (!data || data.length === 0) {
+    console.warn("No data to export or data is empty.");
+    return false; // Indicate failure or no action
+  }
+  try {
+    const replacer = (_key: string, value: any) => value === null || typeof value === 'undefined' ? '' : String(value).includes(',') ? `"${String(value)}"` : String(value);
+    const header = Object.keys(data[0]);
+    const csvRows = [
+      header.join(','), // Header row
+      ...data.map(row => header.map(fieldName => replacer(fieldName, row[fieldName])).join(','))
+    ];
+    const csvString = csvRows.join('\r\n');
+
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    if (link.download !== undefined) { // Feature detection
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', filename);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      return true; // Indicate success
+    } else {
+      console.error("Browser does not support link.download attribute.");
+      return { error: "Browser does not support direct download." };
+    }
+  } catch (e) {
+    console.error("Error generating CSV:", e);
+    return { error: e instanceof Error ? e.message : "Unknown error during CSV generation." };
+  }
+}
+// --- End CSV Export Utility ---
+
 
 // Placeholder data types - these would come from actual data aggregation
 interface EnrichmentStat {
@@ -36,7 +102,7 @@ export function EnrichmentDashboard() {
     { label: 'Total Companies Enriched', value: '1,234', icon: Zap },
     { label: 'Websites Discovered', value: '3,456', icon: ListChecks },
     { label: 'Scraping Jobs Executed', value: '5,678', icon: FileText },
-    { label: 'Average Enrichment Rate', value: '75%', icon: BarChart },
+    { label: 'Average Enrichment Rate', value: '75%', icon: LucideBarChart }, // Use renamed icon
   ];
 
   const recentActivities: RecentActivity[] = [
@@ -50,7 +116,27 @@ export function EnrichmentDashboard() {
     <div className="space-y-6 p-4 md:p-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
         <h1 className="text-2xl font-bold tracking-tight">Enrichment Dashboard</h1>
-        {/* Add date range picker or other global filters here */}
+        <ExportButton
+          onExport={async (format) => {
+            if (format === 'csv') {
+              // For demonstration, export recentActivities
+              // In a real app, this data might be fetched or passed as props
+              const dataToExport = recentActivities.map(act => ({
+                company: act.companyName,
+                activity: act.activityType,
+                details: act.details || '',
+                time: act.timestamp.toISOString(),
+              }));
+              return downloadDataAsCSV(dataToExport, 'enrichment_activity.csv');
+            }
+            // Placeholder for other formats
+            console.log(`Exporting as ${format} (not implemented for this demo)`);
+            return { error: `${format.toUpperCase()} export not implemented yet.`};
+          }}
+          fileName="enrichment_dashboard_data"
+        >
+          Export Dashboard Data
+        </ExportButton>
       </div>
 
       {/* Stats Section */}
@@ -94,15 +180,57 @@ export function EnrichmentDashboard() {
       {/* Placeholder for more charts/data visualizations */}
       <Card>
         <CardHeader>
-          <CardTitle>Enrichment Trends (Placeholder)</CardTitle>
+          <CardTitle>Enrichment Trends</CardTitle>
+          <CardDescription>Trend of companies enriched over the last 7 days (mock data).</CardDescription>
         </CardHeader>
-        <CardContent className="h-60 flex items-center justify-center bg-gray-50 rounded">
-            <p className="text-muted-foreground">Chart visualizations will be here.</p>
+        <CardContent className="h-80">
+          <Line data={enrichmentTrendData} options={chartOptions} />
         </CardContent>
       </Card>
 
     </div>
   );
 }
+
+// Mock data and options for the chart
+const chartLabels = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'];
+const enrichmentTrendData = {
+  labels: chartLabels,
+  datasets: [
+    {
+      label: 'Companies Enriched',
+      data: [12, 19, 15, 22, 18, 25, 20], // Mock data points
+      fill: true,
+      borderColor: 'rgb(54, 162, 235)', // Blue
+      backgroundColor: 'rgba(54, 162, 235, 0.2)',
+      tension: 0.1,
+      pointRadius: 4,
+      pointHoverRadius: 6,
+    },
+  ],
+};
+
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: 'top' as const,
+    },
+    title: {
+      display: false, // Title is in CardHeader
+      text: 'Enrichment Trends',
+    },
+  },
+  scales: {
+    y: {
+      beginAtZero: true,
+      ticks: {
+        precision: 0 // Ensure whole numbers for counts
+      }
+    },
+  },
+};
+
 
 export default EnrichmentDashboard;

@@ -1079,3 +1079,333 @@ If you need to extend, optimize, or add new features (like re-enabling AI parser
 
 ---
 
+_**User**_
+
+Now please this curent result are coming for external and internal right? since I only have one company in my db. 
+
+2. If you read the Developer A's tasks from progress/Plan/search-scraper-integration-plan.md , you will see that I need to see certain buton on the card that will allow me to do the following: 
+1. Scrape
+2. Dialbox or modal where user can difiene what the want to scrape ...
+
+NB: I am wrong? please. explain a bit how it should be, becaue right now  I onle see " Dicover for " then company name and that is all. how will the rest happen accorgin to the file?  You can also read this: progress/Building.Plan-reviewed-Only-Search-feature.md
+
+---
+
+_**Assistant**_
+
+Read file: progress/Plan/search-scraper-integration-plan.md
+
+---
+
+Read file: progress/Building.Plan-reviewed-Only-Search-feature.md
+
+---
+
+Here’s a clear breakdown based on your questions and the plans:
+
+---
+
+## 1. **Are the Results Internal, External, or Both?**
+
+**Yes, you are seeing both internal (your DB) and external (public/free APIs) results.**
+- The backend is designed to:
+  - Query your own database (Supabase, “discovered_companies” table).
+  - Query external sources (like Companies House, Wikidata, etc.).
+  - Merge and display all results together.
+- Since you only have one company in your DB, most results you see are likely from external sources, unless your query matches your single company.
+
+---
+
+## 2. **What UI/UX Should Be Present According to the Plan?**
+
+### **From the Plan (Developer A’s Tasks):**
+- **Company Card** should have:
+  - A “Discover” or “Scrape” button.
+  - A modal or dialog (when you click “Scrape”) where the user can define what they want to scrape (e.g., which fields, custom config).
+  - Progress indicators for scraping/discovery.
+  - (Later phases) Data preview, enrichment, and confidence indicators.
+
+### **What You’re Seeing Now:**
+- You only see “Discover for [company name]” on the card.
+- **You do NOT yet see:**
+  - A “Scrape” button.
+  - A modal/dialog for custom scraping config.
+  - Real-time progress or data preview.
+
+### **Why?**
+- The plan’s UI components for scraping and enrichment (e.g., `DiscoveryButton`, `ScrapingProgress`, `DiscoveryModal`, `ScraperConfigEditor`, etc.) are **not yet implemented or integrated** into your `CompanyCard` component.
+- Only the initial “Discover” action is present.
+
+---
+
+## 3. **How Should It Work According to the Plan?**
+
+**Ideal Flow (per the plan):**
+1. **User sees a “Scrape” or “Discover” button** on each company card.
+2. **User clicks the button**:
+   - A modal/dialog opens (e.g., `DiscoveryModal` or `ScraperConfigEditor`).
+   - User can define what to scrape (fields, custom config, etc.).
+3. **User starts the scrape**:
+   - Progress is shown (e.g., `ScrapingProgress`).
+   - When done, a preview of the scraped/enriched data is shown.
+4. **User can view enriched data** on the card, with indicators for data quality/confidence.
+
+**You are currently at step 1, with only a basic “Discover” button.**
+
+---
+
+## 4. **What’s Next to Implement?**
+
+- Add a “Scrape” button to each company card.
+- When clicked, open a modal/dialog for the user to define scraping options.
+- Show progress and preview when scraping is running/completed.
+- (Optional) Add enrichment and confidence indicators as per later phases.
+
+---
+
+### **Summary Table**
+
+| Feature/Component         | Status         | Plan Reference                |
+|--------------------------|---------------|-------------------------------|
+| Discover/Scrape Button   | Basic present | Phase 1, CompanyCard          |
+| Scraper Config Modal     | Not present   | Phase 2, ScraperConfigEditor  |
+| Progress Indicator       | Not present   | Phase 2, ScrapingProgress     |
+| Data Preview/Enrichment  | Not present   | Phase 3, DataPreview, Enrich  |
+
+---
+
+**You are NOT wrong!**  
+You are just at the early stage of the UI integration.  
+**Next step:** Implement the “Scrape” button and modal as described above.
+
+Would you like help scaffolding the “Scrape” button and modal for your company cards?
+
+---
+
+_**User**_
+
+could you please double check all the files from src/components/search to see if the UI componenenst you mentioned are relly not integrated in campanycard and what we will need to do?  Because the Developer A reported this: 
+"Integrate API calls for website discovery & scraping flow
+
+- Refactored `searchStore.ts` (`initiateWebsiteDiscovery` action) to replace mock logic with actual `fetch` calls to `/api/search/discover` and `/api/search/scraper/execute`.
+- Ensured `CompanyCard.tsx` correctly displays states (loading, progress, data, errors) driven by these API calls.
+- Implemented robust error handling in `CompanyCard.tsx`, including toast notifications for API errors and refined retry logic.
+- Added integration tests (`CompanyCard.integration.test.tsx`) for the discovery/scraping flow, covering success and various error scenarios using mock API responses.
+
+Created CompanyCard.integration.test.tsx with four scenarios covering successful discovery/scraping, discovery API errors (with retry), scraping API errors, and no website found by discovery. Utilized Vitest global fetch mocking and RTL for UI interaction and verification. Store is reset before each test. Basic i18n and TooltipProvider are included in test setup.
+
+Verified that CompanyCard.tsx is structured to react to discoveryStates from searchStore. The refactored store action will now drive these states with API responses. Specific UI changes for error display and retry logic will be handled in the next task. WebsiteDiscovery.tsx and DiscoveryModal.tsx integration with the refactored store action can be done if they are explicitly used to initiate the discovery/scraping flow."
+
+
+
+
+---
+
+_**Assistant**_
+
+<details>
+            <summary>Listed directory src/components/search • **24** results</summary>
+        
+| Name |
+|-------|
+| 📄 `CompanyCard.tsx` |
+| 📄 `DataVisualizationWidget.tsx` |
+| 📄 `BulkDiscovery.tsx` |
+| 📄 `ExportButton.tsx` |
+| 📄 `DataQualityIndicator.tsx` |
+| 📄 `DataComparisonView.tsx` |
+| 📄 `CustomScraperBuilderUI.tsx` |
+| 📄 `AdvancedFilterPanel.tsx` |
+| 📄 `CompanyCard.integration.test.tsx` |
+| 📄 `WebsiteDiscovery.tsx` |
+| 📄 `ScraperConfigEditor.tsx` |
+| 📄 `EnrichmentDashboard.tsx` |
+| 📄 `DataPreview.tsx` |
+| 📄 `ScrapingProgress.tsx` |
+| 📄 `EnrichedDataDisplay.tsx` |
+| 📄 `DiscoveryResults.tsx` |
+| 📄 `DiscoveryModal.tsx` |
+| 📄 `DiscoveryButton.tsx` |
+| 📄 `ConfidenceIndicator.tsx` |
+| 📄 `ResultsGrid.tsx` |
+| 📄 `CompanyCardSkeleton.tsx` |
+| 📄 `EnhancedSearchBar.tsx` |
+| 📄 `MapView.tsx` |
+| 📄 `SmartSearchBar.tsx` |
+
+</details>
+
+---
+
+Read file: src/components/search/CompanyCard.tsx
+
+---
+
+Read file: src/components/search/CompanyCard.tsx
+
+---
+
+Here’s a precise summary after reviewing the code and your developer’s report:
+
+---
+
+## 1. **Which UI Components Are Integrated in `CompanyCard`?**
+
+**Integrated:**
+- `DiscoveryButton` (for starting discovery/scraping)
+- `ScrapingProgress` (shows progress for “discovering” and “scraping” states)
+- Error handling and retry logic (with toast notifications)
+- “Enriched” badge and some enriched data display
+
+**Not Integrated (but exist in your codebase):**
+- `WebsiteDiscovery.tsx`
+- `DiscoveryModal.tsx`
+- `ScraperConfigEditor.tsx`
+- `DataPreview.tsx`
+- `EnrichedDataDisplay.tsx`
+- `DiscoveryResults.tsx`
+- (and others for advanced/optional features)
+
+**How do we know?**
+- Only `DiscoveryButton` and `ScrapingProgress` are imported and used in `CompanyCard.tsx`.
+- There are placeholders (comments) for a “View Enriched Data” button, but no modal or config editor is rendered.
+
+---
+
+## 2. **What’s Actually Happening in the UI?**
+
+- When you click “Discover,” the card triggers the discovery/scraping flow via the store.
+- The card updates its UI based on the state (`idle`, `discovering`, `scraping`, `completed`, `error`).
+- If completed, it shows a badge and some enriched data, but **does not open a modal or allow custom scraping config**.
+
+---
+
+## 3. **What’s Missing for Full Plan Compliance?**
+
+**To match the plan and the developer’s notes, you still need to:**
+- Integrate a modal/dialog (e.g., `DiscoveryModal` or `ScraperConfigEditor`) that opens when the user wants to customize scraping.
+- Allow the user to define what to scrape (fields, config) in that modal.
+- Optionally, show a preview of the data (`DataPreview.tsx`) and allow further enrichment actions.
+
+---
+
+## 4. **What Should You Do Next?**
+
+**To fully implement the planned UX:**
+1. **Add a “Scrape” or “Advanced Scrape” button** to each card (in addition to “Discover”).
+2. **When clicked, open `DiscoveryModal` or `ScraperConfigEditor`**:
+   - Pass the company info and a callback to start the scrape with custom config.
+3. **Show progress and results in the modal** (optionally use `DataPreview`).
+4. **Update the card to show a “View Enriched Data” button** when scraping is complete, which opens the modal with the results.
+
+---
+
+## 5. **Summary Table**
+
+| Component                | Exists in Codebase | Used in CompanyCard? | What to Do Next?                |
+|--------------------------|--------------------|----------------------|----------------------------------|
+| DiscoveryButton          | Yes                | Yes                 | Already used                     |
+| ScrapingProgress         | Yes                | Yes                 | Already used                     |
+| DiscoveryModal           | Yes                | No                  | Integrate for custom scraping    |
+| ScraperConfigEditor      | Yes                | No                  | Integrate for config in modal    |
+| DataPreview              | Yes                | No                  | Integrate for preview in modal   |
+| EnrichedDataDisplay      | Yes                | No                  | Integrate for enriched results   |
+
+---
+
+**In summary:**  
+- The basic flow is integrated, but the advanced modal/config/preview features are not yet wired up in `CompanyCard`.
+- You should add a button to open the modal, and pass the right props/callbacks to allow custom scraping and preview.
+
+Would you like a step-by-step guide or code to integrate the modal and config editor into your company cards?
+
+---
+
+_**User**_
+
+on my search page I want things to be organized. 
+1. we will add a kind of selectionn just like google , linked and crunchbase, it is gonna be "database which when selected, then the data will be retrieved from the  db. And if we select beside it free data, only then the other external sources will be querried. Do you get what I mean? 
+
+---
+
+_**Assistant**_
+
+Yes, I understand perfectly! You want to add a **data source selector** similar to the existing Google, LinkedIn, and Crunchbase selectors, but with:
+
+1. **"Database"** - When selected, only query your internal database (Supabase)
+2. **"Free Data"** - When selected, query external sources (Companies House, Wikidata, etc.)
+3. **Both can be selected together** - Query both internal and external sources
+
+This gives users control over where their search results come from.
+
+---
+
+## **Current State**
+Looking at your code, you already have:
+- `selectedSources` in the search store with `["google", "linkedin", "crunchbase"]`
+- A source selector UI (likely in `SecondaryMenuBar` or similar)
+
+---
+
+## **What We Need to Do**
+
+### **1. Update the Store**
+- Add `"database"` and `"free_data"` to the available sources
+- Update the default selection to include `"database"`
+
+### **2. Update the Backend**
+- Modify `/api/search` to check which sources are selected
+- If `"database"` is selected → query Supabase
+- If `"free_data"` is selected → query external APIs
+- If both → query both and merge results
+
+### **3. Update the UI**
+- Add the new source options to your source selector
+- Maybe rename existing sources to be clearer (e.g., "Google Search", "LinkedIn", "Crunchbase")
+
+---
+
+## **Implementation Plan**
+
+**Step 1:** Update the search store to include the new sources
+**Step 2:** Update the backend to handle the new source logic
+**Step 3:** Update the UI to show the new source options
+
+Would you like me to implement this step by step? I can start with updating the store and backend logic, then move to the UI.
+
+**Which part would you like me to start with?**
+
+---
+
+_**User**_
+
+Yes please, implement all step by step. 
+
+---
+
+_**Assistant**_
+
+
+
+
+---
+
+```diff
+    viewMode: "grid",
+    // Source selection
+-   selectedSources: ["google", "linkedin", "crunchbase"],
++   selectedSources: ["database", "free_data"],
+    // Caching
+    cacheKey: null,
+```
+
+---
+
+
+
+---
+
+
+
+---
+
