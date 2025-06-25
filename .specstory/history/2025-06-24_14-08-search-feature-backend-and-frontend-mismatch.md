@@ -2353,11 +2353,157 @@ Okay sure, since therre are some card like those of the free data that do not ha
 
 _**Assistant**_
 
+```diff
+    onConfirmManualUrl?: (companyId: string, manualUrl: string, config?: ScraperConfig) => Promise<void>;
+  }
++ 
++ function normalizeUrl(url: string): string {
++   if (!url) return '';
++   if (/^https?:\/\//i.test(url)) return url;
++   return `https://${url}`;
++ }
+  
+  export function DiscoveryModal({
+```
 
+```diff
+    useEffect(() => {
+      if (isOpen) {
+-       const urlToUse = companyDiscoveryState?.website || initialUrl || '';
++       let urlToUse = companyDiscoveryState?.website || initialUrl || '';
++       if (urlToUse) {
++         urlToUse = normalizeUrl(urlToUse);
++       }
+        setManualUrl(urlToUse);
+        if (isValidHttpUrl(urlToUse)) {
+```
 
 ---
 
+The code is updated!  
+- Now, whenever a company card passes a website to the modal, it will automatically prepend `https://` if the website does not already start with `http://` or `https://`.
+- This ensures the preview and scraping will work for domains like `neuralleap.ai` and will gracefully handle cards with no website.
 
+**You can now test:**
+- Cards with and without a website
+- Cards with a website missing the protocol (should now preview correctly)
+
+If you need further tweaks or want to handle more edge cases, just let me know!
+
+---
+
+_**User**_
+
+Thanks you. Now  please let's have a look at the configuration. Can you please double check? Is this the place where the user  Write What They Want to Scrape?
+Here is how I get to that: I click on the icon on the companyCard then  "Website Discovery for NeuralLeap AI", the "Confirm URL & Configure Scraper" and i se this:
+"
+Scraper Configuration Editor
+Define or edit the selectors and rules for scraping data.
+
+Configuration (JSON)
+{
+  "websiteUrl": "https://neuralleap.ai",
+  "selectors": [
+    {
+      "fieldName": "title",
+      "cssSelector": "h1",
+      "type": "text"
+    }
+  ]
+}"
+
+---
+
+_**Assistant**_
+
+Yes, you are exactly right!  
+**The “Scraper Configuration Editor” is the place where the user writes what they want to scrape.**
+
+---
+
+## **How It Works**
+
+- When you click the icon on the company card, you open the “Website Discovery” modal.
+- After confirming the URL, you see the **Scraper Configuration Editor**.
+- Here, the user can:
+  - **Edit the JSON configuration** (or use a form, if you provide one)
+  - **Define/select which fields to scrape** (e.g., title, emails, phone numbers, etc.)
+  - **Specify CSS selectors** for each field (e.g., `"cssSelector": "h1"` for the title)
+  - **Set the type** (e.g., `"type": "text"`)
+
+**Example:**
+```json
+{
+  "websiteUrl": "https://neuralleap.ai",
+  "selectors": [
+    {
+      "fieldName": "title",
+      "cssSelector": "h1",
+      "type": "text"
+    }
+  ]
+}
+```
+- This config tells the scraper:  
+  “Go to https://neuralleap.ai, and extract the text from the first `<h1>` element as the ‘title’ field.”
+
+---
+
+## **What Can Be Improved?**
+
+- **User Experience:**  
+  - If your users are not technical, consider providing a visual form or field picker instead of raw JSON.
+  - You can add buttons to “Add Field”, “Choose Type”, “Test Selector”, etc.
+- **Field Options:**  
+  - Allow users to add more fields (e.g., email, phone, address, social links).
+  - Provide common templates or suggestions for selectors.
+- **Validation:**  
+  - Validate the JSON/config before allowing the user to proceed.
+  - Show errors if a selector is invalid or missing.
+
+---
+
+## **Summary Table**
+
+| Step/Screen                | What User Does                                 | What It Means                        |
+|----------------------------|------------------------------------------------|--------------------------------------|
+| Website Discovery Modal    | Confirm or edit the website URL                | Choose what site to scrape           |
+| Scraper Configuration Editor | Define/edit selectors and fields (JSON or form) | **Specify what to scrape**           |
+| Start Discovery/Scrape     | Click button to start scraping                 | Scraper uses the config to extract   |
+
+---
+
+## **You are correct:**
+- **This is the place where the user writes what they want to scrape.**
+- The configuration (selectors, fields, types) is what controls the scraping process.
+
+If you want to make this more user-friendly, you can build a UI on top of the JSON editor, but the core logic is correct!
+
+If you want to see how to add more fields, templates, or a visual editor, just let me know!
+
+---
+
+_**User**_
+
+ah I see but this is still technical. I want the best user-friendly config. Here is the plan:
+1. the default scrapping data if the user does not profide any detail must be "phone numbers", "email", "address (location)"...
+2. The user may want more or other information depending on the site like "information on the about page" I don't know btu any info they might need.  So it should be like some kind of chat box? (you may propose better) where the user can type natural language the way I am typing to you at the moment. 
+ie: get me or scrape the list of , the information about the number ect...
+
+Do you get my point?  
+
+---
+
+_**Assistant**_
+
+Absolutely, I get your point—and your vision is spot on for a modern, user-friendly, AI-powered scraping experience!
+
+---
+
+## **Your Desired Flow**
+
+1. **Default Scraping:**  
+   - If the user does nothing, the system should automatically extract the most
 
 ---
 

@@ -72,3 +72,9 @@ Or anything else in this new approach
 CompanyCard.tsx (main card design)
 DiscoveryModal.tsx (dialog design)
 ScrapingProgress.tsx (progress indicators) -- to beautify
+
+Next steps:
+1.Beautify the UI
+2. redirect the user to use google if a and info is not found (like if the serach querry is: "trip advisor" and the user does not find any results)
+3. filter the free data from the backend to have only data that have valid website with "https://"
+4. Implement auto-generated or AI-assisted config

@@ -108,7 +108,7 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
                 variant="default"
                 size="sm"
                 // START: Color change for the blue discovery button
-                className="w-full bg-[#1981e3] hover:bg-[#1981e3]/90 text-white shadow-sm hover:shadow-md transition-all"
+                className="w-full bg-[#3ea1ed]/90 hover:bg-[#3ea1ed] text-white shadow-sm hover:shadow-md transition-all"
                 // END: Color change for the blue discovery button
               />
             </TooltipTrigger>
