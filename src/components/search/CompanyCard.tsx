@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { DiscoveryModal } from './DiscoveryModal';
 import { DataPreview } from './DataPreview';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip";
+import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from '@/src/components/ui/dialog';
 
 type CompanyWithEmployeeCount = Company & { employee_count?: string; id: string };
 
@@ -38,6 +39,7 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
   const { toast } = useToast();
   const [isDiscoveryModalOpen, setIsDiscoveryModalOpen] = useState(false);
   const [isDataPreviewModalOpen, setIsDataPreviewModalOpen] = useState(false);
+  const [showDefaultScrapeWarning, setShowDefaultScrapeWarning] = useState(false);
 
   const initiateWebsiteDiscovery = useSearchStore(state => state.initiateWebsiteDiscovery);
   const discoveryStates = useSearchStore(state => state.discoveryStates);
@@ -95,6 +97,16 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
   const cardClasses = `group bg-white border border-gray-200 rounded-xl shadow-sm transition-all duration-300 hover:shadow-md hover:border-blue-300/50`;
   const employeeDisplay = company.employee_count || 'N/A';
 
+  const handleDefaultScrape = () => {
+    handleDiscoverClick();
+    setShowDefaultScrapeWarning(false);
+  };
+
+  const handleShowDiscoveryModal = () => {
+    setIsDiscoveryModalOpen(true);
+    setShowDefaultScrapeWarning(false);
+  };
+
   const renderDiscoverySection = () => {
     if (!companyDiscoveryState || companyDiscoveryState.status === 'idle') {
       return (
@@ -108,7 +120,7 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
                 variant="default"
                 size="sm"
                 // START: Color change for the blue discovery button
-                className="w-full bg-[#3ea1ed]/90 hover:bg-[#3ea1ed] text-white shadow-sm hover:shadow-md transition-all"
+                className="w-full bg-[#1B3B6D] hover:bg-[#1B3B6D]/90 text-white shadow-sm hover:shadow-md transition-all"
                 // END: Color change for the blue discovery button
               />
             </TooltipTrigger>
@@ -304,28 +316,27 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
               <div className={`text-xs font-bold px-2 py-1 rounded-full border ${confidenceStyle.bg} ${confidenceStyle.text} ${confidenceStyle.border} flex-shrink-0`}>
                 {confidenceScore}%
               </div>
-              {/* START: Prominent 'Customize Scraping' button (top) */}
+              {/* TOP: Discover for {companyName} (search icon) button */}
               {(!companyDiscoveryState || companyDiscoveryState.status === 'idle' || companyDiscoveryState.status === 'completed' || companyDiscoveryState.status === 'error') && (
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
-                        variant="outline" // Changed to outline for more visibility
-                        size="sm" // Changed to sm for slightly larger size
-                        className="h-8 px-3 text-sm border-blue-400 text-blue-700 hover:bg-blue-50 hover:border-blue-500" // Added specific styling for prominence
-                        onClick={() => setIsDiscoveryModalOpen(true)}
-                        title={t('discovery.customizeScraping', "Customize Scraping")}
+                        variant="default"
+                        size="sm"
+                        className="h-8 px-3 text-sm bg-[#1B3B6D] hover:bg-[#1B3B6D]/90 text-white shadow-sm"
+                        onClick={() => setShowDefaultScrapeWarning(true)}
+                        title={t('discovery.startDiscovery', `Discover for ${company.name}`)}
                       >
-                        <Settings2Icon className="w-4 h-4 mr-1.5" /> 
+                        <SearchIcon className="w-4 h-4 mr-1.5" /> 
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>{t('tooltip.customizeScraping', "Manually set website URL or customize scraping configuration.")}</p>
+                      <p>{t('tooltip.startDiscovery', "Start automatic website discovery and data scraping.")}</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               )}
-              {/* END: Prominent 'Customize Scraping' button (top) */}
             </div>
           </div>
         </CardHeader>
@@ -429,9 +440,36 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
 
         {/* Discovery Action Footer */}
         <CardFooter className="p-4 border-t border-gray-200 group-hover:border-blue-200 flex-shrink-0 mt-auto">
-          {renderDiscoverySection()}
+          {/* BOTTOM: Website Discovery for {companyName} (custom/AI flow) button */}
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full border-blue-400 text-blue-700 hover:bg-blue-50 hover:border-blue-500"
+            onClick={handleShowDiscoveryModal}
+            title={t('discovery.customizeScraping', `Website Discovery for ${company.name}`)}
+          >
+            <EyeIcon className="w-4 h-4 mr-1.5" /> Website Discovery for {company.name}
+          </Button>
         </CardFooter>
       </div>
+
+      {/* Default Scrape Warning Modal */}
+      <Dialog open={showDefaultScrapeWarning} onOpenChange={setShowDefaultScrapeWarning}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Default Website Scraping</DialogTitle>
+            <DialogDescription>
+              The following details will be scraped and saved to the database (if available): <br/>
+              <span className="font-semibold">Phone number, email, address, company name</span>.<br/>
+              <span className="text-xs text-gray-500">You can customize what to extract instead.</span>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex-col sm:flex-row gap-2 pt-4">
+            <Button variant="default" onClick={handleDefaultScrape} className="w-full sm:w-auto">Okay</Button>
+            <Button variant="outline" onClick={handleShowDiscoveryModal} className="w-full sm:w-auto">Customize what to extract</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {company.id && company.name && (
         <DiscoveryModal

@@ -154,5 +154,6 @@
   "company.na": "N/A",
   "discovery.customizeScraping": "Customize Scraping",
   "tooltip.startDiscovery": "Start automatic website discovery and data scraping.",
-  "tooltip.customizeScraping": "Manually set website URL or customize scraping configuration."
+  "tooltip.customizeScraping": "Manually set website URL or customize scraping configuration.",
+  "discovery.startDiscovery": "Discover for NeuralLeap AI"
 }

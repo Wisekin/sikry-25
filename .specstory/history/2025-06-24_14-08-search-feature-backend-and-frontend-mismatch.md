@@ -2503,7 +2503,1312 @@ Absolutely, I get your point—and your vision is spot on for a modern, user-fri
 ## **Your Desired Flow**
 
 1. **Default Scraping:**  
-   - If the user does nothing, the system should automatically extract the most
+   - If the user does nothing, the system should automatically extract the most common business data:  
+     - Phone numbers  
+     - Email addresses  
+     - Address/location  
+     - (Optionally: company name, website, social links)
+
+2. **User-Friendly Customization:**  
+   - The user should be able to **type in natural language** what they want to scrape, e.g.:
+     - “Get me the list of team members”
+     - “Scrape the about page information”
+     - “Find all product names and prices”
+     - “Extract all social media links”
+   - The system should **interpret this request** (using AI/NLP) and convert it into the appropriate scraping configuration (selectors, fields, etc.).
+   - The user should NOT have to write or edit JSON or CSS selectors.
+
+---
+
+## **How to Implement This (Best Practice)**
+
+### **1. Default Scraping (Zero Input)**
+- When the user clicks “Discover” or “Scrape” and provides no extra input, the backend should:
+  - Use a default config to extract phone, email, address, etc.
+  - This can be hardcoded or AI-generated.
+
+### **2. Natural Language Scraping Request**
+- Add a **chat box or prompt input** in the modal (above or instead of the JSON/config editor).
+- User types what they want in plain English.
+- When they submit, send this prompt to your backend (or an AI service like OpenAI).
+- The backend parses the request and generates the scraping config (fields, selectors, etc.).
+- Show the user a preview of what will be scraped, and let them confirm or edit.
+
+### **3. Example UI Flow**
+- **Step 1:** User opens the modal, sees a prompt:  
+  _“What do you want to extract from this site?”_  
+  (with a chat box or input field)
+- **Step 2:** User types:  
+  _“Get me all the emails and the about page text”_
+- **Step 3:** System shows a summary:  
+  _“I will extract: emails, about page text. Proceed?”_
+- **Step 4:** User clicks “Start Scraping”  
+- **Step 5:** Results are shown as usual
+
+---
+
+## **Technical Implementation Outline**
+
+- **Frontend:**  
+  - Add a chat-style input or prompt box in the modal.
+  - If the user enters a prompt, send it to the backend.
+  - If not, use the default config.
+
+- **Backend:**  
+  - Use an AI model (e.g., OpenAI, or your own NLP logic) to parse the user’s request and generate a scraping config.
+  - If no prompt, use the default config.
+
+- **Optional:**  
+  - Show the generated config to the user for confirmation (optional for advanced users).
+
+---
+
+## **Summary Table**
+
+| User Action                | System Behavior                                  |
+|----------------------------|--------------------------------------------------|
+| Clicks “Scrape” (no input) | Scrapes default fields (email, phone, address)   |
+| Types a custom request     | AI interprets and scrapes requested info         |
+| Confirms/edits config      | (Optional) User can review before scraping       |
+
+---
+
+## **Why This Is Great**
+- **Non-technical users** can get what they want with zero or natural language input.
+- **Power users** can still review or tweak the config if needed.
+- **AI-powered**: The system gets smarter over time and can handle more complex requests.
+
+---
+
+**Would you like a step-by-step plan or code scaffolding for this new, user-friendly, AI-powered scraping prompt?**  
+Let me know how you want to proceed!
+
+---
+
+_**User**_
+
+Great job. You got it. Well you will rather help our developer A write all of that. So please Write the full detail instruction to achieve that, include the path of the code , best practices, beautiful and modern design... to help our developer A know straight away what has been accomplish and where to start and what to do. 
+
+---
+
+_**Assistant**_
+
+Absolutely! Here’s a comprehensive, developer-focused instruction set for implementing a **user-friendly, AI-powered, natural language scraping configuration** in your app. This will help Developer A understand what’s been done, what’s needed, and how to proceed.
+
+---
+
+# **Developer Instruction: AI-Powered, User-Friendly Scraper Configuration**
+
+---
+
+## **1. Current State (What’s Already Accomplished)**
+
+- **Discovery and scraping can be triggered from the company card (src/components/search/CompanyCard.tsx).**
+- **DiscoveryModal (src/components/search/DiscoveryModal.tsx)** is used for URL confirmation and configuration.
+- **ScraperConfigEditor (src/components/search/ScraperConfigEditor.tsx)** allows manual JSON editing of selectors.
+- **Default scraping config exists for basic fields (email, phone, address) if the user does not provide custom config.**
+- **Scraping is triggered via a “one-click” flow, but advanced config is still technical (JSON/selectors).**
+
+---
+
+## **2. Goal: User-Friendly, AI-Powered Scraping Prompt**
+
+**Allow users to type what they want to scrape in natural language (like a chat box), and have the system (AI) generate the scraping configuration automatically.**
+
+---
+
+## **3. Implementation Plan**
+
+### **A. UI/UX Changes**
+
+#### **a. Add a Natural Language Prompt Input**
+- **File:** `src/components/search/DiscoveryModal.tsx`
+- **Where:** In the modal, above or instead of the JSON config editor.
+- **Design:**  
+  - Use a chat-style input or a large prompt box.
+  - Placeholder: _“What do you want to extract from this site? (e.g. ‘emails and about page text’)”_
+  - Add a “Generate Configuration” button next to or below the input.
+
+#### **b. Show a Summary/Preview of What Will Be Scraped**
+- After the user submits a prompt, show a summary of what the AI will extract.
+- Optionally, allow the user to edit or confirm before scraping.
+
+#### **c. Fallback to Default Config**
+- If the user leaves the prompt empty, use the default config (email, phone, address, etc.).
+
+#### **d. Modern Design Best Practices**
+- Use Tailwind CSS for consistent, modern styling.
+- Use card layouts, rounded corners, subtle shadows, and clear call-to-action buttons.
+- Animate transitions between steps (prompt → summary → scraping).
+- Ensure accessibility (labels, ARIA, keyboard navigation).
+
+---
+
+### **B. Frontend Logic**
+
+#### **a. Handle Prompt Submission**
+- On submit, send the prompt (and the website URL) to the backend endpoint for AI parsing.
+- Show a loading spinner while waiting for the AI/config generation.
+
+#### **b. Receive and Display Generated Config**
+- When the backend returns the generated config, show a summary (fields to be scraped).
+- Optionally, allow the user to edit or confirm.
+
+#### **c. Trigger Scraping**
+- On confirmation, trigger the scraping process with the generated config.
+
+---
+
+### **C. Backend Logic**
+
+#### **a. New Endpoint for AI Config Generation**
+- **Path:** `app/api/search/scraper/generate-config.ts` (or similar)
+- **Input:** `{ prompt: string, websiteUrl: string }`
+- **Output:** `{ config: ScraperConfig, summary: string[] }`
+- **Logic:**  
+  - Use OpenAI (or similar) to parse the prompt and generate a config object (fields, selectors, types).
+  - If the prompt is empty, return the default config.
+  - Return a summary of what will be scraped for display in the UI.
+
+#### **b. Update Scraping Endpoint**
+- Accept the generated config and use it for scraping.
+
+---
+
+### **D. Example User Flow**
+
+1. **User opens the modal.**
+2. **User sees a prompt:**  
+   _“What do you want to extract from this site?”_
+3. **User types:**  
+   _“Get all emails and the about page text”_
+4. **User clicks “Generate Configuration”**
+5. **System shows:**  
+   _“I will extract: emails, about page text. Proceed?”_
+6. **User clicks “Start Scraping”**
+7. **Results are shown as usual.**
+
+---
+
+## **4. File/Component Breakdown**
+
+| File/Component                                    | Purpose/Change Needed                                                                 |
+|---------------------------------------------------|---------------------------------------------------------------------------------------|
+| `src/components/search/DiscoveryModal.tsx`        | Add prompt input, handle prompt submission, show summary, fallback to default config  |
+| `src/components/search/ScraperConfigEditor.tsx`   | (Optional) Show generated config for advanced users                                   |
+| `app/api/search/scraper/generate-config.ts`       | New endpoint: AI/NLP prompt → config                                                  |
+| `app/api/search/scraper/execute.ts`               | Accept and use generated config for scraping                                          |
+
+---
+
+## **5. Best Practices**
+
+- **User Experience:**  
+  - Minimize technical details for the user.
+  - Use clear, friendly language and helpful placeholders.
+  - Provide instant feedback and clear error messages.
+
+- **Design:**  
+  - Use modern, enterprise-grade UI patterns (see previous design instructions).
+  - Ensure mobile responsiveness and accessibility.
+
+- **AI/NLP:**  
+  - Use OpenAI or similar for prompt parsing.
+  - Validate and sanitize AI output before using for scraping.
+
+- **Fallbacks:**  
+  - Always have a safe default config for common fields.
+  - Allow advanced users to review/edit the config if needed.
+
+---
+
+## **6. Example Prompt-to-Config (Backend AI Logic)**
+
+**Prompt:**  
+_“Get all emails and the about page text”_
+
+**AI Output (config):**
+```json
+{
+  "websiteUrl": "https://neuralleap.ai",
+  "selectors": [
+    { "fieldName": "email", "cssSelector": "a[href^='mailto:']", "type": "text" },
+    { "fieldName": "about", "cssSelector": \"a[href*='about'], .about, #about\", "type": "text" }
+  ]
+}
+```
+**Summary:**  
+- Emails
+- About page text
+
+---
+
+## **7. Next Steps for Developer A**
+
+1. **Update `DiscoveryModal.tsx`** to add the prompt input and handle the new flow.
+2. **Create the backend endpoint** for AI config generation.
+3. **Wire up the frontend to use the new endpoint** and display the summary/config.
+4. **Test the full flow** with both default and custom prompts.
+5. **Polish the UI/UX** for a beautiful, modern, and accessible experience.
+
+---
+
+## **8. Reference Paths**
+
+- `src/components/search/DiscoveryModal.tsx`
+- `src/components/search/ScraperConfigEditor.tsx`
+- `app/api/search/scraper/generate-config.ts`
+- `app/api/search/scraper/execute.ts`
+
+---
+
+**If you need code scaffolding, prompt templates, or more design examples, just ask!**  
+This plan will help you deliver a world-class, user-friendly, AI-powered scraping experience. 🚀
+
+---
+
+_**User**_
+
+ia there a way to make the modal at src/components/search/DiscoveryModal.tsx reponsive? So that we can see the buttons at the bottom wheter we reduce the screen size or not? 
+
+---
+
+_**Assistant**_
+
+
+
+
+---
+
+Read file: src/components/search/DiscoveryModal.tsx
+
+---
+
+Read file: src/components/search/DiscoveryModal.tsx
+
+---
+
+Yes, absolutely! The modal can be made much more responsive. Looking at the current code, I can see several areas where the responsiveness can be improved, especially for the footer buttons and overall layout.
+
+Here are the key issues and solutions:
+
+## **Current Issues:**
+1. **Fixed heights** like `h-[450px]` can cause overflow on smaller screens
+2. **Footer buttons** might get cut off on mobile
+3. **Modal sizing** doesn't adapt well to different screen sizes
+4. **Content areas** don't have proper responsive behavior
+
+## **Solutions:**
+
+
+---
+
+```diff
+        <DialogContent className={
+          currentView === 'scraperConfig'
+-           ? "sm:max-w-4xl max-h-[90vh] md:max-w-6xl max-h-[90vh] rounded-lg"
++           ? "sm:max-w-4xl max-h-[95vh] md:max-w-6xl max-h-[95vh] rounded-lg flex flex-col"
+            : currentView === 'promptInput'
+-           ? "sm:max-w-3xl max-h-[90vh] rounded-lg md:max-w-6xl max-h-[90vh] rounded-lg"
+-           : "sm:max-w-5xl max-h-[90vh] rounded-lg md:max-w-7xl max-h-[90vh] rounded-lg"
++           ? "sm:max-w-3xl max-h-[95vh] rounded-lg md:max-w-6xl max-h-[95vh] rounded-lg flex flex-col"
++           : "sm:max-w-5xl max-h-[95vh] rounded-lg md:max-w-7xl max-h-[95vh] rounded-lg flex flex-col"
+        }>
++         <div className="flex-1 flex flex-col min-h-0">
+            {currentView === 'urlInput' && renderUrlInputView()}
+            {currentView === 'promptInput' && renderPromptInputView()}
+            {currentView === 'scraperConfig' && renderScraperConfigView()}
++         </div>
+        </DialogContent>
+      </Dialog>
+```
+
+---
+
+Now let me update the individual view functions to make them responsive:
+
+
+---
+
+```diff
+    const renderUrlInputView = () => (
+      <>
+-       <DialogHeader className="pb-4 border-b dark:border-gray-800">
++       <DialogHeader className="pb-4 border-b dark:border-gray-800 flex-shrink-0">
+          <DialogTitle className="text-xl font-semibold text-gray-800 dark:text-gray-100">
+            Website Discovery for <span className="text-[#2A3050] dark:text-blue-400">{companyName}</span>
+```
+
+```diff
+        </DialogHeader>
+  
+-       <div className="grid gap-4 py-4 px-1">
+-         <div className="relative">
++       <div className="flex-1 flex flex-col min-h-0 py-4 px-1">
++         <div className="relative flex-shrink-0 mb-4">
+            <Input
+              id="manualUrl"
+```
+
+```diff
+          </div>
+  
+-         <div className="mt-2 h-[450px] border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-100 dark:bg-gray-800 overflow-hidden relative shadow-inner">
++         <div className="flex-1 min-h-0 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-100 dark:bg-gray-800 overflow-hidden relative shadow-inner">
+            {previewUrl && isValidHttpUrl(previewUrl) ? (
+              <>
+```
+
+```diff
+        </div>
+  
+-       <DialogFooter className="border-t dark:border-gray-800 pt-4">
++       <DialogFooter className="border-t dark:border-gray-800 pt-4 flex-shrink-0">
+          <Button variant="outline" onClick={onClose}>Cancel</Button>
+          <Button
+```
+
+---
+
+Now let me update the prompt input view to be responsive:
+
+
+---
+
+Tool call timed out after 200s (edit file)
+
+---
+
+Error calling tool 'edit_file'.
+
+---
+
+```diff
+      return (
+        <>
+-         <DialogHeader className="text-center pb-4">
+-             <DialogTitle className="flex items-center justify-center gap-3 text-2xl font-bold text-gray-800 dark:text-gray-100">
+-                 <span className="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full items-center justify-center bg-gradient-to-br from-[#3c4266] to-[#2A3050]">
+-                     <Wand2Icon className="h-6 w-6 text-white" />
++         <DialogHeader className="text-center pb-4 flex-shrink-0">
++             <DialogTitle className="flex items-center justify-center gap-3 text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100">
++                 <span className="relative flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 overflow-hidden rounded-full items-center justify-center bg-gradient-to-br from-[#3c4266] to-[#2A3050]">
++                     <Wand2Icon className="h-4 w-4 sm:h-6 sm:w-6 text-white" />
+                  </span>
+-                 AI-Powered Scraper for <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#3c4266] to-[#2A3050] dark:from-blue-400 dark:to-blue-300">{companyName}</span>
++                 <span className="text-lg sm:text-2xl">AI-Powered Scraper for <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#3c4266] to-[#2A3050] dark:from-blue-400 dark:to-blue-300">{companyName}</span></span>
+              </DialogTitle>
+-              <DialogDescription className="text-gray-500 dark:text-gray-400 mt-2">
++              <DialogDescription className="text-gray-500 dark:text-gray-400 mt-2 text-sm sm:text-base">
+                  Converse with our AI to build a scraper for <span className="font-medium text-gray-700 dark:text-gray-300">{confirmedUrl}</span>
+              </DialogDescription>
+          </DialogHeader>
+          
+          {/* Chat-style interface */}
+-         <div className="flex flex-col h-[450px] bg-gray-100/50 dark:bg-gray-900/70 rounded-lg border border-gray-200 dark:border-gray-800 shadow-inner">
++         <div className="flex-1 flex flex-col min-h-0 bg-gray-100/50 dark:bg-gray-900/70 rounded-lg border border-gray-200 dark:border-gray-800 shadow-inner">
+              {/* Scrollable message area */}
+-             <div ref={chatContainerRef} className="flex-grow overflow-y-auto p-4 space-y-6 scroll-smooth">
++             <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 space-y-6 scroll-smooth">
+                  {/* AI Welcome/Instruction Message */}
+                  {!generatedSummary && !isGeneratingConfig && (
+```
+
+```diff
+          </div>
+  
+-         <DialogFooter className="flex-col sm:flex-row sm:justify-between pt-4 gap-2">
+-             <Button variant="ghost" onClick={() => setCurrentView('urlInput')} disabled={isLoading || isGeneratingConfig}>
++         <DialogFooter className="flex-col sm:flex-row sm:justify-between pt-4 gap-2 flex-shrink-0">
++             <Button variant="ghost" onClick={() => setCurrentView('urlInput')} disabled={isLoading || isGeneratingConfig} className="w-full sm:w-auto">
+                  <LinkIcon className="mr-2 h-4 w-4" /> Back to URL
+              </Button>
+-             <div className="flex flex-col sm:flex-row gap-2">
++             <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                  {aiGeneratedConfig && (
+-                     <Button variant="outline" onClick={() => setCurrentView('scraperConfig')} disabled={isLoading || isGeneratingConfig}>
++                     <Button variant="outline" onClick={() => setCurrentView('scraperConfig')} disabled={isLoading || isGeneratingConfig} className="w-full sm:w-auto">
+                          <Edit3Icon className="mr-2 h-4 w-4" /> View & Edit
+                      </Button>
+                  )}
+-                 <Button onClick={handleStartDiscoveryWithConfig} disabled={isLoading || isGeneratingConfig || !scraperConfig} className="bg-[#2A3050] hover:bg-[#2A3050]/90 dark:bg-blue-600 dark:hover:bg-blue-500 text-white shadow-sm">
++                 <Button onClick={handleStartDiscoveryWithConfig} disabled={isLoading || isGeneratingConfig || !scraperConfig} className="bg-[#2A3050] hover:bg-[#2A3050]/90 dark:bg-blue-600 dark:hover:bg-blue-500 text-white shadow-sm w-full sm:w-auto">
+                      {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <EyeIcon className="mr-2 h-4 w-4" />}
+                      Start Discovery
+```
+
+---
+
+
+**Yes, you can make the modal in `src/components/search/DiscoveryModal.tsx` fully responsive so that the footer buttons are always visible, even on small screens.**
+
+### Key Steps:
+
+1. **Use Flexbox for Modal Layout:**  
+   Wrap the modal content in a flex column container with `min-h-0` and `flex-1` so the content area and footer can grow/shrink as needed.
+
+2. **Make Heights Flexible:**  
+   Replace any fixed heights (like `h-[450px]`) with `flex-1 min-h-0` on scrollable/content areas. This allows the modal to adapt to the viewport.
+
+3. **Footer Always Visible:**  
+   Add `flex-shrink-0` to the footer and header so they never collapse, and the main content scrolls if needed.
+
+4. **Responsive Button Layout:**  
+   Use `flex-col sm:flex-row` and `w-full sm:w-auto` on button containers so they stack on mobile and are inline on desktop.
+
+5. **DialogContent Sizing:**  
+   Use `max-h-[95vh]` and `flex flex-col` on the modal container to ensure it never overflows the viewport.
+
+---
+
+### **Example of the Main Changes**
+
+- In your `<DialogContent ...>`:
+  ```jsx
+  <DialogContent className="max-h-[95vh] flex flex-col ...">
+    <div className="flex-1 flex flex-col min-h-0">
+      {/* ...modal content... */}
+    </div>
+  </DialogContent>
+  ```
+
+- For scrollable content areas (like the preview or chat):
+  ```jsx
+  <div className="flex-1 min-h-0 ..."> ... </div>
+  ```
+
+- For the footer:
+  ```jsx
+  <DialogFooter className="flex-shrink-0 flex-col sm:flex-row ...">
+    {/* ...buttons... */}
+  </DialogFooter>
+  ```
+
+- For button groups:
+  ```jsx
+  <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+    <Button className="w-full sm:w-auto" ... />
+    ...
+  </div>
+  ```
+
+---
+
+### **Result**
+- The modal header and footer will always be visible.
+- The main content (preview, chat, config editor) will scroll if the screen is small.
+- Buttons will stack vertically on mobile and be inline on desktop.
+
+---
+
+**You can apply these changes to all modal views (`urlInput`, `promptInput`, `scraperConfig`). If you want, I can make these changes for you now. Would you like me to proceed?**
+
+---
+
+_**User**_
+
+How can I increase the vertical height on the modal a bit please?
+
+---
+
+_**Assistant**_
+
+To **increase the vertical height of the modal**, you just need to adjust the `max-h-[80vh]` and `max-h-[90vh]` Tailwind classes in your `DialogContent` to a higher value.
+
+### What you have now:
+```js
+? "sm:max-w-4xl max-h-[90vh] md:max-w-6xl max-h-[80vh] rounded-lg flex flex-col"
+: currentView === 'promptInput'
+? "sm:max-w-3xl max-h-[90vh] rounded-lg md:max-w-6xl max-h-[80vh] rounded-lg flex flex-col"
+: "sm:max-w-5xl max-h-[90vh] rounded-lg md:max-w-7xl max-h-[80vh] rounded-lg flex flex-col"
+```
+
+### To increase the height:
+- Change `max-h-[80vh]` to `max-h-[95vh]` (or even `max-h-screen` for full viewport height).
+- You can also make the `sm` and `md` breakpoints the same for consistency.
+
+### Example (recommended for more height):
+```js
+? "sm:max-w-4xl max-h-[95vh] md:max-w-6xl max-h-[95vh] rounded-lg flex flex-col"
+: currentView === 'promptInput'
+? "sm:max-w-3xl max-h-[95vh] rounded-lg md:max-w-6xl max-h-[95vh] rounded-lg flex flex-col"
+: "sm:max-w-5xl max-h-[95vh] rounded-lg md:max-w-7xl max-h-[95vh] rounded-lg flex flex-col"
+```
+
+---
+
+**Summary:**  
+- Use `max-h-[95vh]` for a taller modal.
+- If you want the modal to use the entire viewport, use `max-h-screen`.
+
+Would you like me to apply this change for you?
+
+---
+
+_**User**_
+
+i made the changes and made a hard refresh on on my broswer but  the height did not increase 
+
+---
+
+_**Assistant**_
+
+If you updated the `max-h-[80vh]` to `max-h-[95vh]` (or even `max-h-screen`) and did a hard refresh, but the modal height did not increase, here are the most common reasons and solutions:
+
+---
+
+### 1. **Parent Container or Content Has Fixed Height**
+- If a child element (like your scrollable area) has a fixed height (e.g., `h-[450px]`), it will limit the modal’s growth.
+- **Solution:**  
+  Make sure all main content areas inside the modal use `flex-1 min-h-0` or similar, not a fixed height.
+
+---
+
+### 2. **Dialog/Modal Library Limitation**
+- Some modal/dialog components (like Radix UI, Headless UI, or custom ones) may have their own max height or overflow rules.
+- **Solution:**  
+  Inspect the modal in your browser’s dev tools. Look for any parent with a `max-height`, `overflow`, or `height` property that could be limiting the modal.
+
+---
+
+### 3. **Tailwind JIT or Build Cache**
+- Sometimes Tailwind’s JIT engine or your build cache doesn’t pick up new classes.
+- **Solution:**  
+  - Make sure you are using the correct Tailwind class (`max-h-[95vh]`).
+  - Try restarting your dev server (`npm run dev` or `yarn dev`).
+  - Ensure your Tailwind config allows arbitrary values like `[95vh]`.
+
+---
+
+### 4. **Viewport Height on Mobile**
+- On mobile, `vh` units can behave differently due to browser UI.
+- **Solution:**  
+  Try `max-h-screen` for full viewport height.
+
+---
+
+### 5. **CSS Specificity or Overriding**
+- There may be a more specific CSS rule overriding your Tailwind class.
+- **Solution:**  
+  Use your browser’s dev tools to check the computed styles for the modal container.
+
+---
+
+## **Checklist to Debug**
+
+1. **Inspect the modal in dev tools:**  
+   - Check the computed `max-height` and `height` on the modal and its parents.
+2. **Check for fixed heights inside the modal:**  
+   - Remove or replace any `h-[450px]` or similar with `flex-1 min-h-0`.
+3. **Restart your dev server.**
+4. **Try `max-h-screen` instead of `max-h-[95vh]`.**
+5. **Check for Tailwind config issues:**  
+   - Make sure `[95vh]` is allowed in your Tailwind setup.
+
+---
+
+## **If you want, I can review the full modal code for any fixed heights or other issues. Would you like me to do that?**
+
+Or, you can paste your current `DialogContent` and main content area code here for a quick review!
+
+---
+
+_**User**_
+
+please show me that in the code 
+
+---
+
+_**Assistant**_
+
+```diff
+            ? "sm:max-w-4xl max-h-[95vh] md:max-w-6xl max-h-[95vh] rounded-lg flex flex-col"
+            : currentView === 'promptInput'
+-           ? "sm:max-w-3xl max-h-[90vh] rounded-lg md:max-w-6xl max-h-[95vh] rounded-lg flex flex-col"
+-           : "sm:max-w-5xl max-h-[90vh] rounded-lg md:max-w-7xl max-h-[95vh] rounded-lg flex flex-col"
++           ? "sm:max-w-3xl max-h-[95vh] rounded-lg md:max-w-6xl max-h-[95vh] rounded-lg flex flex-col"
++           : "sm:max-w-5xl max-h-[95vh] rounded-lg md:max-w-7xl max-h-[95vh] rounded-lg flex flex-col"
+        }>
+          <div className="flex-1 flex flex-col min-h-0">
+```
+
+---
+
+Here’s how you can ensure the modal uses more vertical space and the content area is scrollable, with no fixed heights limiting the modal:
+
+**1. DialogContent:**  
+Set all breakpoints to `max-h-[95vh]` and use `flex flex-col`:
+```jsx
+<DialogContent className={
+  currentView === 'scraperConfig'
+    ? "sm:max-w-4xl max-h-[95vh] md:max-w-6xl max-h-[95vh] rounded-lg flex flex-col"
+    : currentView === 'promptInput'
+    ? "sm:max-w-3xl max-h-[95vh] rounded-lg md:max-w-6xl max-h-[95vh] rounded-lg flex flex-col"
+    : "sm:max-w-5xl max-h-[95vh] rounded-lg md:max-w-7xl max-h-[95vh] rounded-lg flex flex-col"
+}>
+  <div className="flex-1 flex flex-col min-h-0">
+    {/* ...modal content... */}
+  </div>
+</DialogContent>
+```
+
+**2. Remove Fixed Heights in Content:**  
+For any scrollable/content area (like the preview or chat), use:
+```jsx
+<div className="flex-1 min-h-0 ...">
+  {/* ...content... */}
+</div>
+```
+**Do not use `h-[450px]` or any fixed height!**
+
+**3. Footer and Header:**  
+Add `flex-shrink-0` to the header and footer so they always stay visible.
+
+---
+
+**If you already did this and it still doesn’t work:**
+- Make sure you have removed all fixed heights from inside the modal (like `h-[450px]`).
+- Restart your dev server after changing Tailwind classes.
+- Inspect the modal in dev tools to ensure the computed `max-height` is `95vh`.
+
+---
+
+**If you want, paste your current modal JSX (including the content area and footer) and I’ll check for any remaining issues!**
+
+---
+
+_**User**_
+
+you fix did not work 
+
+---
+
+_**Assistant**_
+
+Thank you for your patience! If the modal height is still not increasing after the changes, it means there is likely a **fixed height or overflow constraint inside the modal content** that is preventing it from growing, or a parent container is limiting the height.
+
+Let’s troubleshoot and fix this step by step:
+
+---
+
+## 1. **Remove All Fixed Heights**
+Check for any `h-[450px]`, `h-96`, or similar classes in your modal content (especially in the preview, chat, or config editor areas).  
+**Replace them with:**  
+- `flex-1 min-h-0` for scrollable/flexible areas.
+
+**Example:**
+```jsx
+// BAD (fixed height)
+<div className="h-[450px] ...">...</div>
+
+// GOOD (flexible)
+<div className="flex-1 min-h-0 ...">...</div>
+```
+
+---
+
+## 2. **Ensure Parent Containers Use Flex**
+Your modal’s main content area should be wrapped in a flex column container:
+```jsx
+<DialogContent className="... flex flex-col max-h-[95vh] ...">
+  <div className="flex-1 flex flex-col min-h-0">
+    {/* ...content... */}
+  </div>
+</DialogContent>
+```
+
+---
+
+## 3. **Footer and Header Should Not Shrink**
+Add `flex-shrink-0` to your header and footer:
+```jsx
+<DialogHeader className="flex-shrink-0 ...">...</DialogHeader>
+<DialogFooter className="flex-shrink-0 ...">...</DialogFooter>
+```
+
+---
+
+## 4. **Check for Overriding CSS**
+Use your browser’s dev tools:
+- Inspect the modal and its parents.
+- Look for any `max-height`, `height`, or `overflow` properties that might be limiting the modal.
+- Make sure the computed `max-height` is `95vh`.
+
+---
+
+## 5. **Restart Your Dev Server**
+Sometimes Tailwind’s JIT engine or your build tool needs a restart to pick up new classes.
+
+---
+
+## 6. **Try max-h-screen**
+If `max-h-[95vh]` still doesn’t work, try `max-h-screen`:
+```jsx
+<DialogContent className="... max-h-screen flex flex-col ...">
+```
+
+---
+
+## 7. **If Using a 3rd Party Modal/Dialog**
+Some libraries (like Radix UI, Headless UI, etc.) may have their own constraints.  
+- Check their docs for how to override modal height.
+
+---
+
+## **Example: Full Modal Structure**
+Here’s a minimal working example for a responsive, tall modal:
+```jsx
+<DialogContent className="max-h-[95vh] flex flex-col">
+  <DialogHeader className="flex-shrink-0"> ... </DialogHeader>
+  <div className="flex-1 flex flex-col min-h-0">
+    <div className="flex-1 min-h-0 overflow-y-auto"> ... </div>
+  </div>
+  <DialogFooter className="flex-shrink-0"> ... </DialogFooter>
+</DialogContent>
+```
+
+---
+
+## **If It Still Doesn’t Work**
+**Please do this:**
+- Paste the full JSX for your `<DialogContent>` and its children (including the preview/chat area and footer).
+- Let me know if you’re using a 3rd party modal/dialog component.
+
+**I’ll review and give you a precise fix!**
+
+---
+
+_**User**_
+
+Can you please bring a few modification to the CampanyCard? 
+1. I want the button that we click to see "Website Discovery for {campanyName}"  to be switch with the 
+"Discover for NeuralLeap AI" button. 
+2. Then when we click on "Discover for NeuralLeap AI" it should not start scraping immidiatly, it should warn the user that defautl details such as "phone number, email, address, company name (if available or possivle ) will be scraped and save into the db. and have a small link or button saying something like "custom scraping" (you may replace that with a more undertadable or better description)  sio that the user either then as to comfim with "okay", of cliks on "custome scrapping" to be directed to button that shows "Website Discovery for " and "Converse with our AI to build a scraper for" ( the main flow) 
+Do you get  my point?   
+
+---
+
+_**Assistant**_
+
+Yes, I understand your requirements! Here’s a summary and a plan for the changes you want to make to the `CompanyCard` component:
+
+---
+
+## **Summary of Requested Changes**
+
+1. **Switch Button Placement:**
+   - The main button on the card should now be **"Discover for NeuralLeap AI"** (instead of "Website Discovery for {companyName}").
+
+2. **Button Behavior:**
+   - When the user clicks **"Discover for NeuralLeap AI"**, do **not** start scraping immediately.
+   - Instead, show a **warning modal/dialog** that explains:
+     - Default details (phone, email, address, company name) will be scraped and saved to the DB.
+     - There should be an **"Okay"** button to proceed with default scraping.
+     - There should also be a **link/button** (e.g., "Custom scraping" or "Customize what to extract") that, when clicked, opens the main discovery modal with the full flow:
+       - "Website Discovery for {companyName}"
+       - "Converse with our AI to build a scraper for..."
+
+---
+
+## **Proposed UI/UX Flow**
+
+1. **CompanyCard**  
+   - Main button: **Discover for NeuralLeap AI**
+2. **On Click:**  
+   - Show a modal/dialog:
+     - **Message:**  
+       _"Default details (phone number, email, address, company name) will be scraped and saved to the database."_
+     - **Buttons:**
+       - **Okay** (proceeds with default scraping)
+       - **Customize what to extract** (opens the main discovery modal for custom/AI-powered scraping)
+3. **If "Okay":**  
+   - Start default scraping.
+4. **If "Customize what to extract":**  
+   - Open the main discovery modal (with the full custom/AI flow).
+
+---
+
+## **How I’ll Implement This**
+
+- Update `CompanyCard` to:
+  - Replace the main button with "Discover for NeuralLeap AI".
+  - Add state for showing the warning modal.
+- Add a new modal/dialog for the warning.
+- On "Okay", call the default scraping function.
+- On "Customize what to extract", open the main discovery modal (existing flow).
+
+---
+
+**Would you like me to proceed and make these changes to your `CompanyCard`?**  
+If yes, please confirm if the button text "Customize what to extract" is good, or suggest your preferred wording!
+
+---
+
+_**User**_
+
+this is correct : "Website Discovery for {companyName}" the " {companyName}" is a dynamic pleace holder for the actuall company name. Since I copied, i made a mistake and wrote Discover for NeuralLeap AI. But the Idea is that , the main button that has the search icon (Discover for ...) should now be at the place of the other  button on the top that directs to "Website Discovery " and the folow ... This button will now take the plase of the down button that has the search icon. Do you get it now?
+
+---
+
+_**Assistant**_
+
+Thank you for clarifying!  
+Here’s what you want, step by step:
+
+---
+
+## **Your Desired Changes**
+
+1. **Button Swap:**
+   - The button with the search icon (currently at the bottom, labeled "Discover for ...") should be moved to the top position (where the "Website Discovery for {companyName}" button is now).
+   - The "Website Discovery for {companyName}" button (which opens the full discovery modal/flow) should be moved to the bottom position (where the search icon button was).
+
+2. **Button Behaviors:**
+   - The **top button** (now with the search icon, e.g., "Discover for {companyName}"):
+     - When clicked, show a warning modal:
+       - Warns the user that default details (phone, email, address, company name) will be scraped and saved.
+       - Has an "Okay" button to proceed with default scraping.
+       - Has a "Customize what to extract" link/button that opens the full discovery modal (custom/AI flow).
+   - The **bottom button** (now "Website Discovery for {companyName}"):
+     - When clicked, opens the main discovery modal (custom/AI flow) directly.
+
+---
+
+## **Summary Table**
+
+| Button Position | Label (example)                  | Action                                                                 |
+|-----------------|----------------------------------|------------------------------------------------------------------------|
+| Top             | 🔍 Discover for {companyName}    | Show warning modal (default scrape or customize)                       |
+| Bottom          | Website Discovery for {companyName} | Open main discovery modal (custom/AI flow)                             |
+
+---
+
+## **Next Steps**
+
+- I will:
+  1. Swap the two buttons in the `CompanyCard` layout.
+  2. Update the top button to show the warning modal with "Okay" and "Customize what to extract".
+  3. Make sure the bottom button opens the full discovery modal as before.
+
+---
+
+**Is this correct? If yes, I’ll proceed with the code changes. If you want different button texts or icons, let me know!**
+
+---
+
+_**User**_
+
+ please do that and I will see. if there is a problem I will let you know and we will adjust it.
+
+---
+
+_**Assistant**_
+
+<details>
+            <summary>Searched codebase "CompanyCard" • **9** results</summary>
+        
+| File |
+|------|
+| `undefined` |
+| `undefined` |
+| `undefined` |
+| `undefined` |
+| `undefined` |
+| `undefined` |
+| `undefined` |
+| `undefined` |
+| `undefined` |
+
+</details>
+
+---
+
+Read file: src/components/search/CompanyCard.tsx
+
+---
+
+<details>
+            <summary>Grep search for "Website Discovery for" • **2** files</summary>
+        
+| File | Line | Match |
+|------|------|-------|
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/DiscoveryModal.tsx` | L252 | `Website Discovery for <span className="text-[#2A3050] dark:text-blue-400">{companyName}</span>` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/DiscoveryModal.tsx` | L252 | `Website Discovery for <span className="text-[#2A3050] dark:text-blue-400">{companyName}</span>` |
+
+</details>
+
+---
+
+<details>
+            <summary>Grep search for "Discover" • **2** files</summary>
+        
+| File | Line | Match |
+|------|------|-------|
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L5 | `import { DiscoveryButton } from './DiscoveryButton';` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L7 | `import { useSearchStore, CompanyDiscoveryState, ScrapedData } from '@/stores/searchStore';` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L11 | `import { DiscoveryModal } from './DiscoveryModal';` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L38 | `const [isDiscoveryModalOpen, setIsDiscoveryModalOpen] = useState(false);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L41 | `const initiateWebsiteDiscovery = useSearchStore(state => state.initiateWebsiteDiscovery);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L42 | `const discoveryStates = useSearchStore(state => state.discoveryStates);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L44 | `const setDiscoveryStateForCompany = useSearchStore(state => state.setDiscoveryStateForCompany);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L46 | `const companyDiscoveryState: CompanyDiscoveryState | undefined = discoveryStates[company.id];` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L47 | `const prevStatusRef = useRef<CompanyDiscoveryState['status'] | undefined>(undefined);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L50 | `if (companyDiscoveryState && companyDiscoveryState.status === 'error' && prevStatusRef.current !== 'error' && companyDiscoveryState.error) {` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L52 | `title: `Discovery Error: ${company.name}`,` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L53 | `description: companyDiscoveryState.error,` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L58 | `prevStatusRef.current = companyDiscoveryState?.status;` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L59 | `}, [companyDiscoveryState, company.name, toast]);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L61 | `const scrapedData: ScrapedData | undefined = companyDiscoveryState?.scrapedData;` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L62 | `const isEnriched = companyDiscoveryState?.status === 'completed' && !!scrapedData;` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L64 | `const handleDiscoverClick = (manualUrl?: string) => {` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L65 | `if (companyDiscoveryState?.status === 'error') {` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L66 | `setDiscoveryStateForCompany(company.id, { ...companyDiscoveryState, status: 'idle', error: undefined, progress: 0 });` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L69 | `initiateWebsiteDiscovery(company.id, company.name, manualUrl || company.domain);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L73 | `initiateWebsiteDiscovery(company.id, company.name, manualUrl || company.domain);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L75 | `setIsDiscoveryModalOpen(false);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L80 | `await initiateWebsiteDiscovery(company.id, company.name, manualUrl);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L82 | `setIsDiscoveryModalOpen(false);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L97 | `const renderDiscoverySection = () => {` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L98 | `if (!companyDiscoveryState || companyDiscoveryState.status === 'idle') {` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L103 | `<DiscoveryButton` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L104 | `onClick={() => handleDiscoverClick()}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L109 | `// START: Color change for the blue discovery button` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L111 | `// END: Color change for the blue discovery button` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L115 | `<p>{t('tooltip.startDiscovery', "Start automatic website discovery and data scraping.")}</p>` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L122 | `switch (companyDiscoveryState.status) {` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L123 | `case 'discovering':` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L124 | `return <ScrapingProgress progress={companyDiscoveryState.progress || 30} statusText={t('discovery.status.discovering', "Discovering website...")} />;` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L126 | `return <ScrapingProgress progress={companyDiscoveryState.progress || 0} statusText={t('discovery.status.scraping', "Scraping {{website}}...", { website: companyDiscoveryState.website })} />;` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L132 | `<p className="font-medium">{t('discovery.status.completed', "Data enriched!")}</p>` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L142 | `onClick={() => setIsDiscoveryModalOpen(true)}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L144 | `<Settings2Icon className="w-3.5 h-3.5 mr-1.5" /> {t('discovery.customizeScraping', "Re-Scrape")}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L162 | `<FileTextIcon className="w-3.5 h-3.5 mr-1.5" /> {t('discovery.viewScrapedData', "View Data")}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L179 | `<p className="text-sm font-medium">{t('discovery.status.errorTitle', "Discovery Failed")}</p>` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L182 | `{companyDiscoveryState.error || t('discovery.status.unknownError', "An unknown error occurred.")}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L185 | `onClick={handleDiscoverClick}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L190 | `{t('discovery.tryAgain', "Try Again")}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L249 | `{renderDiscoverySection()}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L307 | `{(!companyDiscoveryState || companyDiscoveryState.status === 'idle' || companyDiscoveryState.status === 'completed' || companyDiscoveryState.status === 'error') && (` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L315 | `onClick={() => setIsDiscoveryModalOpen(true)}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L316 | `title={t('discovery.customizeScraping', "Customize Scraping")}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L429 | `{/* Discovery Action Footer */}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L431 | `{renderDiscoverySection()}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L436 | `<DiscoveryModal` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L437 | `isOpen={isDiscoveryModalOpen}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L438 | `onClose={() => setIsDiscoveryModalOpen(false)}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L441 | `initialUrl={companyDiscoveryState?.website || company.domain}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L452 | `isLoading={companyDiscoveryState?.status === 'scraping' || companyDiscoveryState?.status === 'discovering'}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L453 | `error={companyDiscoveryState?.status === 'error' ? companyDiscoveryState.error : null}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L5 | `import { DiscoveryButton } from './DiscoveryButton';` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L7 | `import { useSearchStore, CompanyDiscoveryState, ScrapedData } from '@/stores/searchStore';` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L11 | `import { DiscoveryModal } from './DiscoveryModal';` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L38 | `const [isDiscoveryModalOpen, setIsDiscoveryModalOpen] = useState(false);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L41 | `const initiateWebsiteDiscovery = useSearchStore(state => state.initiateWebsiteDiscovery);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L42 | `const discoveryStates = useSearchStore(state => state.discoveryStates);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L44 | `const setDiscoveryStateForCompany = useSearchStore(state => state.setDiscoveryStateForCompany);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L46 | `const companyDiscoveryState: CompanyDiscoveryState | undefined = discoveryStates[company.id];` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L47 | `const prevStatusRef = useRef<CompanyDiscoveryState['status'] | undefined>(undefined);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L50 | `if (companyDiscoveryState && companyDiscoveryState.status === 'error' && prevStatusRef.current !== 'error' && companyDiscoveryState.error) {` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L52 | `title: `Discovery Error: ${company.name}`,` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L53 | `description: companyDiscoveryState.error,` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L58 | `prevStatusRef.current = companyDiscoveryState?.status;` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L59 | `}, [companyDiscoveryState, company.name, toast]);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L61 | `const scrapedData: ScrapedData | undefined = companyDiscoveryState?.scrapedData;` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L62 | `const isEnriched = companyDiscoveryState?.status === 'completed' && !!scrapedData;` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L64 | `const handleDiscoverClick = (manualUrl?: string) => {` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L65 | `if (companyDiscoveryState?.status === 'error') {` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L66 | `setDiscoveryStateForCompany(company.id, { ...companyDiscoveryState, status: 'idle', error: undefined, progress: 0 });` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L69 | `initiateWebsiteDiscovery(company.id, company.name, manualUrl || company.domain);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L73 | `initiateWebsiteDiscovery(company.id, company.name, manualUrl || company.domain);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L75 | `setIsDiscoveryModalOpen(false);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L80 | `await initiateWebsiteDiscovery(company.id, company.name, manualUrl);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L82 | `setIsDiscoveryModalOpen(false);` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L97 | `const renderDiscoverySection = () => {` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L98 | `if (!companyDiscoveryState || companyDiscoveryState.status === 'idle') {` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L103 | `<DiscoveryButton` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L104 | `onClick={() => handleDiscoverClick()}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L109 | `// START: Color change for the blue discovery button` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L111 | `// END: Color change for the blue discovery button` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L115 | `<p>{t('tooltip.startDiscovery', "Start automatic website discovery and data scraping.")}</p>` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L122 | `switch (companyDiscoveryState.status) {` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L123 | `case 'discovering':` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L124 | `return <ScrapingProgress progress={companyDiscoveryState.progress || 30} statusText={t('discovery.status.discovering', "Discovering website...")} />;` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L126 | `return <ScrapingProgress progress={companyDiscoveryState.progress || 0} statusText={t('discovery.status.scraping', "Scraping {{website}}...", { website: companyDiscoveryState.website })} />;` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L132 | `<p className="font-medium">{t('discovery.status.completed', "Data enriched!")}</p>` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L142 | `onClick={() => setIsDiscoveryModalOpen(true)}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L144 | `<Settings2Icon className="w-3.5 h-3.5 mr-1.5" /> {t('discovery.customizeScraping', "Re-Scrape")}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L162 | `<FileTextIcon className="w-3.5 h-3.5 mr-1.5" /> {t('discovery.viewScrapedData', "View Data")}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L179 | `<p className="text-sm font-medium">{t('discovery.status.errorTitle', "Discovery Failed")}</p>` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L182 | `{companyDiscoveryState.error || t('discovery.status.unknownError', "An unknown error occurred.")}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L185 | `onClick={handleDiscoverClick}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L190 | `{t('discovery.tryAgain', "Try Again")}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L249 | `{renderDiscoverySection()}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L307 | `{(!companyDiscoveryState || companyDiscoveryState.status === 'idle' || companyDiscoveryState.status === 'completed' || companyDiscoveryState.status === 'error') && (` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L315 | `onClick={() => setIsDiscoveryModalOpen(true)}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L316 | `title={t('discovery.customizeScraping', "Customize Scraping")}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L429 | `{/* Discovery Action Footer */}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L431 | `{renderDiscoverySection()}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L436 | `<DiscoveryModal` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L437 | `isOpen={isDiscoveryModalOpen}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L438 | `onClose={() => setIsDiscoveryModalOpen(false)}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L441 | `initialUrl={companyDiscoveryState?.website || company.domain}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L452 | `isLoading={companyDiscoveryState?.status === 'scraping' || companyDiscoveryState?.status === 'discovering'}` |
+| `file:///Users/salomonks/Documents/sikry-25/src/components/search/CompanyCard.tsx` | L453 | `error={companyDiscoveryState?.status === 'error' ? companyDiscoveryState.error : null}` |
+
+</details>
+
+---
+
+Read file: src/components/search/CompanyCard.tsx
+
+---
+
+Read file: src/components/search/CompanyCard.tsx
+
+---
+
+Here’s how I’ll proceed to implement your requested changes in `CompanyCard.tsx`:
+
+---
+
+### **Plan**
+
+1. **Swap the Buttons:**
+   - Move the "Discover for {companyName}" (search icon) button to the top right (in the CardHeader).
+   - Move the "Website Discovery for {companyName}" (custom/AI flow) button to the CardFooter.
+
+2. **Update Button Behaviors:**
+   - The top button (search icon) will open a warning modal:
+     - Warns about default scraping (phone, email, address, company name).
+     - Has "Okay" (proceed with default) and "Customize what to extract" (open full discovery modal) options.
+   - The bottom button will open the full discovery modal directly.
+
+3. **Add State for the Warning Modal.**
+4. **Wire up the logic for both actions.**
+
+---
+
+I will now make these changes in your `CompanyCard.tsx`.
+
+---
+
+```diff
+  import { DataPreview } from './DataPreview';
+  import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip";
++ import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from '@/src/components/ui/dialog';
+  
+  type CompanyWithEmployeeCount = Company & { employee_count?: string; id: string };
+```
+
+```diff
+    const [isDiscoveryModalOpen, setIsDiscoveryModalOpen] = useState(false);
+    const [isDataPreviewModalOpen, setIsDataPreviewModalOpen] = useState(false);
++   const [showDefaultScrapeWarning, setShowDefaultScrapeWarning] = useState(false);
+  
+    const initiateWebsiteDiscovery = useSearchStore(state => state.initiateWebsiteDiscovery);
+```
+
+```diff
+    const cardClasses = `group bg-white border border-gray-200 rounded-xl shadow-sm transition-all duration-300 hover:shadow-md hover:border-blue-300/50`;
+    const employeeDisplay = company.employee_count || 'N/A';
++ 
++   const handleDefaultScrape = () => {
++     handleDiscoverClick();
++     setShowDefaultScrapeWarning(false);
++   };
++ 
++   const handleShowDiscoveryModal = () => {
++     setIsDiscoveryModalOpen(true);
++     setShowDefaultScrapeWarning(false);
++   };
+  
+    const renderDiscoverySection = () => {
+```
+
+```diff
+                  {confidenceScore}%
+                </div>
+-               {/* START: Prominent 'Customize Scraping' button (top) */}
++               {/* TOP: Discover for {companyName} (search icon) button */}
+                {(!companyDiscoveryState || companyDiscoveryState.status === 'idle' || companyDiscoveryState.status === 'completed' || companyDiscoveryState.status === 'error') && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+-                         variant="outline" // Changed to outline for more visibility
+-                         size="sm" // Changed to sm for slightly larger size
+-                         className="h-8 px-3 text-sm border-blue-400 text-blue-700 hover:bg-blue-50 hover:border-blue-500" // Added specific styling for prominence
+-                         onClick={() => setIsDiscoveryModalOpen(true)}
+-                         title={t('discovery.customizeScraping', "Customize Scraping")}
++                         variant="default"
++                         size="sm"
++                         className="h-8 px-3 text-sm bg-[#1B3B6D] hover:bg-[#1B3B6D]/90 text-white shadow-sm"
++                         onClick={() => setShowDefaultScrapeWarning(true)}
++                         title={t('discovery.startDiscovery', `Discover for ${company.name}`)}
+                        >
+-                         <Settings2Icon className="w-4 h-4 mr-1.5" /> 
++                         <SearchIcon className="w-4 h-4 mr-1.5" /> Discover for {company.name}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+-                       <p>{t('tooltip.customizeScraping', "Manually set website URL or customize scraping configuration.")}</p>
++                       <p>{t('tooltip.startDiscovery', "Start automatic website discovery and data scraping.")}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
+-               {/* END: Prominent 'Customize Scraping' button (top) */}
+              </div>
+            </div>
+```
+
+```diff
+          {/* Discovery Action Footer */}
+          <CardFooter className="p-4 border-t border-gray-200 group-hover:border-blue-200 flex-shrink-0 mt-auto">
+-           {renderDiscoverySection()}
++           {/* BOTTOM: Website Discovery for {companyName} (custom/AI flow) button */}
++           <Button
++             variant="outline"
++             size="sm"
++             className="w-full border-blue-400 text-blue-700 hover:bg-blue-50 hover:border-blue-500"
++             onClick={handleShowDiscoveryModal}
++             title={t('discovery.customizeScraping', `Website Discovery for ${company.name}`)}
++           >
++             <Settings2Icon className="w-4 h-4 mr-1.5" /> Website Discovery for {company.name}
++           </Button>
+          </CardFooter>
+        </div>
++ 
++       {/* Default Scrape Warning Modal */}
++       <Dialog open={showDefaultScrapeWarning} onOpenChange={setShowDefaultScrapeWarning}>
++         <DialogContent className="max-w-md">
++           <DialogHeader>
++             <DialogTitle>Default Website Scraping</DialogTitle>
++             <DialogDescription>
++               The following details will be scraped and saved to the database (if available): <br/>
++               <span className="font-semibold">Phone number, email, address, company name</span>.<br/>
++               <span className="text-xs text-gray-500">You can customize what to extract instead.</span>
++             </DialogDescription>
++           </DialogHeader>
++           <DialogFooter className="flex-col sm:flex-row gap-2 pt-4">
++             <Button variant="default" onClick={handleDefaultScrape} className="w-full sm:w-auto">Okay</Button>
++             <Button variant="outline" onClick={handleShowDiscoveryModal} className="w-full sm:w-auto">Customize what to extract</Button>
++           </DialogFooter>
++         </DialogContent>
++       </Dialog>
+  
+        {company.id && company.name && (
+```
+
+---
+
+
+
+---
+
+The requested changes have been made:
+
+- The "Discover for {companyName}" (search icon) button is now at the top right of the card.
+- Clicking it opens a warning modal, where the user can either:
+  - Click "Okay" to start default scraping (phone,
+
+---
+
+_**User**_
+
+please continue
+
+---
+
+_**Assistant**_
+
+Here’s what you now have in your `CompanyCard`:
+
+---
+
+### **How it Works Now**
+
+1. **Top Button ("Discover for {companyName}")**
+   - **Location:** Top right of the card, with a search icon.
+   - **Action:**  
+     - When clicked, opens a modal warning:
+       - _“The following details will be scraped and saved to the database (if available): Phone number, email, address, company name. You can customize what to extract instead.”_
+       - **Okay:** Proceeds with default scraping.
+       - **Customize what to extract:** Opens the full discovery modal (custom/AI flow).
+
+2. **Bottom Button ("Website Discovery for {companyName}")**
+   - **Location:** Card footer.
+   - **Action:**  
+     - When clicked, opens the main discovery modal for custom/AI-powered scraping.
+
+---
+
+### **What to Check**
+
+- The button swap is visually correct.
+- The warning modal appears as described.
+- Both actions (default scrape and custom scrape) work as expected.
+
+---
+
+### **What’s Next?**
+
+- Try the new UI and flows.
+- If you want to adjust button text, modal wording, or the flow, just let me know what to change!
+- If you want this in the list layout as well, or want to tweak the design, I can help with that too.
+
+**Let me know if you see any issues or want further adjustments!**
+
+---
+
+_**User**_
+
+one more thing, I want an eye or configuration icon in the button "Website Discovery ..." at the bottom of the company card. 
+
+---
+
+_**Assistant**_
+
+```diff
+              title={t('discovery.customizeScraping', `Website Discovery for ${company.name}`)}
+            >
+-             <Settings2Icon className="w-4 h-4 mr-1.5" /> Website Discovery for {company.name}
++             <EyeIcon className="w-4 h-4 mr-1.5" /> Website Discovery for {company.name}
+            </Button>
+          </CardFooter>
+```
+
+---
+
+The "Website Discovery for {companyName}" button at the bottom of the company card now has an Eye icon (👁️) to the left of the text, making it visually clear that it leads to a discovery/preview/configuration flow.
+
+If you would prefer a different icon (such as a gear/configuration icon), just let me know and I can swap it for you!
+
+Let me know if you want any further tweaks or if you'd like to see this in the list layout as well.
+
+---
+
+_**User**_
+
+
+
+---
+
+_**Assistant**_
+
+
+
+---
+
+_**User**_
+
+
+
+---
+
+_**Assistant**_
+
+
 
 ---
 
