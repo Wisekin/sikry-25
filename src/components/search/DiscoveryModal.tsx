@@ -325,7 +325,7 @@ export function DiscoveryModal({
                                 <p className="text-sm text-slate-700 dark:text-slate-300">
                                     I'm ready to get started! What data should I extract? You can either type your request or choose one of the suggestions below.
                                     <br />
-                                    <em className="text-red-800 dark:text-slate-800">If you don't specify anything, I'll look for default data like phone numbers and emails.</em>
+                                    <em className="text-red-800 dark:text-slate-800">If you don't specify anything, I'll look for default data like phone, email and address</em>
                                 </p>
                             </div>
                         </div>
