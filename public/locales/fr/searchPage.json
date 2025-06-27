@@ -100,5 +100,6 @@
     "showingResults": "Affichage des résultats {{start}}-{{end}} sur {{total}}",
     "previous": "Précédent",
     "next": "Suivant"
-  }
+  },
+  "discovery.startDiscovery": "Discover for NeuralLeap AI"
 }

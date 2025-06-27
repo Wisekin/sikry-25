@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Card, CardHeader, CardContent, CardFooter } from "@/src/components/ui/card";
 import { Company } from "@/src/lib/types";
-import { Users, MapPin, Mail, Phone, ExternalLink, Briefcase, Tag, SearchIcon, AlertTriangleIcon, CheckCircle2Icon, SparklesIcon, LinkedinIcon, TwitterIcon, FacebookIcon, InstagramIcon, LinkIcon as LucideLinkIcon, Settings2Icon, EyeIcon, FileTextIcon } from "lucide-react";
+import { Users, MapPin, Mail, Phone, ExternalLink, Briefcase, Tag, SearchIcon, AlertTriangleIcon, CheckCircle2Icon, SparklesIcon, LinkedinIcon, TwitterIcon, FacebookIcon, InstagramIcon, LinkIcon as LucideLinkIcon, Settings2Icon, EyeIcon, FileTextIcon, XIcon } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 import { DiscoveryButton } from './DiscoveryButton';
 import { ScrapingProgress } from './ScrapingProgress';
@@ -12,6 +12,31 @@ import { useToast } from '@/hooks/use-toast';
 import { DiscoveryModal } from './DiscoveryModal';
 import { DataPreview } from './DataPreview';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip";
+import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription, DialogClose } from '@/src/components/ui/dialog';
+import { Edit3Icon, Wand2Icon, ArrowRightIcon } from 'lucide-react';
+interface DataPointCardProps {
+  icon: React.ElementType;
+  title: string;
+}
+
+const DataPointCard = ({ icon: Icon, title }: DataPointCardProps) => (
+  <div className="flex items-start rounded-lg border border-gray-200 bg-white p-4 transition-all hover:shadow-sm dark:border-gray-800 dark:bg-gray-900/30">
+    <Icon className="mt-0.5 mr-3 h-5 w-5 flex-shrink-0 text-blue-600 dark:text-blue-400" />
+    <span className="font-medium text-gray-800 dark:text-gray-200">{title}</span>
+  </div>
+);
+
+interface InfoListItemProps {
+  icon: React.ElementType;
+  text: string;
+}
+
+const InfoListItem = ({ icon: Icon, text }: InfoListItemProps) => (
+  <li className="flex items-center space-x-2">
+    <Icon className="h-4 w-4 text-muted-foreground" />
+    <span className="text-sm">{text}</span>
+  </li>
+);
 
 type CompanyWithEmployeeCount = Company & { employee_count?: string; id: string };
 
@@ -38,6 +63,17 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
   const { toast } = useToast();
   const [isDiscoveryModalOpen, setIsDiscoveryModalOpen] = useState(false);
   const [isDataPreviewModalOpen, setIsDataPreviewModalOpen] = useState(false);
+  const [showDefaultScrapeWarning, setShowDefaultScrapeWarning] = useState(false);
+
+  const handleCustomize = () => {
+    setShowDefaultScrapeWarning(false);
+    setIsDiscoveryModalOpen(true);
+  };
+
+  const handleConfirm = () => {
+    setShowDefaultScrapeWarning(false);
+    // Add any confirmation logic here if needed
+  };
 
   const initiateWebsiteDiscovery = useSearchStore(state => state.initiateWebsiteDiscovery);
   const discoveryStates = useSearchStore(state => state.discoveryStates);
@@ -95,6 +131,16 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
   const cardClasses = `group bg-white border border-gray-200 rounded-xl shadow-sm transition-all duration-300 hover:shadow-md hover:border-blue-300/50`;
   const employeeDisplay = company.employee_count || 'N/A';
 
+  const handleDefaultScrape = () => {
+    handleDiscoverClick();
+    setShowDefaultScrapeWarning(false);
+  };
+
+  const handleShowDiscoveryModal = () => {
+    setIsDiscoveryModalOpen(true);
+    setShowDefaultScrapeWarning(false);
+  };
+
   const renderDiscoverySection = () => {
     if (!companyDiscoveryState || companyDiscoveryState.status === 'idle') {
       return (
@@ -108,7 +154,7 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
                 variant="default"
                 size="sm"
                 // START: Color change for the blue discovery button
-                className="w-full bg-[#3ea1ed]/90 hover:bg-[#3ea1ed] text-white shadow-sm hover:shadow-md transition-all"
+                className="w-full bg-[#1B3B6D] hover:bg-[#1B3B6D]/90 text-white shadow-sm hover:shadow-md transition-all"
                 // END: Color change for the blue discovery button
               />
             </TooltipTrigger>
@@ -304,28 +350,27 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
               <div className={`text-xs font-bold px-2 py-1 rounded-full border ${confidenceStyle.bg} ${confidenceStyle.text} ${confidenceStyle.border} flex-shrink-0`}>
                 {confidenceScore}%
               </div>
-              {/* START: Prominent 'Customize Scraping' button (top) */}
+              {/* TOP: Discover for {companyName} (search icon) button */}
               {(!companyDiscoveryState || companyDiscoveryState.status === 'idle' || companyDiscoveryState.status === 'completed' || companyDiscoveryState.status === 'error') && (
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button
-                        variant="outline" // Changed to outline for more visibility
-                        size="sm" // Changed to sm for slightly larger size
-                        className="h-8 px-3 text-sm border-blue-400 text-blue-700 hover:bg-blue-50 hover:border-blue-500" // Added specific styling for prominence
-                        onClick={() => setIsDiscoveryModalOpen(true)}
-                        title={t('discovery.customizeScraping', "Customize Scraping")}
+                      <Button 
+                        variant="default"
+                        size="sm"
+                        className="h-6 px-3 text-sm bg-[#3b65a8] hover:bg-[#1B3B6D]/90 text-white shadow-sm"
+                        onClick={() => setShowDefaultScrapeWarning(true)}
+                        title={t('discovery.startDiscovery', `Discover for ${company.name}`)}
                       >
-                        <Settings2Icon className="w-4 h-4 mr-1.5" /> 
+                        <SearchIcon className="w-4 h-4"/> 
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>{t('tooltip.customizeScraping', "Manually set website URL or customize scraping configuration.")}</p>
+                      <p>{t('tooltip.startDiscovery', "Start automatic website discovery and data scraping.")}</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               )}
-              {/* END: Prominent 'Customize Scraping' button (top) */}
             </div>
           </div>
         </CardHeader>
@@ -429,9 +474,83 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
 
         {/* Discovery Action Footer */}
         <CardFooter className="p-4 border-t border-gray-200 group-hover:border-blue-200 flex-shrink-0 mt-auto">
-          {renderDiscoverySection()}
+          {/* BOTTOM: Website Discovery for {companyName} (custom/AI flow) button */}
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full border-blue-400 text-blue-700 hover:bg-blue-50 hover:border-blue-500"
+            onClick={handleShowDiscoveryModal}
+            title={t('discovery.customizeScraping', `Website Discovery for ${company.name}`)}
+          >
+            <Settings2Icon className="w-4 h-4 mr-1.5" />Params for   {company.name}
+          </Button>
         </CardFooter>
       </div>
+
+      {/* Default Scrape Warning Modal */}
+      <Dialog 
+    open={showDefaultScrapeWarning} 
+    onOpenChange={setShowDefaultScrapeWarning}
+  >
+    <DialogContent className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-w-lg p-6 sm:p-8 rounded-xl w-[calc(100%-2rem)] sm:w-full max-h-[90vh] overflow-y-auto">
+      {/* Close Button */}
+      <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none">
+        <XIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+        <span className="sr-only">Close</span>
+      </DialogClose>
+
+      <DialogHeader className="text-center pt-4 sm:pt-8">
+        <div className="flex flex-col items-center">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/50 mb-6">
+            <div className="bg-[#2A3050] w-16 h-16 flex items-center justify-center rounded-full  text-white font-bold  text-2xl ">
+              S
+            </div>
+          </div>
+          <span className="text-lg font-bold text-primary -mt-2"></span>
+        </div>
+        <DialogTitle className="text-2xl font-bold text-gray-900 dark:text-gray-50 md:text-3xl mt-2">
+          Standard Data Extraction
+        </DialogTitle>
+        <DialogDescription className="mx-auto max-w-prose text-base text-gray-600 dark:text-gray-400 mt-2">
+          Our system will extract these standard data points from company websites where available
+        </DialogDescription>
+      
+    </DialogHeader>
+
+    <div className="my-6 space-y-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <DataPointCard icon={Phone} title="Phone Numbers" />
+        <DataPointCard icon={Mail} title="Email Addresses" />
+        <DataPointCard icon={MapPin} title="Physical Addresses" />
+        <DataPointCard icon={Briefcase} title="Company Names" />
+      </div>
+    </div>
+
+    <p className="text-center text-sm text-gray-500 dark:text-gray-400">
+      Need more specific data? <span className="font-semibold text-indigo-600 dark:text-indigo-400">Customize the extraction</span> to target precise information.
+    </p>
+
+    <DialogFooter className="flex flex-col gap-3 pt-6 sm:flex-row">
+      <Button 
+        variant="outline" 
+        onClick={handleCustomize}
+        className="w-full border-gray-300 hover:bg-gray-50 dark:border-gray-700 sm:w-auto"
+      >
+        Customize Extraction
+      </Button>
+      
+      <Button 
+        variant="default" 
+        onClick={handleConfirm}
+      //  className="bg-[#2A3050] hover:bg-[#2A3050]/90 dark:bg-blue-600 dark:hover:bg-blue-500 text-white shadow-sm"
+      className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-semibold shadow-md px-6 py-2"
+      >
+        Confirm and Proceed 
+        <ArrowRightIcon className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+      </Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
 
       {company.id && company.name && (
         <DiscoveryModal

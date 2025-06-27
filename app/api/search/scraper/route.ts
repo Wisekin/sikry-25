@@ -5,9 +5,27 @@ import { TemplateMatcher } from '@/lib/services/templateMatcher';
 import { rateLimit } from '@/lib/security/rateLimiter';
 import { Logger } from '@/lib/monitoring/logger';
 
+// It's highly recommended to move these interfaces to a shared types file (e.g., @/types/scraper.ts)
+// to be used by frontend, this API route, and the generate-config API route.
+// For now, defining them here to match the structure from DiscoveryModal and generate-config endpoint.
+export interface ScraperSelector {
+  fieldName: string;
+  cssSelector: string;
+  type: 'text' | 'attribute' | 'html';
+  attributeName?: string;
+}
+
+export interface ScraperConfig {
+  websiteUrl: string; // Note: The ScraperRequest below uses 'url', ensure consistency or mapping.
+  selectors: ScraperSelector[];
+  // Other fields like id, extractionRules, etc., can be added if needed by the service.
+}
+
+// Updated ScraperRequest to potentially include the full ScraperConfig object
 export interface ScraperRequest {
   url: string;
-  selectors?: Record<string, string>;
+  scraperConfigPayload?: ScraperConfig; // This will carry the AI-generated or manually edited config
+  selectors?: Record<string, string>; // Kept for backward compatibility or other flows
   templateId?: string;
   options?: {
     useAi?: boolean;
@@ -47,9 +65,14 @@ export async function POST(request: NextRequest) {
 
     // Parse request body
     const body: ScraperRequest = await request.json();
-    const { url, selectors, templateId, options = {} } = body;
+    // Destructure new scraperConfigPayload as well
+    const { url, scraperConfigPayload, selectors, templateId, options = {} } = body;
 
-    if (!url) {
+    // URL from scraperConfigPayload should ideally match the top-level 'url', or be prioritized.
+    // For now, we assume 'url' is the primary source of truth for the target site.
+    const targetUrl = scraperConfigPayload?.websiteUrl || url;
+
+    if (!targetUrl) {
       return NextResponse.json(
         { error: 'URL is required' },
         { status: 400 }
@@ -62,8 +85,31 @@ export async function POST(request: NextRequest) {
     let result;
     
     try {
-      // If template ID is provided, use it
-      if (templateId) {
+      // Priority 1: Use scraperConfigPayload if provided (this is our new AI-generated config path)
+      if (scraperConfigPayload && scraperConfigPayload.selectors && scraperConfigPayload.selectors.length > 0) {
+        // TODO: This is a temporary conversion. Ideally, ScraperGeneratorService should handle structured selectors.
+        // This conversion loses type and attributeName information.
+        const convertedSelectors: Record<string, string> = {};
+        for (const selector of scraperConfigPayload.selectors) {
+          convertedSelectors[selector.fieldName] = selector.cssSelector;
+        }
+        Logger.logInfo('Using scraperConfigPayload with converted selectors', { userId: user?.id, url: targetUrl, fieldCount: scraperConfigPayload.selectors.length });
+
+
+        result = await scraperService.generateWithSelectors({
+          url: targetUrl, // Use targetUrl which considers scraperConfigPayload.websiteUrl
+          selectors: convertedSelectors,
+          userId: user.id,
+          options: {
+            waitForSelectors: options.waitForSelectors,
+            timeout: options.timeout,
+            screenshot: options.screenshot,
+            metadata: options.metadata,
+          },
+        });
+      }
+      // Priority 2: Use template ID if provided
+      else if (templateId) {
         const template = await templateMatcher.getTemplate(templateId);
         if (!template) {
           return NextResponse.json(
@@ -71,9 +117,9 @@ export async function POST(request: NextRequest) {
             { status: 404 }
           );
         }
-        
+        Logger.logInfo('Using templateId for scraping', { userId: user?.id, url: targetUrl, templateId });
         result = await scraperService.generateFromTemplate({
-          url,
+          url: targetUrl,
           templateId,
           userId: user.id,
           options: {
@@ -84,10 +130,11 @@ export async function POST(request: NextRequest) {
           },
         });
       } 
-      // If selectors are provided, use them
+      // Priority 3: Use flat selectors if provided (legacy or other flows)
       else if (selectors && Object.keys(selectors).length > 0) {
+        Logger.logInfo('Using flat selectors for scraping', { userId: user?.id, url: targetUrl, selectorKeys: Object.keys(selectors) });
         result = await scraperService.generateWithSelectors({
-          url,
+          url: targetUrl,
           selectors,
           userId: user.id,
           options: {
@@ -98,20 +145,20 @@ export async function POST(request: NextRequest) {
           },
         });
       } 
-      // Otherwise, try to find a matching template or use AI
+      // Priority 4: Otherwise, try to find a matching template or use AI (existing logic)
       else {
-        // First try to find a matching template
+        Logger.logInfo('Attempting template match or AI generation for scraping', { userId: user?.id, url: targetUrl });
         const templateMatch = await templateMatcher.findMatchingTemplates({
-          url,
+          url: targetUrl,
           html: '', // Will be fetched by the matcher if needed
           userId: user.id,
         });
 
         if (templateMatch.length > 0 && templateMatch[0].confidence > 0.7) {
-          // Use the best matching template
           const template = templateMatch[0].template;
+          Logger.logInfo('Found matching template', { userId: user?.id, url: targetUrl, templateId: template.id });
           result = await scraperService.generateFromTemplate({
-            url,
+            url: targetUrl,
             templateId: template.id,
             userId: user.id,
             options: {
@@ -122,9 +169,9 @@ export async function POST(request: NextRequest) {
             },
           });
         } else if (options.useAi !== false) {
-          // Use AI to generate selectors if no good template match
+          Logger.logInfo('No matching template, using AI generation', { userId: user?.id, url: targetUrl });
           result = await scraperService.generateWithAi({
-            url,
+            url: targetUrl,
             userId: user.id,
             options: {
               waitForSelectors: options.waitForSelectors,
@@ -134,9 +181,10 @@ export async function POST(request: NextRequest) {
             },
           });
         } else {
+          Logger.logWarn('No scraper config, template, selectors, or AI option provided', { userId: user?.id, url: targetUrl });
           return NextResponse.json(
             { 
-              error: 'No template or selectors provided',
+              error: 'No valid scraping configuration provided (e.g., AI prompt, template, or direct selectors).',
               suggestion: 'Provide selectors, a templateId, or enable AI generation'
             },
             { status: 400 }
@@ -267,7 +315,6 @@ export async function GET(request: NextRequest) {
 export { DELETE, PUT } from '@/lib/api/handlers';
 
 // Add OPTIONS for CORS preflight
-import { NextResponse } from 'next/server';
 
 export async function OPTIONS() {
   return new NextResponse(null, {

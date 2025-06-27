@@ -74,7 +74,11 @@ DiscoveryModal.tsx (dialog design)
 ScrapingProgress.tsx (progress indicators) -- to beautify
 
 Next steps:
-1.Beautify the UI
-2. redirect the user to use google if a and info is not found (like if the serach querry is: "trip advisor" and the user does not find any results)
+1.Beautify the UI ---> Done but we can still improve because I want the best of the best
+2. redirect the user to use google if an info is not found (like if the serach querry is: "trip advisor" and the user does not find any results, redirect or ask the user to go the the link to main google search outside the app and come back to the app to paste the link and scrape)
 3. filter the free data from the backend to have only data that have valid website with "https://"
-4. Implement auto-generated or AI-assisted config
+4. Implement auto-generated or AI-assisted config ---> I think done
+5. Implement the AI scrapping logic and save into the database,  but before, check the db to see  if the info correlate ...
+
+NB: Read progress/Plan/search-scraper-integration-plan.md  to understand how we distributed the tasks to 3 developpers and do the same. But please talke your time go through the plan, the codebase, read progress/Building-Plan.md and progress/Building.Plan-reviewed-Only-Search-feature.md, you can check all database tables here: database/migrations and create a good plan for the next steps. Finally attribute the tasks to the developpers A , B and C.
+

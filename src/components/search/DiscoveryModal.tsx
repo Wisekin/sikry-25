@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -9,29 +9,54 @@ import {
 } from '@/src/components/ui/dialog';
 import { Button } from '@/src/components/ui/button';
 import { Input } from '@/src/components/ui/input';
+import { Textarea } from '@/src/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, AlertTriangle, SettingsIcon, LinkIcon, EyeIcon } from 'lucide-react';
+import {
+  Loader2,
+  AlertTriangle,
+  SettingsIcon,
+  LinkIcon,
+  EyeIcon,
+  SparklesIcon,
+  Edit3Icon,
+  Wand2Icon,
+  ArrowRightIcon,
+  RocketIcon,
+  CheckCircle2,
+  ChevronLeftIcon
+} from 'lucide-react';
 import { ScraperConfigEditor, ScraperConfig } from './ScraperConfigEditor';
 import { useSearchStore } from '@/stores/searchStore';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip";
+import { Tooltip, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card";
+import { PromptSuggestionCard } from './PromptSuggestionCard'; // Import the new component
 
-type ModalView = 'urlInput' | 'scraperConfig' | 'dataPreview';
+export interface ScraperSelector {
+  fieldName: string;
+  cssSelector: string;
+  type: 'text' | 'attribute' | 'html';
+  attributeName?: string;
+}
+
+type ModalView = 'urlInput' | 'promptInput' | 'scraperConfig';
 
 interface DiscoveryModalProps {
   isOpen: boolean;
   onClose: () => void;
   companyId: string;
-  companyName: string;
+  companyName:string;
   initialUrl?: string;
   onConfirmManualUrl?: (companyId: string, manualUrl: string, config?: ScraperConfig) => Promise<void>;
 }
 
+// Helper to normalize URLs
 function normalizeUrl(url: string): string {
   if (!url) return '';
   if (/^https?:\/\//i.test(url)) return url;
   return `https://${url}`;
 }
 
+// Main Component
 export function DiscoveryModal({
   isOpen,
   onClose,
@@ -51,13 +76,27 @@ export function DiscoveryModal({
 
   const companyDiscoveryState = useSearchStore(state => state.discoveryStates[companyId]);
   const [scraperConfig, setScraperConfig] = useState<ScraperConfig | null>(companyDiscoveryState?.scraperConfig || null);
+  const [prompt, setPrompt] = useState('');
+  const [isGeneratingConfig, setIsGeneratingConfig] = useState(false);
+  const [generatedSummary, setGeneratedSummary] = useState<string[] | null>(null);
+  const [aiGeneratedConfig, setAiGeneratedConfig] = useState<ScraperConfig | null>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const promptInputRef = useRef<HTMLTextAreaElement>(null);
+
+  const PROMPT_SUGGESTIONS = [
+      "Extract all contact information like emails and phone numbers...",
+      "List all products or services mentioned on the homepage.",
+  ];
+
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [generatedSummary, isGeneratingConfig]);
 
   useEffect(() => {
     if (isOpen) {
-      let urlToUse = companyDiscoveryState?.website || initialUrl || '';
-      if (urlToUse) {
-        urlToUse = normalizeUrl(urlToUse);
-      }
+      const urlToUse = normalizeUrl(companyDiscoveryState?.website || initialUrl || '');
       setManualUrl(urlToUse);
       if (isValidHttpUrl(urlToUse)) {
         setPreviewUrl(urlToUse);
@@ -69,33 +108,29 @@ export function DiscoveryModal({
       setCurrentView('urlInput');
 
       const existingConfig = companyDiscoveryState?.scraperConfig;
-      if (existingConfig) {
-        setScraperConfig(existingConfig);
-      } else if (urlToUse && isValidHttpUrl(urlToUse)) {
-        setScraperConfig({ websiteUrl: urlToUse, selectors: [{ fieldName: 'title', cssSelector: 'h1', type: 'text' }] });
-      } else {
-        setScraperConfig(null);
-      }
+      setScraperConfig(existingConfig || null);
     } else {
+      // Reset state on close
       setManualUrl('');
       setPreviewUrl('');
       setConfirmedUrl(null);
       setPreviewError(null);
-      setIsPreviewLoading(false);
       setCurrentView('urlInput');
       setScraperConfig(null);
+      setPrompt('');
+      setGeneratedSummary(null);
+      setAiGeneratedConfig(null);
     }
-  }, [isOpen, initialUrl, companyDiscoveryState?.website, companyDiscoveryState?.scraperConfig]);
+  }, [isOpen, initialUrl, companyId, companyDiscoveryState]);
 
   const isValidHttpUrl = (string: string) => {
-    let url;
     try {
-      url = new URL(string);
+      const url = new URL(string);
+      return url.protocol === "http:" || url.protocol === "https:";
     } catch (_) {
       return false;
     }
-    return url.protocol === "http:" || url.protocol === "https:";
-  }
+  };
 
   const handleManualUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newUrl = e.target.value;
@@ -103,11 +138,9 @@ export function DiscoveryModal({
     if (isValidHttpUrl(newUrl)) {
       setPreviewUrl(newUrl);
       setPreviewError(null);
-    } else if (newUrl === '') {
-      setPreviewUrl('');
-      setPreviewError(null);
     } else {
-      setPreviewError("Enter a valid HTTP/HTTPS URL to preview.");
+      setPreviewUrl('');
+      setPreviewError(newUrl === '' ? null : "Please enter a valid URL (e.g., https://example.com)");
     }
   };
 
@@ -116,90 +149,129 @@ export function DiscoveryModal({
       toast({ title: "Invalid URL", description: "Please enter a valid HTTP/HTTPS URL.", variant: "destructive" });
       return;
     }
-    setConfirmedUrl(manualUrl);
-    if (!scraperConfig || scraperConfig.websiteUrl !== manualUrl) {
+    const normalized = normalizeUrl(manualUrl);
+    setConfirmedUrl(normalized);
+    setGeneratedSummary(null);
+    setPrompt('');
+    setAiGeneratedConfig(null);
+
+    const existingConfig = companyDiscoveryState?.scraperConfig;
+    if (existingConfig && existingConfig.websiteUrl === normalized) {
+      setScraperConfig(existingConfig);
+    } else {
       setScraperConfig({
-        websiteUrl: manualUrl,
-        selectors: [{ fieldName: 'title', cssSelector: 'h1', type: 'text' }],
+        id: `temp-${Date.now()}`,
+        websiteUrl: normalized,
+        selectors: [],
+        version: 1,
+        lastModified: new Date().toISOString()
       });
     }
-    setCurrentView('scraperConfig');
+    setCurrentView('promptInput');
   };
 
-  const handleSaveScraperConfig = async (configToSave: ScraperConfig) => {
-    setIsLoading(true);
-    try {
-      useSearchStore.getState().setDiscoveryStateForCompany(companyId, { scraperConfig: configToSave, website: configToSave.websiteUrl });
-      setScraperConfig(configToSave);
-      toast({ title: "Configuration Updated", description: "Scraper configuration has been noted locally." });
-    } catch (error) {
-      const msg = error instanceof Error ? error.message : "Failed to save config.";
-      toast({ title: "Save Error", description: msg, variant: "destructive" });
-    } finally {
-      setIsLoading(false);
-    }
+  const handleGenerateConfig = async () => {
+    if (!confirmedUrl || !prompt.trim()) return;
+    setIsGeneratingConfig(true);
+    setGeneratedSummary(null);
+    setAiGeneratedConfig(null);
+
+    // Simulate API call
+    setTimeout(() => {
+      try {
+        if (prompt.includes("fail")) {
+             throw new Error("The AI model failed to generate a valid configuration. Please try rephrasing your request.");
+        }
+        const mockResponse = {
+            config: {
+                id: `generated-${Date.now()}`,
+                websiteUrl: confirmedUrl,
+                selectors: [
+                    { fieldName: 'email', cssSelector: 'a[href^="mailto:"]', type: 'attribute' as const, attributeName: 'href' },
+                    { fieldName: 'main_heading', cssSelector: 'h1', type: 'text' as const },
+                    { fieldName: 'primary_phone', cssSelector: '.phone, .tel', type: 'text' as const },
+                ],
+                version: 1,
+                lastModified: new Date().toISOString()
+            },
+            summary: [
+                "Identified selectors for email addresses.",
+                "Set up a rule to capture the main H1 heading.",
+                "Added selectors for common phone number classes.",
+                "Configuration is ready for review or use."
+            ]
+        };
+        setAiGeneratedConfig(mockResponse.config);
+        setScraperConfig(mockResponse.config);
+        setGeneratedSummary(mockResponse.summary);
+        toast({
+            title: "AI Configuration Generated!",
+            description: "The AI has proposed a configuration. You can now start discovery or edit it.",
+            className: "bg-green-50 border-green-200 dark:bg-green-900/30 dark:border-green-700",
+            icon: <CheckCircle2 className="h-5 w-5 text-green-500" />
+        });
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
+        toast({ title: "Generation Failed", description: errorMessage, variant: "destructive" });
+        setGeneratedSummary([`Error: ${errorMessage}`]);
+      } finally {
+        setIsGeneratingConfig(false);
+      }
+    }, 1500);
   };
+  
+  const handleSuggestionClick = (suggestion: string) => {
+      setPrompt(suggestion);
+      // Focues the textarea after setting prompt
+      promptInputRef.current?.focus();
+  }
 
   const handleStartDiscoveryWithConfig = async () => {
-    if (!confirmedUrl) {
-      toast({ title: "Error", description: "No URL confirmed for discovery.", variant: "destructive" });
-      return;
-    }
-    if (!scraperConfig) {
-      toast({ title: "Error", description: "No scraper configuration available.", variant: "destructive" });
-      return;
-    }
-      if (onConfirmManualUrl) {
+    if (!confirmedUrl || !scraperConfig) return;
+    if (onConfirmManualUrl) {
       setIsLoading(true);
       try {
         await onConfirmManualUrl(companyId, confirmedUrl, scraperConfig);
-        toast({ title: "Success", description: `Discovery process started for ${confirmedUrl} with custom config.` });
+        toast({ title: "Discovery Started!", description: `The process has successfully begun for ${confirmedUrl}.`, icon: <RocketIcon className="h-5 w-5 text-blue-500" /> });
         onClose();
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
-        toast({ title: "Error", description: errorMessage, variant: "destructive" });
+        toast({ title: "Error Starting Discovery", description: error instanceof Error ? error.message : "An unknown error occurred.", variant: "destructive" });
       } finally {
         setIsLoading(false);
       }
     }
   };
-
+  
   const renderUrlInputView = () => (
     <>
-      <DialogHeader className="pb-4 border-b border-gray-100">
-        <DialogTitle className="text-xl font-semibold text-gray-800">
-          Website Discovery for <span className="text-[#2A3050]">{companyName}</span>
+      <DialogHeader className="p-4 border-b dark:border-slate-800">
+        <DialogTitle className="text-2xl font-bold text-slate-800 dark:text-slate-100">
+          Website Discovery for <span className="text-blue-600 dark:text-blue-400">{companyName}</span>
         </DialogTitle>
-        <DialogDescription className="text-gray-600 mt-1">
-          Enter or verify the website URL for {companyName}. A preview is shown below.
+        <DialogDescription className="text-slate-500 dark:text-slate-400 mt-1">
+          Enter or verify the website URL. A live preview will load below.
         </DialogDescription>
       </DialogHeader>
 
-      <div className="grid gap-4 py-4 px-1">
+      <div className="grid gap-6 p-6">
         <div className="relative">
+          <LinkIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400 dark:text-slate-500" />
           <Input
             id="manualUrl"
             placeholder="https://www.example.com"
             value={manualUrl}
             onChange={handleManualUrlChange}
-            className="col-span-4 pl-10 h-11 text-gray-700 border-gray-300 focus:border-[#2A3050] focus:ring-[#2A3050]"
+            className="w-full pl-12 h-12 text-lg text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-800 rounded-lg shadow-sm"
           />
-          <LinkIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
         </div>
 
-        <div className="mt-2 h-[400px] border border-gray-200 rounded-lg bg-gray-50 overflow-hidden relative shadow-sm">
-          {previewUrl ? (
+        <div className="min-h-[450px] border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-100 dark:bg-slate-900/50 overflow-hidden relative shadow-inner">
+          {previewUrl && isValidHttpUrl(previewUrl) ? (
             <>
-              {isPreviewLoading && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-50/90 z-10">
-                  <Loader2 className="h-8 w-8 animate-spin text-[#2A3050]" />
-                  <p className="mt-2 text-sm text-gray-600">Loading preview...</p>
-                </div>
-              )}
-              {previewError && !isPreviewLoading && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-50/90 z-10 p-4">
-                  <AlertTriangle className="h-8 w-8 text-amber-500" />
-                  <p className="mt-2 text-sm text-center text-amber-700">{previewError}</p>
+              {(isPreviewLoading || previewError) && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-100/90 dark:bg-slate-900/90 z-10 p-4 backdrop-blur-sm">
+                  {isPreviewLoading ? <Loader2 className="h-10 w-10 animate-spin text-blue-500" /> : <AlertTriangle className="h-10 w-10 text-amber-500" />}
+                  <p className="mt-4 text-center font-medium text-slate-600 dark:text-slate-400">{isPreviewLoading ? 'Loading Preview...' : previewError}</p>
                 </div>
               )}
               <iframe
@@ -207,137 +279,272 @@ export function DiscoveryModal({
                 title="Website Preview"
                 className="w-full h-full bg-white"
                 sandbox="allow-scripts allow-same-origin"
+                onLoadStart={() => setIsPreviewLoading(true)}
                 onLoad={() => setIsPreviewLoading(false)}
-                onError={() => { setIsPreviewLoading(false); if (!previewError) setPreviewError('Could not load preview.'); }}
-                onLoadStart={() => { setIsPreviewLoading(true); setPreviewError(null); }}
+                onError={() => { setIsPreviewLoading(false); if (!previewError) setPreviewError('Could not load preview. The site may block embedding.'); }}
               />
             </>
           ) : (
-            <div className="flex flex-col items-center justify-center h-full bg-gray-50">
-              <LinkIcon className="h-12 w-12 text-gray-300" />
-              <p className="mt-2 text-sm text-gray-500">
-                {previewError || "Enter a valid URL above to see a preview."}
+            <div className="flex flex-col items-center justify-center h-full text-center p-4">
+              <LinkIcon className="h-16 w-16 text-slate-300 dark:text-slate-600" />
+              <p className="mt-4 text-lg font-semibold text-slate-500 dark:text-slate-400">
+                {previewError || "Enter a valid URL to see a preview"}
               </p>
+              <p className="text-sm text-slate-400 dark:text-slate-500">The website will be displayed here.</p>
             </div>
           )}
         </div>
       </div>
+    </>
+  );
 
-      <DialogFooter className="border-t border-gray-100 pt-4">
-        <Button
-          variant="outline"
-          onClick={onClose}
-          disabled={isLoading}
-          className="border-gray-300 text-gray-700 hover:bg-gray-50"
-        >
-          Cancel
-        </Button>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                onClick={handleConfirmAndProceedToConfig}
-                disabled={isLoading || !manualUrl || !isValidHttpUrl(manualUrl) || isPreviewLoading}
-                className="bg-[#2A3050] hover:bg-[#2A3050]/90 text-white shadow-sm"
-              >
-                {isLoading ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <SettingsIcon className="mr-2 h-4 w-4" />
+ const renderPromptInputView = () => (
+    <>
+        {/* Header Section with Gradient */}
+        <div className="text-center py-2 mr-3 ml-3 rounded-t-lg bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-800 dark:to-slate-900 ">
+       
+            <DialogTitle className="text-3xl font-extrabold text-white tracking-tight">
+                AI-Powered Scraper
+            </DialogTitle>
+             <DialogDescription className="mt-2 text-slate-400 text-md max-w-2xl mx-auto">
+                Describe the data you need from <strong className="text-blue-300 font-medium">{confirmedUrl}</strong>, and our AI will build the scraper for you.
+            </DialogDescription>
+        </div>
+
+        {/* Chat & Prompt Area */}
+        <div className="flex flex-col min-h-[450px] bg-slate-100 dark:bg-slate-900/70 border-y dark:border-slate-800">
+            <div className="flex-grow overflow-y-auto p-6 space-y-6 scroll-smooth" ref={chatContainerRef}>
+                {/* Initial State: AI Welcome & Suggestions */}
+                {!generatedSummary && !isGeneratingConfig && (
+                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <div className="flex items-start gap-3 max-w-xl mb-6">
+                            <span className="flex-shrink-0 w-10 h-10 rounded-full bg-slate-700 text-white flex items-center justify-center ring-4 ring-slate-100 dark:ring-slate-900">
+                                <SparklesIcon className="w-6 h-6" />
+                            </span>
+                            <div className="p-4 rounded-2xl rounded-tl-none bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
+                                <p className="text-sm text-slate-700 dark:text-slate-300">
+                                    I'm ready to get started! What data should I extract? You can either type your request or choose one of the suggestions below.
+                                    <br />
+                                    <em className="text-red-800 dark:text-slate-800">If you don't specify anything, I'll look for default data like phone, email and address</em>
+                                </p>
+                            </div>
+                        </div>
+                        <div className="space-y-3 max-w-xl ml-12">
+                            {PROMPT_SUGGESTIONS.map(s => <PromptSuggestionCard key={s} suggestion={s} onClick={handleSuggestionClick} />)}
+                        </div>
+                    </div>
                 )}
-                Confirm URL & Configure Scraper
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent className="bg-gray-800 text-white">
-              <p>Validate the URL and proceed to the scraper configuration editor.</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </DialogFooter>
+                
+                {/* AI Generated Summary Message */}
+                {generatedSummary && (
+                    <div className="flex items-start gap-3 max-w-xl animate-in fade-in slide-in-from-bottom-2 duration-300">
+                        <span className="flex-shrink-0 w-10 h-10 rounded-full bg-slate-700 text-white flex items-center justify-center ring-4 ring-slate-100 dark:ring-slate-900">
+                           <SparklesIcon className="w-6 h-6" />
+                        </span>
+                        <div className="p-4 rounded-2xl rounded-tl-none bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
+                            <p className="font-semibold text-slate-800 dark:text-slate-200 mb-2">Here's my plan:</p>
+                            <ul className="space-y-1.5">
+                                {generatedSummary.map((item, index) => (
+                                    <li key={index} className="flex items-start text-sm text-slate-600 dark:text-slate-400">
+                                      <CheckCircle2 className="h-4 w-4 mr-2 mt-0.5 text-green-500 flex-shrink-0" />
+                                      <span>{item}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                )}
+                
+                {/* Loading Indicator */}
+                {isGeneratingConfig && (
+                    <div className="flex items-start gap-3 max-w-md animate-in fade-in">
+                         <span className="flex-shrink-0 w-10 h-10 rounded-full bg-slate-700 text-white flex items-center justify-center ring-4 ring-slate-100 dark:ring-slate-900">
+                           <SparklesIcon className="w-6 h-6 animate-pulse" />
+                        </span>
+                        <div className="p-4 rounded-2xl rounded-tl-none bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
+                            <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
+                                <Loader2 className="w-5 h-5 animate-spin"/>
+                                <span className="font-medium">Generating configuration...</span>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            {/* Prompt Input Area */}
+            <div className="flex-shrink-0 p-4 sm:p-6 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border-t dark:border-slate-800">
+                <div className="relative">
+                    <Textarea
+                        ref={promptInputRef}
+                        id="aiPrompt"
+                        placeholder="e.g., 'Get all phone numbers and addresses'"
+                        value={prompt}
+                        onChange={(e) => setPrompt(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleGenerateConfig(); }}}
+                        rows={1}
+                        className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 rounded-full w-full resize-none p-3 pl-5 pr-28 sm:pr-36 text-md focus-visible:ring-2 focus-visible:ring-blue-500/80 dark:focus-visible:ring-blue-500/60 shadow-sm"
+                        disabled={isGeneratingConfig}
+                    />
+                    <Button
+                        size="sm"
+                        onClick={handleGenerateConfig}
+                        disabled={isGeneratingConfig || !prompt.trim()}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 h-9 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-md"
+                    >
+                        {isGeneratingConfig ? <Loader2 className="h-5 w-5 animate-spin"/> : <ArrowRightIcon className="h-5 w-5" />}
+                        <span className="ml-1.5 hidden sm:inline">Generate</span>
+                    </Button>
+                </div>
+            </div>
+        </div>
     </>
   );
 
   const renderScraperConfigView = () => {
-    if (!confirmedUrl) return <p>Error: URL not confirmed.</p>;
+    if (!confirmedUrl) return null;
+    const configToEdit = aiGeneratedConfig || scraperConfig;
+
     return (
       <>
-        <DialogHeader className="pb-4 border-b border-gray-100">
-          <DialogTitle className="text-xl font-semibold text-gray-800">
-            Configure Scraper for <span className="text-[#2A3050]">{companyName}</span>
+        <DialogHeader className="p-6 border-b dark:border-slate-800">
+          <DialogTitle className="text-2xl font-bold text-slate-800 dark:text-slate-100 flex items-center">
+            <SettingsIcon className="w-7 h-7 mr-3 text-blue-500"/>
+            Manual Scraper Configuration
           </DialogTitle>
-          <DialogDescription className="text-gray-600 mt-1">
-            Define data extraction rules for <span className="font-medium text-gray-700">{confirmedUrl}</span>
+          <DialogDescription className="text-slate-500 dark:text-slate-400 mt-1">
+            Review or edit data extraction rules for <span className="font-medium text-blue-500 dark:text-blue-400">{confirmedUrl}</span>
           </DialogDescription>
         </DialogHeader>
 
-        <div className="py-4 max-h-[60vh] overflow-y-auto px-1">
-          {scraperConfig ? (
+        <div className="p-6 max-h-[60vh] overflow-y-auto bg-slate-50 dark:bg-slate-900/50">
+          {configToEdit ? (
             <ScraperConfigEditor
               key={confirmedUrl}
-              initialConfig={scraperConfig}
-              onSaveConfig={handleSaveScraperConfig}
+              initialConfig={configToEdit}
+              onSaveConfig={async (newConfig) => {
+                 setAiGeneratedConfig(newConfig);
+                 setScraperConfig(newConfig);
+                 toast({ title: "Configuration Updated", description: "Your manual changes have been saved." });
+              }}
               isLoading={isLoading}
             />
           ) : (
-            <div className="flex flex-col items-center justify-center h-40">
-              <Loader2 className="h-8 w-8 animate-spin text-[#2A3050]" />
-              <p className="mt-2 text-gray-600">Loading configuration...</p>
+             <div className="flex flex-col items-center justify-center h-40 text-slate-500 dark:text-slate-400">
+                <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+                <p className="mt-4 font-medium">Loading configuration...</p>
             </div>
           )}
         </div>
-
-        <DialogFooter className="flex-col sm:flex-row sm:justify-between border-t border-gray-100 pt-4">
-          <Button
-            variant="outline"
-            onClick={() => setCurrentView('urlInput')}
-            disabled={isLoading}
-            className="border-gray-300 text-gray-700 hover:bg-gray-50"
-          >
-            <LinkIcon className="mr-2 h-4 w-4" /> Back to URL
-          </Button>
-          <div className="flex flex-col sm:flex-row gap-2 mt-2 sm:mt-0">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    onClick={handleStartDiscoveryWithConfig}
-                    disabled={isLoading || !scraperConfig}
-                    className="bg-[#2A3050] hover:bg-[#2A3050]/90 text-white shadow-sm"
-                  >
-                    {isLoading ? (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    ) : (
-                      <EyeIcon className="mr-2 h-4 w-4" />
-                    )}
-                    Discover with this Configuration
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent className="bg-gray-800 text-white">
-                  <p>Start the web discovery and scraping process using the current configuration.</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-        </DialogFooter>
       </>
     );
   };
 
   if (!isOpen) return null;
 
+  // Sticky header component with grouped buttons
+  const renderStickyHeader = () => (
+    <div className="sticky top-0 z-10 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-6 py-2">
+      <div className="flex justify-between items-center">
+        <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200">
+          {currentView === 'urlInput' ? '' : currentView === 'promptInput' ? 'AI Configuration' : 'Scraper Config'}
+        </h2>
+        <div className="flex items-center space-x-3">
+          <Button 
+            variant="outline"
+            onClick={currentView === 'urlInput' ? onClose : () => setCurrentView(prev => {
+              if (prev === 'scraperConfig') return 'promptInput';
+              if (prev === 'promptInput') return 'urlInput';
+              return prev;
+            })}
+            className="px-4 py-2"
+          >
+            {currentView === 'urlInput' ? 'Cancel' : 'Back'}
+          </Button>
+          
+          {currentView === 'urlInput' ? (
+            <Button
+              onClick={handleConfirmAndProceedToConfig}
+              disabled={isLoading || !manualUrl || !isValidHttpUrl(manualUrl) || isPreviewLoading}
+              className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-semibold shadow-md px-6 py-2"
+            >
+              Confirm & Configure Scraper <ArrowRightIcon className="ml-2 h-4 w-4" />
+            </Button>
+          ) : (
+            <Button
+              onClick={handleStartDiscoveryWithConfig}
+              disabled={isLoading || !scraperConfig}
+              className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-semibold shadow-md px-6 py-2"
+            >
+              {currentView === 'promptInput' ? 'Continue to Scraper' : 'Start Discovery'}
+              <RocketIcon className="ml-2 h-4 w-4" />
+            </Button>
+          )}
+        </div>
+      </div>
+      <div className=" text-sm text-slate-500 dark:text-slate-400">
+        
+        {currentView === 'promptInput' && 'Describe what data you want to extract'}
+        {currentView === 'scraperConfig' && 'Review and edit the scraper configuration'}
+      </div>
+    </div>
+  );
+
+  // Enhanced footer component with progress indicators
+  const renderEnhancedFooter = () => (
+    <div className="sticky  z-10 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 px-6 py-1">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-medium">
+            {currentView === 'urlInput' ? 1 : currentView === 'promptInput' ? 2 : 3}
+          </div>
+          <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+            {currentView === 'urlInput' ? 'Enter Website URL' : 
+             currentView === 'promptInput' ? 'Configure with AI' : 
+             'Review & Start Discovery'}
+          </span>
+        </div>
+        
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-1 text-sm text-slate-500 dark:text-slate-400">
+            <span>Step</span>
+            <span className="font-medium text-slate-700 dark:text-slate-300">
+              {currentView === 'urlInput' ? '1' : currentView === 'promptInput' ? '2' : '3'}
+            </span>
+            <span>of</span>
+            <span>3</span>
+          </div>
+          
+          <div className="flex items-center space-x-1">
+            {[1, 2, 3].map((step) => (
+              <div 
+                key={step}
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                  (currentView === 'urlInput' && step === 1) ||
+                  (currentView === 'promptInput' && step === 2) ||
+                  (currentView === 'scraperConfig' && step === 3)
+                    ? 'bg-blue-600 w-4'
+                    : 'bg-slate-300 dark:bg-slate-600'
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className={
-        currentView === 'scraperConfig'
-          // START: Increased max-width for scraper config view
-          ? "sm:max-w-6xl md:max-w-6xl max-h-[90vh] rounded-lg" // Adjust these as needed, e.g., "lg:max-w-7xl xl:max-w-8xl"
-          // END: Increased max-width for scraper config view
-          // START: Increased max-width for URL input view
-          : "sm:max-w-4xl md:max-w-7xl max-h-[90vh] rounded-lg" // Adjust these as needed
-          // END: Increased max-width for URL input view
-      }>
-        {currentView === 'urlInput' && renderUrlInputView()}
-        {currentView === 'scraperConfig' && renderScraperConfigView()}
+      <DialogContent className="p-0 gap-0 rounded-xl shadow-2xl border-0 w-[90vw] max-w-none sm:max-w-5xl lg:max-w-7xl dark:bg-slate-900 h-[85vh] flex flex-col">
+        <div className="flex flex-col h-full">
+          {renderStickyHeader()}
+          <div className="flex-1 overflow-y-auto">
+            {currentView === 'urlInput' && renderUrlInputView()}
+            {currentView === 'promptInput' && renderPromptInputView()}
+            {currentView === 'scraperConfig' && renderScraperConfigView()}
+          </div>
+          {renderEnhancedFooter()}
+        </div>
       </DialogContent>
     </Dialog>
   );
