@@ -1,6 +1,7 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card';
-import { BarChart2, PieChart as PieIcon, LineChart as LineIcon, HelpCircle } from 'lucide-react'; // Renamed icons
+import { BarChart2, PieChart as PieIcon, LineChart as LineIcon, HelpCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Bar, Line, Pie } from 'react-chartjs-2';
 import {
@@ -11,13 +12,12 @@ import {
   PointElement,
   LineElement,
   ArcElement,
-  Title,
-  Tooltip,
+  Title as ChartJsTitle, // Renamed to avoid conflict with CardTitle
+  Tooltip as ChartJsTooltip, // Renamed
   Legend,
   Filler,
 } from 'chart.js';
 
-// Register Chart.js components - ensuring all needed are registered
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -25,42 +25,35 @@ ChartJS.register(
   PointElement,
   LineElement,
   ArcElement,
-  Title,
-  Tooltip,
+  ChartJsTitle,
+  ChartJsTooltip,
   Legend,
   Filler
 );
 
-
-// Define generic types for chart data
 type ChartType = 'bar' | 'pie' | 'line' | 'number';
 
-export interface ChartDataItem { // Exporting for potential use elsewhere
-  name: string; // Corresponds to labels
-  value: number; // Corresponds to data points
-  color?: string; // Optional color for pie/bar segments
+export interface ChartDataItem {
+  name: string;
+  value: number;
+  color?: string;
   [key: string]: any;
 }
 
 interface DataVisualizationWidgetProps {
-  title: string;
-  description?: string;
+  title: string; // Assumed to be already translated when passed as a prop
+  description?: string; // Assumed to be already translated
   chartType: ChartType;
   data: ChartDataItem[] | number;
   isLoading?: boolean;
-  error?: string | null;
+  error?: string | null; // Error messages might need to be translation keys or translated before passing
   className?: string;
-  // Config options could include `options` for Chart.js directly
-  chartJsOptions?: any; // To pass full Chart.js options object
+  chartJsOptions?: any;
 }
 
 const defaultChartColors = [
-  'rgba(54, 162, 235, 0.6)',
-  'rgba(255, 99, 132, 0.6)',
-  'rgba(75, 192, 192, 0.6)',
-  'rgba(255, 206, 86, 0.6)',
-  'rgba(153, 102, 255, 0.6)',
-  'rgba(255, 159, 64, 0.6)',
+  'rgba(54, 162, 235, 0.6)', 'rgba(255, 99, 132, 0.6)', 'rgba(75, 192, 192, 0.6)',
+  'rgba(255, 206, 86, 0.6)', 'rgba(153, 102, 255, 0.6)', 'rgba(255, 159, 64, 0.6)',
   'rgba(99, 255, 132, 0.6)',
 ];
 
@@ -72,43 +65,34 @@ export function DataVisualizationWidget({
   isLoading = false,
   error = null,
   className,
-  chartJsOptions = {}, // Default to empty object
+  chartJsOptions = {},
 }: DataVisualizationWidgetProps) {
+  const { t } = useTranslation('searchPage');
 
   const baseChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: {
-        display: chartType !== 'pie', // Often legend is more useful for bar/line
-        position: 'top' as const,
-      },
-      title: {
-        display: false, // CardTitle is used instead
-      },
+      legend: { display: chartType !== 'pie', position: 'top' as const },
+      title: { display: false }, // CardTitle is used
     },
-    ...chartJsOptions, // Allow overriding with specific options
+    ...chartJsOptions,
   };
 
-  const pieChartOptions = { // Specific options for Pie charts
+  const pieChartOptions = {
     ...baseChartOptions,
     plugins: {
         ...baseChartOptions.plugins,
-        legend: {
-            display: true, // Pie charts usually benefit from a legend
-            position: 'right' as const,
-            labels: { boxWidth: 12, padding: 15 }
-        }
+        legend: { display: true, position: 'right' as const, labels: { boxWidth: 12, padding: 15 } }
     }
   };
-
 
   const renderContent = () => {
     if (isLoading) {
       return (
-        <div className="flex items-center justify-center h-full min-h-[200px]"> {/* Increased min-height */}
-          <BarChart2 className="h-10 w-10 text-gray-300 animate-pulse" />
-          <p className="ml-2 text-gray-500">Loading chart data...</p>
+        <div className="flex items-center justify-center h-full min-h-[200px]">
+          <BarChart2 className="h-10 w-10 text-gray-300 dark:text-slate-600 animate-pulse" />
+          <p className="ml-2 text-gray-500 dark:text-slate-400">{t('dataVisualizationWidget.loading')}</p>
         </div>
       );
     }
@@ -117,8 +101,8 @@ export function DataVisualizationWidget({
       return (
         <div className="flex flex-col items-center justify-center h-full min-h-[200px] text-center p-4">
           <HelpCircle className="h-10 w-10 text-red-400 mb-2" />
-          <p className="font-semibold text-red-600">Could not load chart</p>
-          <p className="text-xs text-red-500">{error}</p>
+          <p className="font-semibold text-red-600 dark:text-red-400">{t('dataVisualizationWidget.errorTitle')}</p>
+          <p className="text-xs text-red-500 dark:text-red-500">{error}</p> {/* Assuming error is a displayable message */}
         </div>
       );
     }
@@ -128,33 +112,31 @@ export function DataVisualizationWidget({
     if (noDataAvailable) {
          return (
             <div className="flex flex-col items-center justify-center h-full min-h-[200px] text-center p-4">
-                <HelpCircle className="h-10 w-10 text-gray-400 mb-2" />
-                <p className="text-gray-500">No data available for this visualization.</p>
+                <HelpCircle className="h-10 w-10 text-gray-400 dark:text-slate-500 mb-2" />
+                <p className="text-gray-500 dark:text-slate-400">{t('dataVisualizationWidget.noData')}</p>
             </div>
         );
     }
 
-    // Prepare data for Chart.js
     let chartData: any = {};
     if (Array.isArray(data)) {
       chartData = {
-        labels: data.map(item => item.name),
+        labels: data.map(item => item.name), // Assuming item.name does not need translation here or is pre-translated
         datasets: [{
-          label: title, // Use widget title as default dataset label
+          label: title, // Already translated prop
           data: data.map(item => item.value),
           backgroundColor: chartType === 'pie' 
             ? data.map((item, index) => item.color || defaultChartColors[index % defaultChartColors.length])
-            : (chartType === 'bar' ? defaultChartColors[0] : 'rgba(54, 162, 235, 0.2)'), // Bar color or Line area color
+            : (chartType === 'bar' ? defaultChartColors[0] : 'rgba(54, 162, 235, 0.2)'),
           borderColor: chartType === 'pie' 
-            ? data.map(() => '#fff') // White borders for pie segments
-            : defaultChartColors[0], // Line or Bar border color
+            ? data.map(() => '#fff')
+            : defaultChartColors[0],
           borderWidth: chartType === 'pie' ? 2 : 1,
-          fill: chartType === 'line', // Fill area for line charts
+          fill: chartType === 'line',
           tension: chartType === 'line' ? 0.1 : undefined,
         }],
       };
     }
-
 
     switch (chartType) {
       case 'bar':
@@ -166,11 +148,11 @@ export function DataVisualizationWidget({
       case 'number':
          return (
             <div className="flex flex-col items-center justify-center h-full p-4">
-                <div className="text-4xl font-bold text-gray-700">{Number(data).toLocaleString()}</div>
+                <div className="text-4xl font-bold text-gray-700 dark:text-slate-200">{Number(data).toLocaleString()}</div>
             </div>
          );
       default:
-        return <p className="text-gray-500">Unknown chart type.</p>;
+        return <p className="text-gray-500 dark:text-slate-400">{t('dataVisualizationWidget.unknownChartType')}</p>;
     }
   };
 
@@ -180,7 +162,7 @@ export function DataVisualizationWidget({
         <CardTitle className="text-lg">{title}</CardTitle>
         {description && <CardDescription>{description}</CardDescription>}
       </CardHeader>
-      <CardContent className="flex-grow min-h-[250px] p-2 sm:p-4"> {/* Increased min-height for charts */}
+      <CardContent className="flex-grow min-h-[250px] p-2 sm:p-4">
         {renderContent()}
       </CardContent>
     </Card>

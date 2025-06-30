@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Trans } from 'react-i18next';
 import { Card, CardHeader, CardContent, CardFooter } from "@/src/components/ui/card";
 import { Company } from "@/src/lib/types";
 import { Users, MapPin, Mail, Phone, ExternalLink, Briefcase, Tag, SearchIcon, AlertTriangleIcon, CheckCircle2Icon, SparklesIcon, LinkedinIcon, TwitterIcon, FacebookIcon, InstagramIcon, LinkIcon as LucideLinkIcon, Settings2Icon, EyeIcon, FileTextIcon, XIcon } from "lucide-react";
@@ -8,23 +9,28 @@ import { ScrapingProgress } from './ScrapingProgress';
 import { useSearchStore, CompanyDiscoveryState, ScrapedData } from '@/stores/searchStore';
 import { Button } from '@/src/components/ui/button';
 import { Badge } from '@/src/components/ui/badge';
+// Note: `Trans` component might be needed for complex inline translations with HTML elements.
 import { useToast } from '@/hooks/use-toast';
 import { DiscoveryModal } from './DiscoveryModal';
 import { DataPreview } from './DataPreview';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip";
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription, DialogClose } from '@/src/components/ui/dialog';
 import { Edit3Icon, Wand2Icon, ArrowRightIcon } from 'lucide-react';
+
 interface DataPointCardProps {
   icon: React.ElementType;
-  title: string;
+  titleKey: string; // Changed to titleKey for translation
 }
 
-const DataPointCard = ({ icon: Icon, title }: DataPointCardProps) => (
-  <div className="flex items-start rounded-lg border border-gray-200 bg-white p-4 transition-all hover:shadow-sm dark:border-gray-800 dark:bg-gray-900/30">
-    <Icon className="mt-0.5 mr-3 h-5 w-5 flex-shrink-0 text-blue-600 dark:text-blue-400" />
-    <span className="font-medium text-gray-800 dark:text-gray-200">{title}</span>
-  </div>
-);
+const DataPointCard = ({ icon: Icon, titleKey }: DataPointCardProps) => {
+  const { t } = useTranslation('searchPage');
+  return (
+    <div className="flex items-start rounded-lg border border-gray-200 bg-white p-4 transition-all hover:shadow-sm dark:border-gray-800 dark:bg-gray-900/30">
+      <Icon className="mt-0.5 mr-3 h-5 w-5 flex-shrink-0 text-blue-600 dark:text-blue-400" />
+      <span className="font-medium text-gray-800 dark:text-gray-200">{t(titleKey)}</span>
+    </div>
+  );
+};
 
 interface InfoListItemProps {
   icon: React.ElementType;
@@ -86,14 +92,14 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
   useEffect(() => {
     if (companyDiscoveryState && companyDiscoveryState.status === 'error' && prevStatusRef.current !== 'error' && companyDiscoveryState.error) {
       toast({
-        title: `Discovery Error: ${company.name}`,
-        description: companyDiscoveryState.error,
+        title: t('companyCard.discovery.status.errorTitle'),
+        description: companyDiscoveryState.error, // Error messages from backend might not be translated yet
         variant: "destructive",
         duration: 7000,
       });
     }
     prevStatusRef.current = companyDiscoveryState?.status;
-  }, [companyDiscoveryState, company.name, toast]);
+  }, [companyDiscoveryState, company.name, toast, t]);
 
   const scrapedData: ScrapedData | undefined = companyDiscoveryState?.scrapedData;
   const isEnriched = companyDiscoveryState?.status === 'completed' && !!scrapedData;
@@ -129,7 +135,7 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
   const confidenceScore = company.confidenceScore || 0;
   const confidenceStyle = getConfidenceColor(confidenceScore);
   const cardClasses = `group bg-white border border-gray-200 rounded-xl shadow-sm transition-all duration-300 hover:shadow-md hover:border-blue-300/50`;
-  const employeeDisplay = company.employee_count || 'N/A';
+  const employeeDisplay = company.employee_count || t('companyCard.na', 'N/A');
 
   const handleDefaultScrape = () => {
     handleDiscoverClick();
@@ -153,13 +159,11 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
                 companyName={company.name}
                 variant="default"
                 size="sm"
-                // START: Color change for the blue discovery button
                 className="w-full bg-[#1B3B6D] hover:bg-[#1B3B6D]/90 text-white shadow-sm hover:shadow-md transition-all"
-                // END: Color change for the blue discovery button
               />
             </TooltipTrigger>
             <TooltipContent>
-              <p>{t('tooltip.startDiscovery', "Start automatic website discovery and data scraping.")}</p>
+              <p>{t('companyCard.tooltips.startDiscovery')}</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -168,15 +172,15 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
 
     switch (companyDiscoveryState.status) {
       case 'discovering':
-        return <ScrapingProgress progress={companyDiscoveryState.progress || 30} statusText={t('discovery.status.discovering', "Discovering website...")} />;
+        return <ScrapingProgress progress={companyDiscoveryState.progress || 30} statusText={t('companyCard.discovery.status.discovering')} />;
       case 'scraping':
-        return <ScrapingProgress progress={companyDiscoveryState.progress || 0} statusText={t('discovery.status.scraping', "Scraping {{website}}...", { website: companyDiscoveryState.website })} />;
+        return <ScrapingProgress progress={companyDiscoveryState.progress || 0} statusText={t('companyCard.discovery.status.scraping', { website: companyDiscoveryState.website })} />;
       case 'completed':
         return (
           <div className="text-center space-y-1">
             <div className="flex items-center justify-center text-emerald-600">
               <CheckCircle2Icon className="w-5 h-5 mr-2"/>
-              <p className="font-medium">{t('discovery.status.completed', "Data enriched!")}</p>
+              <p className="font-medium">{t('companyCard.discovery.status.completed')}</p>
             </div>
             <div className="flex flex-col sm:flex-row gap-1 mt-1.5 w-full">
               <TooltipProvider>
@@ -188,11 +192,11 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
                       className="text-xs flex-1 border-gray-300 hover:bg-blue-50 hover:border-blue-300 text-gray-700"
                       onClick={() => setIsDiscoveryModalOpen(true)}
                     >
-                      <Settings2Icon className="w-3.5 h-3.5 mr-1.5" /> {t('discovery.customizeScraping', "Re-Scrape")}
+                      <Settings2Icon className="w-3.5 h-3.5 mr-1.5" /> {t('companyCard.discovery.customizeScraping')}
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>{t('tooltip.customizeScraping', "Manually set website URL or customize scraping configuration.")}</p>
+                    <p>{t('companyCard.tooltips.customizeScraping')}</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -206,11 +210,11 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
                         className="text-xs flex-1 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white shadow-sm"
                         onClick={() => setIsDataPreviewModalOpen(true)}
                       >
-                        <FileTextIcon className="w-3.5 h-3.5 mr-1.5" /> {t('discovery.viewScrapedData', "View Data")}
+                        <FileTextIcon className="w-3.5 h-3.5 mr-1.5" /> {t('companyCard.discovery.viewScrapedData')}
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>{t('tooltip.viewScrapedData', "View the data that has been scraped and enriched for this company.")}</p>
+                      <p>{t('companyCard.tooltips.viewScrapedData')}</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -223,10 +227,10 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
           <div className="text-center p-2 border border-red-200 rounded-md bg-red-50">
             <div className="flex items-center justify-center text-red-700 mb-1.5">
               <AlertTriangleIcon className="w-5 h-5 mr-2 flex-shrink-0"/>
-              <p className="text-sm font-medium">{t('discovery.status.errorTitle', "Discovery Failed")}</p>
+              <p className="text-sm font-medium">{t('companyCard.discovery.status.errorTitle')}</p>
             </div>
             <p className="text-xs text-red-600 mb-2 break-words">
-              {companyDiscoveryState.error || t('discovery.status.unknownError', "An unknown error occurred.")}
+              {companyDiscoveryState.error || t('companyCard.discovery.status.unknownError')}
             </p>
             <Button
               onClick={handleDiscoverClick}
@@ -234,7 +238,7 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
               size="sm"
               className="text-xs w-full"
             >
-              {t('discovery.tryAgain', "Try Again")}
+              {t('companyCard.discovery.tryAgain')}
             </Button>
           </div>
         );
@@ -248,7 +252,7 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
       <div className={`${cardClasses} p-3 sm:p-4 flex flex-col sm:flex-row items-start gap-3 sm:gap-4 max-w-full hover:bg-blue-50/50`}>
         <img
           src={company.logo || `https://ui-avatars.com/api/?name=${company.name.replace(/\s/g, '+')}&background=EBF4FF&color=1D4ED8`}
-          alt={`${company.name} logo`}
+          alt={t('companyCard.logoAlt', { companyName: company.name })}
           className="w-12 h-12 sm:w-16 sm:h-16 rounded-md object-contain flex-shrink-0 border border-gray-200"
         />
 
@@ -263,11 +267,11 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Badge variant="outline" className="border-emerald-300 bg-emerald-50 text-emerald-700 text-xs px-1.5 py-0.5">
-                        <SparklesIcon className="w-3 h-3 mr-1" /> Enriched
+                        <SparklesIcon className="w-3 h-3 mr-1" /> {t('companyCard.enriched')}
                       </Badge>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>{t('tooltip.enrichedData', "This company's data has been successfully enriched through web scraping.")}</p>
+                      <p>{t('companyCard.tooltips.enrichedData')}</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -288,7 +292,7 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
           <div className="text-xs text-gray-600 space-y-0.5 flex flex-col sm:flex-row sm:flex-wrap sm:gap-x-3 sm:gap-y-1">
             {company.industry && <span className="flex items-center"><Briefcase className="w-3.5 h-3.5 mr-1 text-gray-500 flex-shrink-0" /> {company.industry}</span>}
             {company.location_text && <span className="flex items-center"><MapPin className="w-3.5 h-3.5 mr-1 text-gray-500 flex-shrink-0" /> {company.location_text}</span>}
-            {employeeDisplay !== 'N/A' && <span className="flex items-center"><Users className="w-3.5 h-3.5 mr-1 text-gray-500 flex-shrink-0" /> {employeeDisplay} {t('company.employees', 'Employees')}</span>}
+            {employeeDisplay !== t('companyCard.na', 'N/A') && <span className="flex items-center"><Users className="w-3.5 h-3.5 mr-1 text-gray-500 flex-shrink-0" /> {employeeDisplay} {t('company.employees')}</span>}
           </div>
         </div>
 
@@ -312,7 +316,7 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
             <div className="flex items-center gap-3 min-w-0">
               <img
                 src={company.logo || `https://ui-avatars.com/api/?name=${company.name.replace(/\s/g, '+')}&background=EBF4FF&color=1D4ED8`}
-                alt={`${company.name} logo`}
+                alt={t('companyCard.logoAlt', { companyName: company.name })}
                 className="w-12 h-12 rounded-md object-contain flex-shrink-0 border border-gray-200"
               />
               <div className="min-w-0">
@@ -323,11 +327,11 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Badge variant="outline" className="border-emerald-300 bg-emerald-50 text-emerald-700 text-xs px-1.5 py-0.5 flex-shrink-0">
-                              <SparklesIcon className="w-3 h-3 mr-1" /> Enriched
+                              <SparklesIcon className="w-3 h-3 mr-1" /> {t('companyCard.enriched')}
                             </Badge>
                           </TooltipTrigger>
                           <TooltipContent>
-                            <p>{t('tooltip.enrichedData', "This company's data has been successfully enriched through web scraping.")}</p>
+                            <p>{t('companyCard.tooltips.enrichedData')}</p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
@@ -360,13 +364,13 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
                         size="sm"
                         className="h-6 px-3 text-sm bg-[#3b65a8] hover:bg-[#1B3B6D]/90 text-white shadow-sm"
                         onClick={() => setShowDefaultScrapeWarning(true)}
-                        title={t('discovery.startDiscovery', `Discover for ${company.name}`)}
+                        title={t('companyCard.discovery.startDiscovery', { companyName: company.name })}
                       >
                         <SearchIcon className="w-4 h-4"/> 
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>{t('tooltip.startDiscovery', "Start automatic website discovery and data scraping.")}</p>
+                      <p>{t('companyCard.tooltips.startDiscovery')}</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -378,7 +382,7 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
         <CardContent className="p-4 space-y-3 flex-grow min-h-0 overflow-y-auto">
           {preferences.showCompanyDescription && (
             <p className="text-sm text-gray-600 line-clamp-2" title={company.description}>
-              {company.description || t('company.noDescription', 'No description available.')}
+              {company.description || t('company.noDescription')}
             </p>
           )}
 
@@ -394,14 +398,14 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
               <div className="flex items-center gap-2 truncate">
                 <MapPin className="w-4 h-4 text-gray-500 flex-shrink-0"/>
                 <span className="truncate">{scrapedData?.address || company.location_text}</span>
-                {scrapedData?.address && <SparklesIcon className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 ml-1" aria-label="Enriched Address"/>}
+                {scrapedData?.address && <SparklesIcon className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 ml-1" aria-label={t('company.enrichedAddress')}/>}
               </div>
             )}
 
-            {employeeDisplay !== 'N/A' && (
+            {employeeDisplay !== t('companyCard.na', 'N/A') && (
               <div className="flex items-center gap-2 truncate">
                 <Users className="w-4 h-4 text-gray-500 flex-shrink-0"/>
-                <span className="truncate">{employeeDisplay} {t('company.employees', 'Employees')}</span>
+                <span className="truncate">{employeeDisplay} {t('company.employees')}</span>
               </div>
             )}
           </div>
@@ -420,7 +424,7 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
                   >
                     {scrapedData?.website || company.domain}
                   </a>
-                  {scrapedData?.website && <SparklesIcon className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 ml-1" aria-label="Enriched Website"/>}
+                  {scrapedData?.website && <SparklesIcon className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 ml-1" aria-label={t('company.enrichedWebsite')}/>}
                 </div>
               )}
 
@@ -429,7 +433,7 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
                   <div key={`email-${idx}`} className="flex items-center gap-2 truncate text-gray-700">
                     <Mail className="w-4 h-4 text-gray-500 flex-shrink-0" />
                     <a href={`mailto:${email}`} className="truncate hover:underline" title={email}>{email}</a>
-                    {scrapedData?.emails?.includes(email) && <SparklesIcon className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 ml-1" aria-label="Enriched Email"/>}
+                    {scrapedData?.emails?.includes(email) && <SparklesIcon className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 ml-1" aria-label={t('company.enrichedEmail')}/>}
                   </div>
                 ))
               )}
@@ -439,7 +443,7 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
                   <div key={`phone-${idx}`} className="flex items-center gap-2 truncate text-gray-700">
                     <Phone className="w-4 h-4 text-gray-500 flex-shrink-0" />
                     <span className="truncate" title={phone}>{phone}</span>
-                    {scrapedData?.phones?.includes(phone) && <SparklesIcon className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 ml-1" aria-label="Enriched Phone"/>}
+                    {scrapedData?.phones?.includes(phone) && <SparklesIcon className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 ml-1" aria-label={t('company.enrichedPhone')}/>}
                   </div>
                 ))
               )}
@@ -449,8 +453,8 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
                 return (
                   <div key={platform} className="flex items-center gap-2 truncate text-blue-600">
                     <SocialIcon className="w-4 h-4 text-gray-500 flex-shrink-0" />
-                    <a href={link} target="_blank" rel="noopener noreferrer" className="truncate hover:underline" title={`${platform} profile`}>{link}</a>
-                    <SparklesIcon className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 ml-1" aria-label={`Enriched ${platform}`}/>
+                    <a href={link} target="_blank" rel="noopener noreferrer" className="truncate hover:underline" title={t('companyCard.socialProfileAlt', { platform })}>{link}</a>
+                    <SparklesIcon className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 ml-1" aria-label={t('company.enrichedSocial', { platform })}/>
                   </div>
                 );
               })}
@@ -461,7 +465,7 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
         {/* Technologies Section */}
         {company.extractedData?.technologies?.[0] && (
           <div className="p-4 border-t border-gray-200 group-hover:border-blue-200 flex-shrink-0">
-            <h4 className="text-xs font-semibold text-gray-500 mb-2">{t('company.technologies', 'TECHNOLOGIES')}</h4>
+            <h4 className="text-xs font-semibold text-gray-500 mb-2">{t('company.technologies')}</h4>
             <div className="flex flex-wrap gap-2">
               {company.extractedData.technologies?.slice(0, 3).map((tech: string, index: number) => (
                 <div key={`${tech}-${index}`} className="flex items-center gap-1.5 text-xs bg-gray-100 text-gray-700 rounded-full px-2 py-1">
@@ -480,9 +484,9 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
             size="sm"
             className="w-full border-blue-400 text-blue-700 hover:bg-blue-50 hover:border-blue-500"
             onClick={handleShowDiscoveryModal}
-            title={t('discovery.customizeScraping', `Website Discovery for ${company.name}`)}
+            title={t('companyCard.paramsFor', { companyName: company.name })}
           >
-            <Settings2Icon className="w-4 h-4 mr-1.5" />Params for   {company.name}
+            <Settings2Icon className="w-4 h-4 mr-1.5" />{t('companyCard.paramsFor', { companyName: company.name })}
           </Button>
         </CardFooter>
       </div>
@@ -496,7 +500,7 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
       {/* Close Button */}
       <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none">
         <XIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-        <span className="sr-only">Close</span>
+        <span className="sr-only">{t('actions.close')}</span>
       </DialogClose>
 
       <DialogHeader className="text-center pt-4 sm:pt-8">
@@ -509,25 +513,28 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
           <span className="text-lg font-bold text-primary -mt-2"></span>
         </div>
         <DialogTitle className="text-2xl font-bold text-gray-900 dark:text-gray-50 md:text-3xl mt-2">
-          Standard Data Extraction
+          {t('companyCard.defaultScrapeWarning.title')}
         </DialogTitle>
         <DialogDescription className="mx-auto max-w-prose text-base text-gray-600 dark:text-gray-400 mt-2">
-          Our system will extract these standard data points from company websites where available
+          {t('companyCard.defaultScrapeWarning.description')}
         </DialogDescription>
       
     </DialogHeader>
 
     <div className="my-6 space-y-4">
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <DataPointCard icon={Phone} title="Phone Numbers" />
-        <DataPointCard icon={Mail} title="Email Addresses" />
-        <DataPointCard icon={MapPin} title="Physical Addresses" />
-        <DataPointCard icon={Briefcase} title="Company Names" />
+        <DataPointCard icon={Phone} titleKey="companyCard.defaultScrapeWarning.phoneNumbers" />
+        <DataPointCard icon={Mail} titleKey="companyCard.defaultScrapeWarning.emailAddresses" />
+        <DataPointCard icon={MapPin} titleKey="companyCard.defaultScrapeWarning.physicalAddresses" />
+        <DataPointCard icon={Briefcase} titleKey="companyCard.defaultScrapeWarning.companyNames" />
       </div>
     </div>
 
     <p className="text-center text-sm text-gray-500 dark:text-gray-400">
-      Need more specific data? <span className="font-semibold text-indigo-600 dark:text-indigo-400">Customize the extraction</span> to target precise information.
+      <Trans 
+        i18nKey="companyCard.defaultScrapeWarning.customizePrompt"
+        components={{ 1: <span className="font-semibold text-indigo-600 dark:text-indigo-400 cursor-pointer" onClick={handleCustomize} /> }}
+      />
     </p>
 
     <DialogFooter className="flex flex-col gap-3 pt-6 sm:flex-row">
@@ -536,7 +543,7 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
         onClick={handleCustomize}
         className="w-full border-gray-300 hover:bg-gray-50 dark:border-gray-700 sm:w-auto"
       >
-        Customize Extraction
+        {t('companyCard.defaultScrapeWarning.customizeButton')}
       </Button>
       
       <Button 
@@ -545,7 +552,7 @@ export const CompanyCard = ({ company, layout = 'grid' }: CompanyCardProps) => {
       //  className="bg-[#2A3050] hover:bg-[#2A3050]/90 dark:bg-blue-600 dark:hover:bg-blue-500 text-white shadow-sm"
       className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-semibold shadow-md px-6 py-2"
       >
-        Confirm and Proceed 
+        {t('companyCard.defaultScrapeWarning.confirmButton')}
         <ArrowRightIcon className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
       </Button>
     </DialogFooter>

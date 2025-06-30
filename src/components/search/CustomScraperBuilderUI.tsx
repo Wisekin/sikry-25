@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   DndContext,
   closestCenter,
@@ -24,25 +25,23 @@ import { Input } from '@/src/components/ui/input';
 import { Label } from '@/src/components/ui/label';
 import { Textarea } from '@/src/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/components/ui/select';
-import { Trash2Icon, PlusCircleIcon, EyeIcon, CodeIcon, SaveIcon, FolderOpenIcon, HelpCircleIcon, Loader2, GripVerticalIcon, PackageIcon } from 'lucide-react'; // Added GripVerticalIcon, PackageIcon
+import { Trash2Icon, PlusCircleIcon, EyeIcon, CodeIcon, SaveIcon, FolderOpenIcon, HelpCircleIcon, Loader2, GripVerticalIcon, PackageIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/src/components/ui/tooltip';
 
-// Matches ScraperConfig in ScraperConfigEditor.tsx for potential compatibility
 export interface ScraperFieldConfig {
-  id: string; // Unique ID for the field for list rendering and dnd
+  id: string;
   fieldName: string;
   cssSelector: string;
   type: 'text' | 'attribute' | 'html' | 'link';
-  attributeName?: string; // if type is 'attribute'
+  attributeName?: string;
 }
 
 export interface FullScraperConfig {
-  id?: string; // Config ID if saved/loaded
+  id?: string;
   name: string;
   targetUrl: string;
   fields: ScraperFieldConfig[];
-  // Advanced settings: pagination selectors, delay settings, etc.
   description?: string;
 }
 
@@ -51,8 +50,9 @@ const initialField: Omit<ScraperFieldConfig, 'id'> = {
 };
 
 export function CustomScraperBuilderUI() {
+  const { t } = useTranslation('searchPage');
   const [config, setConfig] = useState<FullScraperConfig>({
-    name: 'New Scraper',
+    name: t('customScraperBuilder.newScraperName', 'New Scraper'), // Default name translated
     targetUrl: '',
     fields: [{...initialField, id: crypto.randomUUID()}],
   });
@@ -61,7 +61,6 @@ export function CustomScraperBuilderUI() {
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
   const [activeDragItem, setActiveDragItem] = useState<Active | null>(null);
-
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -92,76 +91,59 @@ export function CustomScraperBuilderUI() {
     if (config.targetUrl && (config.targetUrl.startsWith('http://') || config.targetUrl.startsWith('https://'))) {
         setIsLoadingPreview(true);
         setPreviewUrl(config.targetUrl);
-        // setIsLoadingPreview will be set to false by iframe's onLoad or onError
     } else {
-        toast({ title: "Invalid URL", description: "Please enter a valid URL starting with http:// or https://", variant: "destructive"});
+        toast({ title: t('customScraperBuilder.toastInvalidUrlTitle'), description: t('customScraperBuilder.toastInvalidUrlDescription'), variant: "destructive"});
         setPreviewUrl('');
     }
   };
 
   const handleSaveConfig = async () => {
     setIsSaving(true);
-    console.log("Saving config:", config);
-    // Mock save operation
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    // console.log("Saving config:", config); // Keep for debugging if needed
+    await new Promise(resolve => setTimeout(resolve, 1500)); // Mock save
     setIsSaving(false);
-    toast({ title: "Configuration Saved", description: `${config.name} has been saved (mocked).` });
+    toast({ title: t('customScraperBuilder.toastConfigSavedTitle'), description: t('customScraperBuilder.toastConfigSavedDescription', { configName: config.name }) });
   };
 
   const handleLoadConfig = () => {
-    // Mock load operation
     const mockLoadedConfig: FullScraperConfig = {
         id: 'loaded-config-123',
-        name: 'Loaded Example Scraper',
+        name: t('customScraperBuilder.loadedExampleName', 'Loaded Example Scraper'),
         targetUrl: 'https://example.com/products',
         fields: [
             { id: crypto.randomUUID(), fieldName: 'productName', cssSelector: 'h1.product-title', type: 'text'},
             { id: crypto.randomUUID(), fieldName: 'price', cssSelector: '.price-tag', type: 'text'},
             { id: crypto.randomUUID(), fieldName: 'imageUrl', cssSelector: 'img.product-image', type: 'attribute', attributeName: 'src'},
         ],
-        description: "This is a loaded example."
+        description: t('customScraperBuilder.loadedExampleDescription', "This is a loaded example.")
     };
     setConfig(mockLoadedConfig);
-    setPreviewUrl(mockLoadedConfig.targetUrl); // Optionally load preview
-    toast({ title: "Configuration Loaded", description: `${mockLoadedConfig.name} loaded (mocked).` });
+    setPreviewUrl(mockLoadedConfig.targetUrl);
+    toast({ title: t('customScraperBuilder.toastConfigLoadedTitle'), description: t('customScraperBuilder.toastConfigLoadedDescription', { configName: mockLoadedConfig.name }) });
   }
 
   const handleDragEnd = (event: DragEndEvent) => {
     setActiveDragItem(null);
     const { active, over } = event;
-    console.log("DragEndEvent: ", event);
-
     if (over && active.id !== over.id) {
-      // Handle reordering of existing fields
       if (active.data.current?.type === 'field' && over.data.current?.type === 'fieldContainer') {
          setConfig((prevConfig) => {
           const oldIndex = prevConfig.fields.findIndex(f => f.id === active.id);
-          // Approximate new index based on over.id if it's another field, or drop into container
-          // This needs refinement for dropping into specific positions vs end of list.
-          // For now, let's assume over.id is a field if reordering or the container id.
-          // This logic is simplified and will be improved.
-          let newIndex = prevConfig.fields.length -1; // Default to end
-          
-          // A more robust way would be to find the index of 'over.id' if it's a field
+          let newIndex = prevConfig.fields.length -1;
           const overIsField = prevConfig.fields.find(f => f.id === over.id);
           if (overIsField) {
             newIndex = prevConfig.fields.findIndex(f => f.id === over.id);
           }
-
-          return {
-            ...prevConfig,
-            fields: arrayMove(prevConfig.fields, oldIndex, newIndex),
-          };
+          return { ...prevConfig, fields: arrayMove(prevConfig.fields, oldIndex, newIndex) };
         });
         return;
       }
-      
-      // Handle dropping a new field from the palette
       if (active.data.current?.type === 'paletteItem' && over.data.current?.type === 'fieldContainer') {
         const fieldType = active.data.current?.fieldType as ScraperFieldConfig['type'];
+        const fieldNameKey = `customScraperBuilder.palette${fieldType.charAt(0).toUpperCase() + fieldType.slice(1)}Field`;
         let newField: ScraperFieldConfig = {
             id: crypto.randomUUID(),
-            fieldName: `new${fieldType.charAt(0).toUpperCase() + fieldType.slice(1)}Field`,
+            fieldName: t(fieldNameKey, `New ${fieldType} Field`), // Default field name
             cssSelector: '',
             type: fieldType,
         };
@@ -173,96 +155,91 @@ export function CustomScraperBuilderUI() {
     }
   };
   
-  const handleDragStart = (event: DragEndEvent) => {
+  const handleDragStart = (event: DragEndEvent) => { // DragEndEvent is used for active in examples, might be DragStartEvent
     setActiveDragItem(event.active);
   };
 
-  const predefinedFieldTypes: { name: string; type: ScraperFieldConfig['type'] }[] = [
-    { name: 'Text Field', type: 'text' },
-    { name: 'Attribute Field', type: 'attribute' },
-    { name: 'HTML Content', type: 'html' },
-    { name: 'Link (URL)', type: 'link' },
+  const predefinedFieldTypes: { nameKey: string; type: ScraperFieldConfig['type'] }[] = [
+    { nameKey: 'customScraperBuilder.paletteTextField', type: 'text' },
+    { nameKey: 'customScraperBuilder.paletteAttributeField', type: 'attribute' },
+    { nameKey: 'customScraperBuilder.paletteHtmlContent', type: 'html' },
+    { nameKey: 'customScraperBuilder.paletteLinkUrl', type: 'link' },
   ];
 
-
   return (
-    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd} onDragCancel={() => setActiveDragItem(null)}>
+    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart as any} onDragEnd={handleDragEnd} onDragCancel={() => setActiveDragItem(null)}>
     <TooltipProvider>
     <div className="flex flex-col lg:flex-row gap-4 p-4 h-[calc(100vh-100px)] max-h-full">
-      {/* Palette Panel (New) */}
       <Card className="w-full lg:w-1/4 xl:w-1/5 flex flex-col max-h-full">
         <CardHeader>
-          <CardTitle>Field Palette</CardTitle>
-          <CardDescription>Drag fields to the builder.</CardDescription>
+          <CardTitle>{t('customScraperBuilder.paletteTitle')}</CardTitle>
+          <CardDescription>{t('customScraperBuilder.paletteDescription')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-2 flex-grow overflow-y-auto">
           {predefinedFieldTypes.map(pf => (
-            <DraggablePaletteItem key={pf.type} id={`palette-${pf.type}`} fieldName={pf.name} fieldType={pf.type} />
+            <DraggablePaletteItem key={pf.type} id={`palette-${pf.type}`} fieldName={t(pf.nameKey)} fieldType={pf.type} />
           ))}
         </CardContent>
       </Card>
 
-      {/* Center Panel: Configuration */}
       <Card className="w-full lg:w-1/3 xl:w-2/5 flex flex-col max-h-full">
         <CardHeader>
-          <CardTitle>Scraper Configuration</CardTitle>
-          <CardDescription>Define the target and fields for your custom scraper.</CardDescription>
+          <CardTitle>{t('customScraperBuilder.configTitle')}</CardTitle>
+          <CardDescription>{t('customScraperBuilder.configDescription')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4 flex-grow overflow-y-auto">
           <div>
-            <Label htmlFor="scraperName">Scraper Name</Label>
-            <Input id="scraperName" value={config.name} onChange={e => setConfig(p => ({...p, name: e.target.value}))} placeholder="e.g., Product Details Scraper" />
+            <Label htmlFor="scraperName">{t('customScraperBuilder.labelScraperName')}</Label>
+            <Input id="scraperName" value={config.name} onChange={e => setConfig(p => ({...p, name: e.target.value}))} placeholder={t('customScraperBuilder.placeholderScraperName')} />
           </div>
           <div>
-            <Label htmlFor="targetUrl">Target URL</Label>
+            <Label htmlFor="targetUrl">{t('customScraperBuilder.labelTargetUrl')}</Label>
             <div className="flex gap-2">
-              <Input id="targetUrl" value={config.targetUrl} onChange={e => setConfig(p => ({...p, targetUrl: e.target.value}))} placeholder="https://example.com/data" />
-              <Button variant="outline" size="icon" onClick={handleLoadUrlPreview} aria-label="Load URL in preview">
+              <Input id="targetUrl" value={config.targetUrl} onChange={e => setConfig(p => ({...p, targetUrl: e.target.value}))} placeholder={t('customScraperBuilder.placeholderTargetUrl')} />
+              <Button variant="outline" size="icon" onClick={handleLoadUrlPreview} aria-label={t('customScraperBuilder.buttonLoadUrlPreview')}>
                 <EyeIcon className="h-4 w-4"/>
               </Button>
             </div>
           </div>
           <div>
-            <Label>Fields to Extract</Label>
-            {/* This div is the droppable container for fields */}
+            <Label>{t('customScraperBuilder.labelFieldsToExtract')}</Label>
             <SortableContext items={config.fields.map(f => f.id)} strategy={verticalListSortingStrategy}>
-              <div id="fields-container" className="space-y-3 min-h-[100px] max-h-96 overflow-y-auto border p-2 rounded-md bg-slate-50">
+              <div id="fields-container" className="space-y-3 min-h-[100px] max-h-96 overflow-y-auto border p-2 rounded-md bg-slate-50 dark:bg-slate-800/50">
                 {config.fields.map((field, index) => (
                   <SortableFieldItem key={field.id} id={field.id} field={field} index={index} updateField={updateField} removeField={removeField} />
                 ))}
                 {config.fields.length === 0 && (
-                    <div className="text-center text-gray-400 py-8">
-                        <p>Drag fields from the palette here.</p>
+                    <div className="text-center text-gray-400 dark:text-slate-500 py-8">
+                        <p>{t('customScraperBuilder.emptyFields')}</p>
                     </div>
                 )}
               </div>
             </SortableContext>
             <Button variant="outline" onClick={addField} className="mt-2 w-full">
-              <PlusCircleIcon className="mr-2 h-4 w-4" /> Add Field Manually
+              <PlusCircleIcon className="mr-2 h-4 w-4" /> {t('customScraperBuilder.buttonAddFieldManually')}
             </Button>
           </div>
            <div>
-                <Label htmlFor="scraperDescription">Description (Optional)</Label>
-                <Textarea id="scraperDescription" value={config.description || ''} onChange={e => setConfig(p => ({...p, description: e.target.value}))} placeholder="Briefly describe what this scraper does."/>
+                <Label htmlFor="scraperDescription">{t('customScraperBuilder.labelDescription')}</Label>
+                <Textarea id="scraperDescription" value={config.description || ''} onChange={e => setConfig(p => ({...p, description: e.target.value}))} placeholder={t('customScraperBuilder.placeholderDescription')}/>
             </div>
         </CardContent>
         <CardFooter className="border-t pt-4 flex-col sm:flex-row gap-2">
             <Button onClick={handleLoadConfig} variant="outline" className="w-full sm:w-auto">
-                <FolderOpenIcon className="mr-2 h-4 w-4"/> Load (Mock)
+                <FolderOpenIcon className="mr-2 h-4 w-4"/> {t('customScraperBuilder.buttonLoadConfig')}
             </Button>
             <Button onClick={handleSaveConfig} disabled={isSaving} className="w-full sm:w-auto sm:ml-auto">
                 {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <SaveIcon className="mr-2 h-4 w-4" />}
-                Save Config (Mock)
+                {t('customScraperBuilder.buttonSaveConfig')}
             </Button>
         </CardFooter>
       </Card>
 
-      {/* Right Panel: Preview & Inspector */}
       <Card className="w-full lg:w-2/3 flex flex-col max-h-full">
         <CardHeader className="flex-row justify-between items-center">
             <div>
-                <CardTitle>Website Preview / Inspector</CardTitle>
-                <CardDescription>View the target URL. Future: Element inspector and selector helper.</CardDescription>
+                <CardTitle>{t('customScraperBuilder.previewTitle')}</CardTitle>
+                <CardDescription>{t('customScraperBuilder.previewDescription')}</CardDescription>
             </div>
             <Tooltip>
                 <TooltipTrigger asChild>
@@ -270,40 +247,39 @@ export function CustomScraperBuilderUI() {
                         <CodeIcon className="h-5 w-5"/>
                     </Button>
                 </TooltipTrigger>
-                <TooltipContent><p>Selector Helper (Coming Soon)</p></TooltipContent>
+                <TooltipContent><p>{t('customScraperBuilder.tooltipSelectorHelper')}</p></TooltipContent>
             </Tooltip>
         </CardHeader>
-        <CardContent className="flex-grow p-0 relative bg-gray-100">
+        <CardContent className="flex-grow p-0 relative bg-gray-100 dark:bg-slate-800">
           {previewUrl ? (
             <>
             {isLoadingPreview && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/80 z-10">
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/80 dark:bg-slate-900/80 z-10">
                     <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-                    <p className="mt-2">Loading preview...</p>
+                    <p className="mt-2">{t('customScraperBuilder.previewLoading')}</p>
                 </div>
             )}
             <iframe
               src={previewUrl}
-              title="Website Preview for Scraper"
+              title={t('customScraperBuilder.previewTitle')}
               className="w-full h-full border-0"
-              sandbox="allow-scripts allow-same-origin allow-popups allow-forms" // More permissive for interaction, but be cautious
+              sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
               onLoad={() => setIsLoadingPreview(false)}
               onError={() => {
                 setIsLoadingPreview(false);
-                toast({title: "Preview Error", description: "Could not load website preview. The site may block embedding or is unavailable.", variant: "destructive"});
+                toast({title: t('customScraperBuilder.toastPreviewErrorTitle'), description: t('customScraperBuilder.previewErrorLoad'), variant: "destructive"});
               }}
             />
             </>
           ) : (
-            <div className="flex flex-col items-center justify-center h-full text-gray-400">
+            <div className="flex flex-col items-center justify-center h-full text-gray-400 dark:text-slate-500">
               <EyeIcon className="w-16 h-16 mb-4" />
-              <p>Enter a Target URL and click the eye icon to load a preview.</p>
-              <p className="text-xs mt-2">Note: Some websites may not load in an iframe due to security policies (X-Frame-Options).</p>
+              <p>{t('customScraperBuilder.previewEnterUrl')}</p>
+              <p className="text-xs mt-2">{t('customScraperBuilder.previewSecurityNote')}</p>
             </div>
           )}
-           {/* Placeholder for Drag-and-Drop instructions or selector helper tool */}
            <div className="absolute bottom-2 right-2 p-2 bg-black/50 text-white text-xs rounded shadow-lg">
-              Future: Drag to select elements or use inspector tool.
+              {t('customScraperBuilder.dragOverlayFuture')}
             </div>
         </CardContent>
       </Card>
@@ -321,38 +297,26 @@ export function CustomScraperBuilderUI() {
   );
 }
 
-
-// --- Draggable Components ---
-
-// Draggable item from the palette
 interface DraggablePaletteItemProps {
   id: string;
-  fieldName: string;
+  fieldName: string; // This will be the translated name
   fieldType: ScraperFieldConfig['type'];
 }
 function DraggablePaletteItem({ id, fieldName, fieldType }: DraggablePaletteItemProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: id,
-    data: { type: 'paletteItem', fieldType: fieldType, fieldName: fieldName } // Add type for onDragEnd
+    data: { type: 'paletteItem', fieldType: fieldType, fieldName: fieldName }
   });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-    zIndex: isDragging ? 100 : 'auto',
-  };
-
+  const style = { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1, zIndex: isDragging ? 100 : 'auto' };
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}
-         className="p-2 border rounded-md bg-sky-50 hover:bg-sky-100 cursor-grab flex items-center gap-2 shadow-sm">
-      <PackageIcon className="h-5 w-5 text-sky-600" />
-      <span className="text-sm text-sky-700">{fieldName}</span>
+         className="p-2 border rounded-md bg-sky-50 hover:bg-sky-100 cursor-grab flex items-center gap-2 shadow-sm dark:bg-sky-900/50 dark:hover:bg-sky-800/50 dark:border-sky-700">
+      <PackageIcon className="h-5 w-5 text-sky-600 dark:text-sky-400" />
+      <span className="text-sm text-sky-700 dark:text-sky-300">{fieldName}</span>
     </div>
   );
 }
 
-// Sortable item for existing fields
 interface SortableFieldItemProps {
   id: string;
   field: ScraperFieldConfig;
@@ -362,75 +326,61 @@ interface SortableFieldItemProps {
 }
 
 function SortableFieldItem({ id, field, index, updateField, removeField }: SortableFieldItemProps) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging
-  } = useSortable({ id: id, data: { type: 'field', field: field } }); // Add type for onDragEnd
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-    zIndex: isDragging ? 100 : 'auto',
-  };
+  const { t } = useTranslation('searchPage');
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: id, data: { type: 'field', field: field } });
+  const style = { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1, zIndex: isDragging ? 100 : 'auto' };
 
   return (
-    <Card ref={setNodeRef} style={style} className="p-3 bg-white shadow-md">
+    <Card ref={setNodeRef} style={style} className="p-3 bg-white dark:bg-slate-800 shadow-md">
       <div className="flex justify-between items-center mb-2">
         <div className="flex items-center gap-1">
-            <button {...attributes} {...listeners} className="cursor-grab p-1 text-gray-400 hover:text-gray-600" aria-label="Drag to reorder field">
+            <button {...attributes} {...listeners} className="cursor-grab p-1 text-gray-400 hover:text-gray-600 dark:text-slate-500 dark:hover:text-slate-400" aria-label={t('customScraperBuilder.dragActionLabel', "Drag to reorder field")}>
                 <GripVerticalIcon className="h-5 w-5" />
             </button>
-            <Label className="text-sm font-medium">Field #{index + 1}: {field.fieldName || "Untitled"}</Label>
+            <Label className="text-sm font-medium">{t('customScraperBuilder.fieldItemTitle', { indexPlusOne: index + 1, fieldName: field.fieldName || t('customScraperBuilder.fieldItemUntitled') })}</Label>
         </div>
-        <Button variant="ghost" size="icon" onClick={() => removeField(index)} className="text-red-500 hover:text-red-700">
+        <Button variant="ghost" size="icon" onClick={() => removeField(index)} className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-500">
           <Trash2Icon className="h-4 w-4" />
         </Button>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
         <div>
-          <Label htmlFor={`fieldName-${index}`} className="text-xs">Field Name</Label>
-          <Input id={`fieldName-${index}`} value={field.fieldName} onChange={e => updateField(index, { fieldName: e.target.value })} placeholder="e.g., title" />
+          <Label htmlFor={`fieldName-${index}`} className="text-xs">{t('customScraperBuilder.fieldItemLabelName')}</Label>
+          <Input id={`fieldName-${index}`} value={field.fieldName} onChange={e => updateField(index, { fieldName: e.target.value })} placeholder={t('customScraperBuilder.fieldItemPlaceholderName')} />
         </div>
         <div>
-          <Label htmlFor={`fieldType-${index}`} className="text-xs">Type</Label>
+          <Label htmlFor={`fieldType-${index}`} className="text-xs">{t('customScraperBuilder.fieldItemLabelType')}</Label>
           <Select value={field.type} onValueChange={(value: ScraperFieldConfig['type']) => updateField(index, { type: value, attributeName: value !== 'attribute' ? undefined : field.attributeName })}>
             <SelectTrigger id={`fieldType-${index}`}><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="text">Text</SelectItem>
-              <SelectItem value="attribute">Attribute</SelectItem>
-              <SelectItem value="html">HTML</SelectItem>
-              <SelectItem value="link">Link (href)</SelectItem>
+              <SelectItem value="text">{t('customScraperBuilder.selectTypeText')}</SelectItem>
+              <SelectItem value="attribute">{t('customScraperBuilder.selectTypeAttribute')}</SelectItem>
+              <SelectItem value="html">{t('customScraperBuilder.selectTypeHtml')}</SelectItem>
+              <SelectItem value="link">{t('customScraperBuilder.selectTypeLink')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
       </div>
       <div className="mt-2">
-        <Label htmlFor={`cssSelector-${index}`} className="text-xs">CSS Selector</Label>
-        <Input id={`cssSelector-${index}`} value={field.cssSelector} onChange={e => updateField(index, { cssSelector: e.target.value })} placeholder="e.g., h1.main-title" />
+        <Label htmlFor={`cssSelector-${index}`} className="text-xs">{t('customScraperBuilder.fieldItemLabelSelector')}</Label>
+        <Input id={`cssSelector-${index}`} value={field.cssSelector} onChange={e => updateField(index, { cssSelector: e.target.value })} placeholder={t('customScraperBuilder.fieldItemPlaceholderSelector')} />
       </div>
       {field.type === 'attribute' && (
         <div className="mt-2">
-          <Label htmlFor={`attributeName-${index}`} className="text-xs">Attribute Name</Label>
-          <Input id={`attributeName-${index}`} value={field.attributeName || ''} onChange={e => updateField(index, { attributeName: e.target.value })} placeholder="e.g., data-id, src" />
+          <Label htmlFor={`attributeName-${index}`} className="text-xs">{t('customScraperBuilder.fieldItemLabelAttribute')}</Label>
+          <Input id={`attributeName-${index}`} value={field.attributeName || ''} onChange={e => updateField(index, { attributeName: e.target.value })} placeholder={t('customScraperBuilder.fieldItemPlaceholderAttribute')} />
         </div>
       )}
     </Card>
   );
 }
 
-
-// Drag Overlay Components (simple versions)
 function PaletteItemDragOverlay({ fieldName }: { fieldName: string }) {
-  return <div className="p-2 border rounded-md bg-sky-500 text-white shadow-xl flex items-center gap-2"><PackageIcon className="h-5 w-5" />{fieldName}</div>;
+  return <div className="p-2 border rounded-md bg-sky-500 text-white shadow-xl flex items-center gap-2 dark:bg-sky-600"><PackageIcon className="h-5 w-5" />{fieldName}</div>;
 }
 function FieldItemDragOverlay({ fieldName }: { fieldName: string }) {
-  return <div className="p-3 border rounded-md bg-slate-600 text-white shadow-xl"><GripVerticalIcon className="inline mr-2 h-5 w-5" />{fieldName || "Field"}</div>;
+  const { t } = useTranslation('searchPage');
+  return <div className="p-3 border rounded-md bg-slate-600 text-white shadow-xl dark:bg-slate-700"><GripVerticalIcon className="inline mr-2 h-5 w-5" />{fieldName || t('customScraperBuilder.fieldItemUntitled')}</div>;
 }
-
 
 export default CustomScraperBuilderUI;

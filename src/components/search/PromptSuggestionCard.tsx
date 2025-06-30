@@ -34,7 +34,7 @@ export const PromptSuggestionCard: React.FC<PromptSuggestionCardProps> = ({ sugg
           <Lightbulb className="h-6 w-6 text-yellow-400 dark:text-yellow-300" />
         </div>
         <div>
-          <p className="font-semibold text-slate-700 dark:text-slate-200">
+          <p className="font-semibold text-slate-800 dark:text-slate-200 text-sm">
             {suggestion}
           </p>
         </div>

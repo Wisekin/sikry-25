@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Dialog,
   DialogContent,
@@ -32,13 +33,14 @@ export function DataPreview({ // Component name kept as DataPreview for now, act
   error = null,
   companyName,
 }: DataPreviewModalProps) {
+  const { t } = useTranslation('searchPage');
 
   const renderContent = () => {
     if (isLoading) {
       return (
         <div className="flex flex-col items-center justify-center h-64">
           <Loader2 className="h-10 w-10 animate-spin text-blue-500" />
-          <p className="mt-3 text-sm text-gray-600">Loading data...</p>
+          <p className="mt-3 text-sm text-gray-600">{t('dataPreview.loading')}</p>
         </div>
       );
     }
@@ -47,7 +49,7 @@ export function DataPreview({ // Component name kept as DataPreview for now, act
       return (
         <div className="flex flex-col items-center justify-center h-64 text-center p-4">
           <AlertTriangle className="h-10 w-10 text-red-500" />
-          <p className="mt-3 text-sm font-medium text-red-700">Error loading data</p>
+          <p className="mt-3 text-sm font-medium text-red-700">{t('dataPreview.errorTitle')}</p>
           <p className="text-xs text-red-600">{error}</p>
         </div>
       );
@@ -57,8 +59,8 @@ export function DataPreview({ // Component name kept as DataPreview for now, act
       return (
         <div className="flex flex-col items-center justify-center h-64 text-center p-4">
           <EyeOff className="h-10 w-10 text-gray-400" />
-          <p className="mt-3 text-sm text-gray-500">No data available to display.</p>
-          <p className="text-xs text-gray-400">Scraping might not have run or yielded no results.</p>
+          <p className="mt-3 text-sm text-gray-500">{t('dataPreview.noData')}</p>
+          <p className="text-xs text-gray-400">{t('dataPreview.noDataHint')}</p>
         </div>
       );
     }
@@ -79,10 +81,14 @@ export function DataPreview({ // Component name kept as DataPreview for now, act
       <DialogContent className="sm:max-w-xl"> 
         <DialogHeader>
           <DialogTitle>
-            Enriched Data for {companyName || 'Company'}
+            {companyName 
+              ? t('dataPreview.title', { companyName }) 
+              : t('dataPreview.defaultTitle')}
           </DialogTitle>
           <DialogDescription>
-            Detailed information gathered for {companyName}.
+            {companyName
+              ? t('dataPreview.description', { companyName })
+              : t('dataPreview.defaultDescription')}
           </DialogDescription>
         </DialogHeader>
 
@@ -92,7 +98,7 @@ export function DataPreview({ // Component name kept as DataPreview for now, act
 
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
-            Close
+            {t('actions.close')}
           </Button>
         </DialogFooter>
       </DialogContent>

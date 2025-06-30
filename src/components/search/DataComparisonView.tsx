@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Dialog,
   DialogContent,
@@ -9,25 +10,27 @@ import {
 } from '@/src/components/ui/dialog';
 import { Button } from '@/src/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/src/components/ui/table';
-import { ScrapedData } from '@/stores/searchStore'; // Assuming ScrapedData is available
-import { Company } from '@/src/lib/types'; // For original company data type
+import { ScrapedData } from '@/stores/searchStore';
+import { Company } from '@/src/lib/types';
 import { SparklesIcon, AlertTriangle } from 'lucide-react';
 
 interface DataComparisonViewProps {
   isOpen: boolean;
   onClose: () => void;
-  originalData: Partial<Company>; // Original company data from initial search/DB
-  enrichedData: ScrapedData | null | undefined; // Data after scraping/enrichment
+  originalData: Partial<Company>;
+  enrichedData: ScrapedData | null | undefined;
   companyName?: string;
 }
 
+type ComparisonFieldKey = keyof ScrapedData | keyof Company['extractedData'] | 'domain' | 'location_text' | 'name' | 'description' | 'socialMedia';
+
 type ComparisonField = {
-  key: keyof ScrapedData | keyof Company['extractedData'] | 'domain' | 'location_text' | 'name' | 'description'; // Add more keys as needed
-  label: string;
+  key: ComparisonFieldKey;
+  label: string; // This will be the translated label
   originalValue?: any;
   enrichedValue?: any;
   isDifferent: boolean;
-  isEnrichedOnly: boolean; // True if the field only exists in enriched data
+  isEnrichedOnly: boolean;
 };
 
 export function DataComparisonView({
@@ -37,6 +40,7 @@ export function DataComparisonView({
   enrichedData,
   companyName,
 }: DataComparisonViewProps) {
+  const { t } = useTranslation('searchPage');
 
   const generateComparisonFields = (): ComparisonField[] => {
     if (!originalData && !enrichedData) return [];
@@ -44,33 +48,27 @@ export function DataComparisonView({
     const fields: ComparisonField[] = [];
     const allKeys = new Set<string>();
 
-    // Define a mapping for display labels and potentially how to access nested original data
-    const fieldMappings: Record<string, { label: string, originalKey?: keyof Company | (keyof Company['extractedData']), enrichedKey: keyof ScrapedData }> = {
-        name: { label: 'Company Name', originalKey: 'name', enrichedKey: 'companyName'},
-        website: { label: 'Website', originalKey: 'domain', enrichedKey: 'website' },
-        emails: { label: 'Emails', originalKey: 'emails', enrichedKey: 'emails' }, // Assuming original emails are in extractedData
-        phones: { label: 'Phones', originalKey: 'phones', enrichedKey: 'phones' }, // Assuming original phones are in extractedData
-        address: { label: 'Address', originalKey: 'location_text', enrichedKey: 'address' },
-        // Add other direct ScrapedData fields
-        // socialMedia needs special handling due to its object structure
+    const fieldMappings: Record<string, { labelKey: string, originalKey?: keyof Company | (keyof Company['extractedData']), enrichedKey: keyof ScrapedData }> = {
+        name: { labelKey: 'dataComparison.labelCompanyName', originalKey: 'name', enrichedKey: 'companyName'},
+        website: { labelKey: 'dataComparison.labelWebsite', originalKey: 'domain', enrichedKey: 'website' },
+        emails: { labelKey: 'dataComparison.labelEmails', originalKey: 'emails', enrichedKey: 'emails' },
+        phones: { labelKey: 'dataComparison.labelPhones', originalKey: 'phones', enrichedKey: 'phones' },
+        address: { labelKey: 'dataComparison.labelAddress', originalKey: 'location_text', enrichedKey: 'address' },
     };
 
-    // Add keys from fieldMappings (covers common fields)
     Object.keys(fieldMappings).forEach(key => allKeys.add(key));
 
-    // Add any other keys present in enrichedData that are not in fieldMappings
     if (enrichedData) {
         Object.keys(enrichedData).forEach(key => {
-            if (!fieldMappings[key as keyof ScrapedData] && key !== 'socialMedia') { // Exclude socialMedia for now from direct mapping
+            if (!fieldMappings[key as keyof ScrapedData] && key !== 'socialMedia') {
                  allKeys.add(key);
             }
         });
     }
 
-
     allKeys.forEach(key => {
       const mapping = fieldMappings[key as keyof ScrapedData];
-      const label = mapping?.label || key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
+      const label = t(mapping?.labelKey || `dataComparison.label${key.charAt(0).toUpperCase() + key.slice(1)}`, key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase()));
 
       let originalValue: any = undefined;
       if (mapping?.originalKey) {
@@ -83,19 +81,15 @@ export function DataComparisonView({
          originalValue = (originalData as Record<string, any>)[key];
       }
 
-
       const enrichedValue = enrichedData ? (enrichedData as Record<string, any>)[mapping?.enrichedKey || key] : undefined;
-
-      // Normalize empty arrays/objects/strings for comparison
       const normOrig = (Array.isArray(originalValue) && originalValue.length === 0) || originalValue === '' || originalValue === null ? undefined : originalValue;
       const normEnr = (Array.isArray(enrichedValue) && enrichedValue.length === 0) || enrichedValue === '' || enrichedValue === null ? undefined : enrichedValue;
-
       const isDifferent = JSON.stringify(normOrig) !== JSON.stringify(normEnr) && (normOrig !== undefined || normEnr !== undefined);
       const isEnrichedOnly = normOrig === undefined && normEnr !== undefined;
 
-      if (normOrig !== undefined || normEnr !== undefined) { // Only add if at least one value exists
+      if (normOrig !== undefined || normEnr !== undefined) {
         fields.push({
-          key: key as ComparisonField['key'],
+          key: key as ComparisonFieldKey,
           label,
           originalValue: normOrig,
           enrichedValue: normEnr,
@@ -105,25 +99,23 @@ export function DataComparisonView({
       }
     });
 
-    // Handle socialMedia separately
     if (enrichedData?.socialMedia && Object.keys(enrichedData.socialMedia).length > 0) {
         fields.push({
-            key: 'socialMedia' as any, // Cast as key type might not fully cover this structure
-            label: 'Social Media',
-            originalValue: undefined, // Assuming original data doesn't have this structure
+            key: 'socialMedia',
+            label: t('dataComparison.labelSocialMedia'),
+            originalValue: undefined,
             enrichedValue: enrichedData.socialMedia,
             isDifferent: true,
             isEnrichedOnly: true,
         });
     }
-
     return fields;
   };
 
   const comparisonFields = generateComparisonFields();
 
   const renderValue = (value: any) => {
-    if (value === undefined || value === null) return <span className="text-gray-400 italic">N/A</span>;
+    if (value === undefined || value === null) return <span className="text-gray-400 italic">{t('dataComparison.valueNA')}</span>;
     if (Array.isArray(value)) return value.join(', ');
     if (typeof value === 'object') return <pre className="text-xs whitespace-pre-wrap">{JSON.stringify(value, null, 2)}</pre>;
     return String(value);
@@ -135,9 +127,9 @@ export function DataComparisonView({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-2xl md:max-w-3xl lg:max-w-4xl">
         <DialogHeader>
-          <DialogTitle>Data Comparison {companyName ? `for ${companyName}` : ''}</DialogTitle>
+          <DialogTitle>{companyName ? t('dataComparison.titleForCompany', { companyName }) : t('dataComparison.title')}</DialogTitle>
           <DialogDescription>
-            Comparing original data with enriched data. Highlighted rows indicate differences or new information.
+            {t('dataComparison.description')}
           </DialogDescription>
         </DialogHeader>
 
@@ -146,23 +138,23 @@ export function DataComparisonView({
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[150px]">Field</TableHead>
-                  <TableHead>Original Data</TableHead>
-                  <TableHead>Enriched Data</TableHead>
+                  <TableHead className="w-[150px]">{t('dataComparison.headerField')}</TableHead>
+                  <TableHead>{t('dataComparison.headerOriginal')}</TableHead>
+                  <TableHead>{t('dataComparison.headerEnriched')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {comparisonFields.map((field) => (
                   <TableRow
                     key={String(field.key)}
-                    className={field.isDifferent ? (field.isEnrichedOnly ? 'bg-green-50 hover:bg-green-100' : 'bg-yellow-50 hover:bg-yellow-100') : ''}
+                    className={field.isDifferent ? (field.isEnrichedOnly ? 'bg-green-50 dark:bg-green-900/30 hover:bg-green-100 dark:hover:bg-green-800/30' : 'bg-yellow-50 dark:bg-yellow-900/30 hover:bg-yellow-100 dark:hover:bg-yellow-800/30') : ''}
                   >
                     <TableCell className="font-medium py-2">{field.label}</TableCell>
                     <TableCell className="py-2">{renderValue(field.originalValue)}</TableCell>
                     <TableCell className="py-2 relative">
                       {renderValue(field.enrichedValue)}
                       {field.isDifferent && field.enrichedValue !== undefined && (
-                        <SparklesIcon className="w-4 h-4 text-green-500 absolute top-2 right-2" aria-label="Enriched or Changed"/>
+                        <SparklesIcon className="w-4 h-4 text-green-500 absolute top-2 right-2" aria-label={t('dataComparison.labelEnrichedOrChanged')}/>
                       )}
                     </TableCell>
                   </TableRow>
@@ -172,14 +164,14 @@ export function DataComparisonView({
           ) : (
              <div className="flex flex-col items-center justify-center h-40 text-center">
                 <AlertTriangle className="h-10 w-10 text-orange-400" />
-                <p className="mt-3 text-sm text-gray-600">No data available for comparison.</p>
+                <p className="mt-3 text-sm text-gray-600 dark:text-slate-400">{t('dataComparison.noData')}</p>
              </div>
           )}
         </div>
 
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
-            Close
+            {t('actions.close')}
           </Button>
         </DialogFooter>
       </DialogContent>
