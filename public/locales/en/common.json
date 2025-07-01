@@ -296,5 +296,6 @@
   "common.all": "common.all",
   "filters": "Filters",
   "all": "All",
-  "export": "Export"
+  "export": "Export",
+  "companyCard.defaultScrapeWarning.customizePrompt": "companyCard.defaultScrapeWarning.customizePrompt"
 }

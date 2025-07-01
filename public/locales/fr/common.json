@@ -340,5 +340,6 @@
   "ai.placeholder": "ai.placeholder",
   "ai.title": "ai.title",
   "ai.quickSuggestions": "ai.quickSuggestions",
-  "common.all": "common.all"
+  "common.all": "common.all",
+  "companyCard.defaultScrapeWarning.customizePrompt": "companyCard.defaultScrapeWarning.customizePrompt"
 }

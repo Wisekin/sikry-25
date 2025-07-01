@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card';
 import { Button } from '@/src/components/ui/button';
 import { Textarea } from '@/src/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { useSearchStore } from '@/stores/searchStore'; // To trigger discovery actions
+import { useSearchStore } from '@/stores/searchStore';
 import { Loader2, UploadCloud } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface CompanyInput {
-  id: string; // A unique ID for this input item, e.g., line number or generated hash
+  id: string;
   nameOrDomain: string;
   status: 'pending' | 'loading' | 'success' | 'error';
   message?: string;
 }
 
 export function BulkDiscovery() {
+  const { t } = useTranslation('searchPage');
   const [inputText, setInputText] = useState('');
   const [companyInputs, setCompanyInputs] = useState<CompanyInput[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -26,11 +28,11 @@ export function BulkDiscovery() {
   const handleParseInput = () => {
     const lines = inputText.split('\n').filter(line => line.trim() !== '');
     if (lines.length === 0) {
-      toast({ title: "Input Required", description: "Please enter company names or domains, one per line.", variant: "destructive" });
+      toast({ title: t('bulkDiscovery.toastRequired'), description: t('bulkDiscovery.toastRequiredDescription'), variant: "destructive" });
       return;
     }
     const newInputs: CompanyInput[] = lines.map((line, index) => ({
-      id: `item-${Date.now()}-${index}`, // Simple unique ID
+      id: `item-${Date.now()}-${index}`,
       nameOrDomain: line.trim(),
       status: 'pending',
     }));
@@ -39,71 +41,73 @@ export function BulkDiscovery() {
 
   const handleProcessBulkDiscovery = async () => {
     if (companyInputs.length === 0) {
-      toast({ title: "No Companies", description: "Please parse some company inputs first.", variant: "default" });
+      toast({ title: t('bulkDiscovery.toastNoCompanies'), description: t('bulkDiscovery.toastNoCompaniesDescription'), variant: "default" });
       return;
     }
 
     setIsProcessing(true);
-    toast({ title: "Bulk Discovery Started", description: `Processing ${companyInputs.length} items...` });
+    toast({ title: t('bulkDiscovery.toastDiscoveryStarted'), description: t('bulkDiscovery.toastProcessingItems', { count: companyInputs.length }) });
 
     for (const input of companyInputs) {
-      if (input.status !== 'pending') continue; // Skip already processed or processing
+      if (input.status !== 'pending') continue;
 
       setCompanyInputs(prev => prev.map(item => item.id === input.id ? { ...item, status: 'loading' } : item));
 
       try {
-        // Assuming company ID and name are derived or the same for this mock
-        // In a real scenario, you might need to pre-validate or look up company IDs if possible
-        // For simplicity, we'll use the input itself as a "name" and a generated ID for store interaction
-        // The store action might need adjustment if it strictly requires a pre-existing company ID from results.
-        // For this placeholder, let's assume the store action can handle new discoveries based on name/domain.
-        await initiateWebsiteDiscovery(input.id, input.nameOrDomain, input.nameOrDomain); // Using input.id as companyId for store state
-
-        setCompanyInputs(prev => prev.map(item => item.id === input.id ? { ...item, status: 'success', message: 'Discovery initiated.' } : item));
+        await initiateWebsiteDiscovery(input.id, input.nameOrDomain, input.nameOrDomain);
+        setCompanyInputs(prev => prev.map(item => item.id === input.id ? { ...item, status: 'success', message: t('bulkDiscovery.messageInitiated') } : item));
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        const errorMessage = error instanceof Error ? error.message : t('companyCard.discovery.status.unknownError'); // Using a common error key
         setCompanyInputs(prev => prev.map(item => item.id === input.id ? { ...item, status: 'error', message: errorMessage } : item));
       }
-      // Optional: Add a small delay between requests if hitting an API rapidly
-      // await new Promise(resolve => setTimeout(resolve, 200));
     }
 
     setIsProcessing(false);
-    toast({ title: "Bulk Discovery Complete", description: "All items processed." });
+    toast({ title: t('bulkDiscovery.toastDiscoveryComplete'), description: t('bulkDiscovery.toastAllProcessed') });
+  };
+
+  const getStatusText = (status: CompanyInput['status']) => {
+    switch (status) {
+      case 'pending': return t('bulkDiscovery.statusPending');
+      case 'loading': return t('bulkDiscovery.statusLoading');
+      case 'success': return t('bulkDiscovery.statusSuccess');
+      case 'error': return t('bulkDiscovery.statusError');
+      default: return status;
+    }
   };
 
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>Bulk Website Discovery</CardTitle>
+        <CardTitle>{t('bulkDiscovery.title')}</CardTitle>
         <CardDescription>
-          Enter a list of company names or domains (one per line) to discover and scrape their websites.
+          {t('bulkDiscovery.description')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
-          <Label htmlFor="bulk-input-textarea" className="mb-1 block text-sm font-medium">Company Names/Domains:</Label>
+          <Label htmlFor="bulk-input-textarea" className="mb-1 block text-sm font-medium">{t('bulkDiscovery.inputLabel')}</Label>
           <Textarea
             id="bulk-input-textarea"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            placeholder="Acme Corp\nbeta.com\nGamma Inc (gamma.co)"
+            placeholder={t('bulkDiscovery.inputPlaceholder')}
             rows={8}
-            disabled={isProcessing || companyInputs.length > 0 && !isProcessing } // Disable if parsed and not yet cleared
+            disabled={isProcessing || (companyInputs.length > 0 && !isProcessing)}
           />
            <div className="mt-2 flex gap-2">
-            <Button onClick={handleParseInput} disabled={isProcessing || companyInputs.length > 0 && !isProcessing || !inputText.trim()}>
-                <UploadCloud className="mr-2 h-4 w-4" /> Parse Input
+            <Button onClick={handleParseInput} disabled={isProcessing || (companyInputs.length > 0 && !isProcessing) || !inputText.trim()}>
+                <UploadCloud className="mr-2 h-4 w-4" /> {t('bulkDiscovery.parseButton')}
             </Button>
             {companyInputs.length > 0 && !isProcessing && (
-                <Button variant="outline" onClick={() => { setCompanyInputs([]); setInputText(''); }}>Clear Parsed List</Button>
+                <Button variant="outline" onClick={() => { setCompanyInputs([]); setInputText(''); }}>{t('bulkDiscovery.clearButton')}</Button>
             )}
            </div>
         </div>
 
         {companyInputs.length > 0 && (
           <div className="space-y-3">
-            <h3 className="text-md font-semibold">Parsed Companies ({companyInputs.length})</h3>
+            <h3 className="text-md font-semibold">{t('bulkDiscovery.parsedCompaniesTitle', { count: companyInputs.length })}</h3>
             <div className="max-h-60 overflow-y-auto border rounded-md p-2 space-y-1">
               {companyInputs.map(input => (
                 <div key={input.id} className="flex justify-between items-center p-1.5 bg-gray-50 rounded text-sm">
@@ -114,7 +118,7 @@ export function BulkDiscovery() {
                     input.status === 'success' ? 'bg-green-100 text-green-700' :
                     'bg-red-100 text-red-700'
                   }`}>
-                    {input.status}
+                    {getStatusText(input.status)}
                     {input.status === 'loading' && <Loader2 className="inline ml-1 h-3 w-3 animate-spin"/>}
                   </span>
                 </div>
@@ -122,7 +126,7 @@ export function BulkDiscovery() {
             </div>
             <Button onClick={handleProcessBulkDiscovery} disabled={isProcessing || companyInputs.every(c => c.status !== 'pending')}>
               {isProcessing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-              Start Bulk Discovery
+              {t('bulkDiscovery.startButton')}
             </Button>
           </div>
         )}
@@ -132,9 +136,10 @@ export function BulkDiscovery() {
 }
 
 // Basic Label component if not globally available or for local structure
+// Assuming Label is imported from ui/label, so this local one might not be needed if that's the case.
+// If it is used, it should also be translated if it had text content.
 const Label: React.FC<React.LabelHTMLAttributes<HTMLLabelElement>> = ({className, ...props}) => (
     <label className={cn("text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70", className)} {...props} />
 );
-
 
 export default BulkDiscovery;

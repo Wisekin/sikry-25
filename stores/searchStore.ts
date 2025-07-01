@@ -1,8 +1,6 @@
 "use client"
 
 import { create } from 'zustand';
-// Company type might be needed if results are strongly typed, but results are 'any[]' for now
-// import { Company } from '@/src/lib/types'; 
 import { devtools, persist } from "zustand/middleware";
 
 // As per the plan document for Search-Scraper Integration
@@ -466,3 +464,15 @@ export const useSearchStore = create<SearchState & SearchActions>()(
     }
   )
 );
+
+// Interface for SearchStore with discovery methods
+export interface SearchStore extends SearchState {
+  setQuery: (query: string) => void;
+  fetchSearchResults: () => Promise<void>;
+  setError: (error: string | null) => void;
+  setLoading: (loading: boolean) => void;
+  setPage: (page: number) => void;
+  setDiscoveryStateForCompany: (companyId: string, state: CompanyDiscoveryState) => void;
+  initiateWebsiteDiscovery: (companyId: string, companyName: string, manualUrl?: string) => Promise<void>;
+  executeScraperWithUrl: (companyId: string, url: string, config?: ScraperConfig) => Promise<void>;
+}

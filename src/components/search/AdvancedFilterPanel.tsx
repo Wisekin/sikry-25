@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/src/components/ui/accordion';
 import { Button } from '@/src/components/ui/button';
 import { Label } from '@/src/components/ui/label';
-import { Input } from '@/src/components/ui/input'; // For simple text inputs like location
-import { Checkbox } from '@/src/components/ui/checkbox'; // For boolean flags and potentially multi-select items
-import { Slider } from '@/src/components/ui/slider'; // For range slider
+import { Input } from '@/src/components/ui/input';
+import { Checkbox } from '@/src/components/ui/checkbox';
+import { Slider } from '@/src/components/ui/slider';
 import { Popover, PopoverContent, PopoverTrigger } from '@/src/components/ui/popover';
 import { Calendar } from '@/src/components/ui/calendar';
 import { CalendarIcon, FilterIcon, XIcon } from 'lucide-react';
@@ -14,18 +15,18 @@ import { cn } from '@/lib/utils';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../ui/card';
 
 // Mock industry list - in a real app, this would come from an API or constants
+// TODO: These should ideally be translatable if they are not just for developers/testing
 const MOCK_INDUSTRIES = ["Technology", "Healthcare", "Finance", "Manufacturing", "Retail", "Education", "Real Estate", "Entertainment"];
 const EMPLOYEE_COUNT_STEPS = [0, 50, 200, 1000, 5000, 20000, 100000]; // For slider labels
 
 export function AdvancedFilterPanel() {
+  const { t } = useTranslation('searchPage');
   const { filters, setFilters, clearFilters } = useSearchStore(state => ({
     filters: state.filters,
     setFilters: state.setFilters,
     clearFilters: state.clearFilters,
   }));
 
-  // Local state for UI interaction before committing to store, helps avoid rapid store updates on every little change.
-  // Or, update store directly if components are simple enough. For complex filters, local state is better.
   const [localIndustries, setLocalIndustries] = useState<string[]>(filters.industry);
   const [localEmployeeRange, setLocalEmployeeRange] = useState<[number, number]>([
     filters.employeeCount.min ?? EMPLOYEE_COUNT_STEPS[0],
@@ -46,8 +47,8 @@ export function AdvancedFilterPanel() {
     setFilters({
       industry: localIndustries,
       employeeCount: {
-        min: localEmployeeRange[0] === EMPLOYEE_COUNT_STEPS[0] && localEmployeeRange[1] === EMPLOYEE_COUNT_STEPS[EMPLOYEE_COUNT_STEPS.length -1] ? null : localEmployeeRange[0], // null if default full range
-        max: localEmployeeRange[0] === EMPLOYEE_COUNT_STEPS[0] && localEmployeeRange[1] === EMPLOYEE_COUNT_STEPS[EMPLOYEE_COUNT_STEPS.length -1] ? null : localEmployeeRange[1] === EMPLOYEE_COUNT_STEPS[EMPLOYEE_COUNT_STEPS.length -1] ? null : localEmployeeRange[1] // null if max is the highest step
+        min: localEmployeeRange[0] === EMPLOYEE_COUNT_STEPS[0] && localEmployeeRange[1] === EMPLOYEE_COUNT_STEPS[EMPLOYEE_COUNT_STEPS.length -1] ? null : localEmployeeRange[0],
+        max: localEmployeeRange[0] === EMPLOYEE_COUNT_STEPS[0] && localEmployeeRange[1] === EMPLOYEE_COUNT_STEPS[EMPLOYEE_COUNT_STEPS.length -1] ? null : localEmployeeRange[1] === EMPLOYEE_COUNT_STEPS[EMPLOYEE_COUNT_STEPS.length -1] ? null : localEmployeeRange[1]
       },
       location: localLocation,
       confidenceScore: localConfidence,
@@ -58,13 +59,11 @@ export function AdvancedFilterPanel() {
         to: localScrapedTo ? format(localScrapedTo, 'yyyy-MM-dd') : null,
       }
     });
-    // Potentially trigger search here or expect parent component to do so
   };
 
   const handleClearFilters = () => {
-    clearFilters(); // Resets store to initial
-    // Reset local state too
-    setLocalIndustries(useSearchStore.getState().filters.industry); // Get fresh initial state
+    clearFilters();
+    setLocalIndustries(useSearchStore.getState().filters.industry);
     setLocalEmployeeRange([
         useSearchStore.getState().filters.employeeCount.min ?? EMPLOYEE_COUNT_STEPS[0],
         useSearchStore.getState().filters.employeeCount.max ?? EMPLOYEE_COUNT_STEPS[EMPLOYEE_COUNT_STEPS.length -1]
@@ -83,25 +82,22 @@ export function AdvancedFilterPanel() {
     );
   };
 
-  // For employee range slider, assuming it gives an array [min, max]
   const handleEmployeeRangeChange = (value: number[]) => {
     if (value.length === 2) {
       setLocalEmployeeRange([value[0], value[1]]);
     }
   };
 
-
   return (
-    <Card className="w-full max-w-sm"> {/* Adjust width as needed */}
+    <Card className="w-full max-w-sm">
       <CardHeader className="border-b">
-        <CardTitle className="flex items-center"><FilterIcon className="mr-2 h-5 w-5"/> Advanced Filters</CardTitle>
+        <CardTitle className="flex items-center"><FilterIcon className="mr-2 h-5 w-5"/> {t('advancedFilterPanel.title')}</CardTitle>
       </CardHeader>
       <CardContent className="p-4 space-y-6 max-h-[70vh] overflow-y-auto">
         <Accordion type="multiple" defaultValue={['industry', 'employeeCount', 'location', 'contact', 'dateRange']} className="w-full">
 
-          {/* Industry Filter (Multi-select Checkbox Group) */}
           <AccordionItem value="industry">
-            <AccordionTrigger>Industry</AccordionTrigger>
+            <AccordionTrigger>{t('advancedFilterPanel.industry')}</AccordionTrigger>
             <AccordionContent className="space-y-2 max-h-40 overflow-y-auto">
               {MOCK_INDUSTRIES.map(industry => (
                 <div key={industry} className="flex items-center space-x-2">
@@ -110,23 +106,23 @@ export function AdvancedFilterPanel() {
                     checked={localIndustries.includes(industry)}
                     onCheckedChange={() => handleIndustryToggle(industry)}
                   />
-                  <Label htmlFor={`industry-${industry}`} className="font-normal text-sm">{industry}</Label>
+                  {/* Assuming MOCK_INDUSTRIES are keys or need a mapping to translation keys */}
+                  <Label htmlFor={`industry-${industry}`} className="font-normal text-sm">{t(`industry.${industry.toLowerCase().replace(/\s+/g, '')}`, industry)}</Label>
                 </div>
               ))}
             </AccordionContent>
           </AccordionItem>
 
-          {/* Employee Count Filter (Range Slider) */}
           <AccordionItem value="employeeCount">
-            <AccordionTrigger>Employee Count</AccordionTrigger>
+            <AccordionTrigger>{t('advancedFilterPanel.employeeCount')}</AccordionTrigger>
             <AccordionContent className="pt-2">
               <Slider
                 min={EMPLOYEE_COUNT_STEPS[0]}
                 max={EMPLOYEE_COUNT_STEPS[EMPLOYEE_COUNT_STEPS.length - 1]}
-                step={EMPLOYEE_COUNT_STEPS.length > 1 ? EMPLOYEE_COUNT_STEPS[1] - EMPLOYEE_COUNT_STEPS[0] : 10} // Approximate step
+                step={EMPLOYEE_COUNT_STEPS.length > 1 ? EMPLOYEE_COUNT_STEPS[1] - EMPLOYEE_COUNT_STEPS[0] : 10}
                 value={localEmployeeRange}
                 onValueChange={handleEmployeeRangeChange}
-                minStepsBetweenThumbs={0} // Allow thumbs to be at the same step
+                minStepsBetweenThumbs={0}
                 className="my-4"
               />
               <div className="flex justify-between text-xs text-muted-foreground">
@@ -136,21 +132,19 @@ export function AdvancedFilterPanel() {
             </AccordionContent>
           </AccordionItem>
 
-          {/* Location Filter */}
           <AccordionItem value="location">
-            <AccordionTrigger>Location</AccordionTrigger>
+            <AccordionTrigger>{t('advancedFilterPanel.location')}</AccordionTrigger>
             <AccordionContent>
               <Input
-                placeholder="e.g., City, State, Country"
+                placeholder={t('advancedFilterPanel.locationPlaceholder')}
                 value={localLocation}
                 onChange={(e) => setLocalLocation(e.target.value)}
               />
             </AccordionContent>
           </AccordionItem>
 
-          {/* Confidence Score Filter */}
           <AccordionItem value="confidenceScore">
-            <AccordionTrigger>Min. Confidence Score</AccordionTrigger>
+            <AccordionTrigger>{t('advancedFilterPanel.minConfidenceScore')}</AccordionTrigger>
             <AccordionContent className="pt-2">
                <Slider
                 min={0}
@@ -160,31 +154,29 @@ export function AdvancedFilterPanel() {
                 onValueChange={(val) => setLocalConfidence(val[0])}
                 className="my-4"
               />
-              <div className="text-center text-sm text-muted-foreground">{localConfidence}%</div>
+              <div className="text-center text-sm text-muted-foreground">{t('advancedFilterPanel.confidenceValue', { value: localConfidence })}</div>
             </AccordionContent>
           </AccordionItem>
 
-          {/* Contact Availability */}
           <AccordionItem value="contact">
-            <AccordionTrigger>Contact Info</AccordionTrigger>
+            <AccordionTrigger>{t('advancedFilterPanel.contactInfo')}</AccordionTrigger>
             <AccordionContent className="space-y-2">
                 <div className="flex items-center space-x-2">
                   <Checkbox id="hasEmail" checked={localHasEmail} onCheckedChange={(checked) => setLocalHasEmail(!!checked)} />
-                  <Label htmlFor="hasEmail" className="font-normal text-sm">Has Email</Label>
+                  <Label htmlFor="hasEmail" className="font-normal text-sm">{t('advancedFilterPanel.hasEmail')}</Label>
                 </div>
                  <div className="flex items-center space-x-2">
                   <Checkbox id="hasPhone" checked={localHasPhone} onCheckedChange={(checked) => setLocalHasPhone(!!checked)} />
-                  <Label htmlFor="hasPhone" className="font-normal text-sm">Has Phone</Label>
+                  <Label htmlFor="hasPhone" className="font-normal text-sm">{t('advancedFilterPanel.hasPhone')}</Label>
                 </div>
             </AccordionContent>
           </AccordionItem>
 
-          {/* Last Scraped Date Range */}
           <AccordionItem value="dateRange">
-            <AccordionTrigger>Last Scraped Date</AccordionTrigger>
+            <AccordionTrigger>{t('advancedFilterPanel.lastScrapedDate')}</AccordionTrigger>
             <AccordionContent className="space-y-3">
               <div>
-                <Label htmlFor="scrapedFromDate" className="text-xs">From</Label>
+                <Label htmlFor="scrapedFromDate" className="text-xs">{t('advancedFilterPanel.from')}</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
@@ -193,7 +185,7 @@ export function AdvancedFilterPanel() {
                       className={cn("w-full justify-start text-left font-normal", !localScrapedFrom && "text-muted-foreground")}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {localScrapedFrom ? format(localScrapedFrom, "PPP") : <span>Pick a date</span>}
+                      {localScrapedFrom ? format(localScrapedFrom, "PPP") : <span>{t('advancedFilterPanel.pickDate')}</span>}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
@@ -202,7 +194,7 @@ export function AdvancedFilterPanel() {
                 </Popover>
               </div>
               <div>
-                <Label htmlFor="scrapedToDate" className="text-xs">To</Label>
+                <Label htmlFor="scrapedToDate" className="text-xs">{t('advancedFilterPanel.to')}</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
@@ -211,7 +203,7 @@ export function AdvancedFilterPanel() {
                       className={cn("w-full justify-start text-left font-normal", !localScrapedTo && "text-muted-foreground")}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {localScrapedTo ? format(localScrapedTo, "PPP") : <span>Pick a date</span>}
+                      {localScrapedTo ? format(localScrapedTo, "PPP") : <span>{t('advancedFilterPanel.pickDate')}</span>}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
@@ -226,9 +218,9 @@ export function AdvancedFilterPanel() {
       </CardContent>
       <CardFooter className="border-t p-4 flex justify-between">
         <Button variant="ghost" onClick={handleClearFilters} className="text-xs">
-            <XIcon className="mr-1 h-4 w-4"/> Clear All
+            <XIcon className="mr-1 h-4 w-4"/> {t('advancedFilterPanel.clearAllButton')}
         </Button>
-        <Button onClick={handleApplyFilters}>Apply Filters</Button>
+        <Button onClick={handleApplyFilters}>{t('advancedFilterPanel.applyButton')}</Button>
       </CardFooter>
     </Card>
   );

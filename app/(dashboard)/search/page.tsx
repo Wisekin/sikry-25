@@ -12,10 +12,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/ta
 import { Slider } from '@/src/components/ui/slider';
 import { 
   Filter, Download, Grid, List, Loader2, X, ChevronDown, Globe, Linkedin, Database,
-  Briefcase, MapPin, Users, Star, Mail, Phone, RefreshCw, ExternalLink, SlidersHorizontal, Frown,
+  Briefcase, MapPin, Users, Star, Mail, Phone, RefreshCw, ExternalLink, SlidersHorizontal, Frown, ShieldCheck,
+  Search,
 } from 'lucide-react';
 
 import { MapView } from '@/src/components/map/MapView';
+import { WebsiteFilter } from '@/src/components/search/WebsiteFilter'; // Import WebsiteFilter
+import { GoogleRedirectModal } from '@/src/components/search/GoogleRedirectModal'; // Import GoogleRedirectModal
 import { ResultsGrid } from '@/src/components/search/ResultsGrid';
 import { SmartSearchBar } from '@/src/components/smart-search-bar';
 
@@ -83,6 +86,7 @@ function SearchPageContent() {
 
   const debouncedQuery = useDebounce(query, 500);
   const isInitialQueryProcessed = useRef(false); // Renamed and will adjust logic
+  const [isGoogleRedirectModalOpen, setIsGoogleRedirectModalOpen] = useState(false);
   
   const [filters, setFilters] = useState({
     industry: 'All Industries',
@@ -91,6 +95,7 @@ function SearchPageContent() {
     confidenceScore: 0,
     hasEmail: false,
     hasPhone: false,
+    hasValidWebsite: false, // Added hasValidWebsite
   });
 
   const handleClearFilters = () => {
@@ -101,6 +106,7 @@ function SearchPageContent() {
       confidenceScore: 70,
       hasEmail: false,
       hasPhone: false,
+      hasValidWebsite: false, // Reset hasValidWebsite
     });
   };
 
@@ -128,6 +134,19 @@ function SearchPageContent() {
       if (filters.hasEmail && (!company.extractedData || !Array.isArray(company.extractedData.emails) || company.extractedData.emails.length === 0)) return false;
       // Has Phone
       if (filters.hasPhone && (!company.extractedData || !Array.isArray(company.extractedData.phones) || company.extractedData.phones.length === 0)) return false;
+      // Has Valid Website (HTTPS)
+      if (filters.hasValidWebsite) {
+        if (!company.website || !company.website.startsWith('https://')) {
+          // Also check scrapedData if available, as per CompanyCard logic
+          const scrapedWebsite = company.discoveryStates?.[company.id]?.scrapedData?.website;
+          if (!scrapedWebsite || !scrapedWebsite.startsWith('https://')) {
+            // If neither original nor scraped website is valid HTTPS, filter out
+            if (!company.website?.startsWith('https://') && !scrapedWebsite?.startsWith('https://')) {
+              return false;
+            }
+          }
+        }
+      }
       return true;
     });
   }, [results, filters]);
@@ -282,8 +301,16 @@ function SearchPageContent() {
                   <Phone className="w-4 h-4 mr-1 inline" /> {t('filters.hasPhone')}
                 </button>
               </div>
+
+              {/* Website Filter */}
+              <div className="pt-4 border-t border-gray-100">
+                <WebsiteFilter
+                  isActive={filters.hasValidWebsite}
+                  onToggle={(isActive) => setFilters(prev => ({ ...prev, hasValidWebsite: isActive }))}
+                />
+              </div>
               
-              <Button variant="outline" onClick={handleClearFilters} className="w-full border-gray-300 text-gray-700 hover:bg-gray-100 hover:text-[#1B1F3B]">
+              <Button variant="outline" onClick={handleClearFilters} className="w-full border-gray-300 text-gray-700 hover:bg-gray-100 hover:text-[#1B1F3B] mt-2">
                 <RefreshCw className="w-4 h-4 mr-2" /> {t('clearAllFilters')}
               </Button>
             </CardContent>
@@ -346,10 +373,23 @@ function SearchPageContent() {
 
           {!isLoading && filteredCompanies.length === 0 && status === 'success' && (
             <div className="text-center py-24 bg-white rounded-xl shadow-sm">
+              <Frown className="mx-auto h-12 w-12 text-gray-400 mb-4" />
               <h3 className="text-xl font-semibold text-[#1B1F3B] mb-2">{t('noResults.title', 'No Results Found')}</h3>
-              <p className="text-muted-foreground mb-4">{t('noResults.suggestion', 'Try adjusting your filters or search terms for a better match.')}</p>
-              {error && <p className="text-red-500">{error}</p>}
-              <Button variant="outline" onClick={handleClearFilters}>{t('clearAllFilters')}</Button>
+              <p className="text-muted-foreground mb-6 max-w-md mx-auto">{t('noResults.suggestion', 'Try adjusting your filters or search terms for a better match.')}</p>
+              {error && <p className="text-red-500 mb-4">{error}</p>}
+              <div className="flex flex-col sm:flex-row justify-center items-center gap-3">
+                <Button variant="outline" onClick={handleClearFilters} className="w-full sm:w-auto">
+                  {t('clearAllFilters', 'Clear All Filters')}
+                </Button>
+                {query.trim() && ( // Only show Google redirect if there was a query
+                  <Button 
+                    onClick={() => setIsGoogleRedirectModalOpen(true)} 
+                    className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white"
+                  >
+                    <Search className="mr-2 h-4 w-4" /> {t('googleRedirectModal.triggerButton', 'Find on Google')}
+                  </Button>
+                )}
+              </div>
             </div>
           )}
 
@@ -397,6 +437,19 @@ function SearchPageContent() {
           )}
         </main>
       </div>
+
+      <GoogleRedirectModal
+        isOpen={isGoogleRedirectModalOpen}
+        onClose={() => setIsGoogleRedirectModalOpen(false)}
+        companyNameQuery={query}
+        onConfirm={(url) => {
+          console.log('Google Redirect Modal Confirmed URL:', url);
+          // Here you would typically integrate with your scraping/discovery workflow
+          // For example, by calling a store action:
+          // useSearchStore.getState().initiateDiscoveryWithUrl(url, query);
+          setIsGoogleRedirectModalOpen(false);
+        }}
+      />
     </div>
   );
 }

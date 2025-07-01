@@ -1,7 +1,8 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card';
-import { DataVisualizationWidget } from './DataVisualizationWidget'; // Assuming it's in the same directory
-import { DollarSign, Users, SearchCodeIcon, Zap } from 'lucide-react'; // Example icons
+import { DataVisualizationWidget } from './DataVisualizationWidget';
+import { DollarSign, Users, SearchCodeIcon, Zap } from 'lucide-react';
 
 // Mock data for charts - replace with actual data fetching and processing
 const mockBarData = [
@@ -30,12 +31,14 @@ const mockPieData = [
 ];
 
 export const AnalyticsDashboard: React.FC = () => {
+  const { t } = useTranslation('searchPage');
+
   // In a real scenario, you'd fetch this data or derive it from a store
   const placeholderStats = [
-    { title: 'Total Discoveries', value: '1,234', icon: <SearchCodeIcon className="h-6 w-6 text-blue-500" />, description: '+20% from last month' },
-    { title: 'Successful Extractions', value: '987', icon: <Zap className="h-6 w-6 text-green-500" />, description: '80% success rate' },
-    { title: 'Companies Enriched', value: '750', icon: <Users className="h-6 w-6 text-purple-500" />, description: 'New companies added' },
-    { title: 'Placeholder Stat', value: '$10.2k', icon: <DollarSign className="h-6 w-6 text-amber-500" />, description: 'Some financial metric' },
+    { titleKey: 'analyticsDashboard.totalDiscoveries', value: '1,234', icon: <SearchCodeIcon className="h-6 w-6 text-blue-500" />, descriptionKey: 'analyticsDashboard.totalDiscoveriesDescription' },
+    { titleKey: 'analyticsDashboard.successfulExtractions', value: '987', icon: <Zap className="h-6 w-6 text-green-500" />, descriptionKey: 'analyticsDashboard.successfulExtractionsDescription' },
+    { titleKey: 'analyticsDashboard.companiesEnriched', value: '750', icon: <Users className="h-6 w-6 text-purple-500" />, descriptionKey: 'analyticsDashboard.companiesEnrichedDescription' },
+    { titleKey: 'analyticsDashboard.placeholderStat', value: '$10.2k', icon: <DollarSign className="h-6 w-6 text-amber-500" />, descriptionKey: 'analyticsDashboard.placeholderStatDescription' },
   ];
 
   return (
@@ -44,12 +47,12 @@ export const AnalyticsDashboard: React.FC = () => {
         {placeholderStats.map((stat, index) => (
           <Card key={index}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+              <CardTitle className="text-sm font-medium">{t(stat.titleKey)}</CardTitle>
               {stat.icon}
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-xs text-muted-foreground">{stat.description}</p>
+              <p className="text-xs text-muted-foreground">{t(stat.descriptionKey)}</p>
             </CardContent>
           </Card>
         ))}
@@ -57,27 +60,27 @@ export const AnalyticsDashboard: React.FC = () => {
 
       <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
         <DataVisualizationWidget
-          title="Discovery Trends (Mock)"
-          description="Number of websites discovered over time."
+          title={t('analyticsDashboard.discoveryTrendsTitle')}
+          description={t('analyticsDashboard.discoveryTrendsDescription')}
           chartType="line"
           data={mockLineData}
         />
         <DataVisualizationWidget
-          title="Extraction Success Rate (Mock)"
-          description="Breakdown of successful vs. failed extractions."
+          title={t('analyticsDashboard.extractionSuccessRateTitle')}
+          description={t('analyticsDashboard.extractionSuccessRateDescription')}
           chartType="bar"
           data={mockBarData}
         />
         <DataVisualizationWidget
-          title="Data Source Distribution (Mock)"
-          description="Distribution of data sources for enrichment."
+          title={t('analyticsDashboard.dataSourceDistributionTitle')}
+          description={t('analyticsDashboard.dataSourceDistributionDescription')}
           chartType="pie"
           data={mockPieData}
-          className="md:col-span-1 lg:col-span-2" // Example of spanning for different layouts
+          className="md:col-span-1 lg:col-span-2"
         />
          <DataVisualizationWidget
-          title="Total Searches (Mock)"
-          description="Total number of searches performed this month."
+          title={t('analyticsDashboard.totalSearchesTitle')}
+          description={t('analyticsDashboard.totalSearchesDescription')}
           chartType="number"
           data={2450}
         />
